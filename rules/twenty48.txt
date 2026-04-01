@@ -1,0 +1,16 @@
+2048
+
+Slide and merge tiles to reach the 2048 tile.
+
+HOW TO PLAY
+- Use the arrow keys to slide all tiles in a direction.
+- Tiles with the same number merge into one when they collide.
+- Each tile can only merge once per move.
+- After each move, a new tile (2 or 4) appears in a random empty spot.
+
+SCORING
+- Your score increases by the value of each merged tile.
+
+WINNING AND LOSING
+- Win: create a 2048 tile (you can keep playing after).
+- Lose: no valid moves remain (board full, no adjacent matches).

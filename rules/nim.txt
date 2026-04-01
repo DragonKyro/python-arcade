@@ -1,0 +1,12 @@
+NIM
+
+Remove objects strategically to force the computer to take the last one.
+
+HOW TO PLAY
+- The board has several rows of objects (stones).
+- On your turn, click to remove 1 or more objects from a single row.
+- You must remove at least 1 object per turn.
+
+WINNING
+- The player who takes the last object loses.
+- Plan ahead to leave the computer in a losing position!

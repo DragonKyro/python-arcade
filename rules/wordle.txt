@@ -1,0 +1,17 @@
+WORDLE
+
+Guess the hidden 5-letter word in 6 tries.
+
+HOW TO PLAY
+- Type a 5-letter word using your keyboard and press Enter.
+- Press Backspace to delete a letter.
+
+FEEDBACK (color of each letter after guessing)
+- Green: correct letter in the correct position.
+- Yellow: correct letter but in the wrong position.
+- Gray: letter is not in the word at all.
+
+Use the feedback to narrow down the answer. The on-screen keyboard
+also updates to show which letters have been used and their status.
+
+You have 6 attempts. Good luck!

@@ -5,6 +5,7 @@
 import arcade
 import random
 import copy
+from pages.rules import RulesView
 
 WIDTH = 800
 HEIGHT = 600
@@ -118,6 +119,7 @@ class Twenty48View(arcade.View):
         # Buttons
         self.back_button = Button(70, HEIGHT - 30, 110, 40, "Back", bg_color=(143, 122, 102))
         self.new_game_button = Button(200, HEIGHT - 30, 130, 40, "New Game", bg_color=(143, 122, 102))
+        self.help_button = Button(WIDTH - 40, HEIGHT - 30, 40, 40, "?", bg_color=arcade.color.DARK_SLATE_BLUE)
 
         self._new_game()
 
@@ -278,6 +280,7 @@ class Twenty48View(arcade.View):
         # Buttons
         self.back_button.draw()
         self.new_game_button.draw()
+        self.help_button.draw()
 
         # Grid background
         grid_cx = GRID_LEFT + GRID_PIXEL / 2
@@ -374,6 +377,12 @@ class Twenty48View(arcade.View):
         # New Game button
         if self.new_game_button.hit_test(x, y):
             self._new_game()
+            return
+
+        # Help button
+        if self.help_button.hit_test(x, y):
+            rules_view = RulesView("2048", "twenty48.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # Dismiss win overlay

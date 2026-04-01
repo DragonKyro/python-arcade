@@ -1,0 +1,15 @@
+ROCK PAPER SCISSORS
+
+Beat the computer in a best-of-many showdown.
+
+HOW TO PLAY
+- Click Rock, Paper, or Scissors to make your choice.
+- The computer makes its choice at the same time.
+
+RULES
+- Rock beats Scissors.
+- Scissors beats Paper.
+- Paper beats Rock.
+- Same choice is a draw.
+
+The computer studies your patterns, so try to stay unpredictable!

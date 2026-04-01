@@ -1,0 +1,15 @@
+MASTERMIND
+
+Crack the secret 4-color code in 10 attempts or fewer.
+
+HOW TO PLAY
+- Click a color from the palette at the bottom to select it.
+- Click a slot in the current row to place your selected color.
+- Fill all 4 slots, then click Submit to make your guess.
+
+FEEDBACK PEGS (shown to the right of each guess)
+- Black peg: correct color in the correct position.
+- White peg: correct color but in the wrong position.
+- Empty: that color is not in the code.
+
+Use the feedback to narrow down the secret code. Good luck!

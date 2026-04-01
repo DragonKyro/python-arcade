@@ -1,0 +1,453 @@
+import arcade
+import random
+import time
+from pages.rules import RulesView
+
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Game constants
+MAX_GUESSES = 6
+WORD_LENGTH = 5
+
+# Colors
+GREEN = (106, 170, 100)       # #6AAA64
+YELLOW = (201, 180, 88)       # #C9B458
+DARK_GRAY = (120, 124, 126)   # #787C7E
+EMPTY_CELL = (18, 18, 19)
+CELL_BORDER = (58, 58, 60)
+CELL_ACTIVE_BORDER = (135, 138, 140)
+BG_COLOR = (18, 18, 19)
+KEY_BG = (129, 131, 132)
+KEY_TEXT = arcade.color.WHITE
+
+# Layout
+CELL_SIZE = 60
+CELL_GAP = 6
+GRID_TOP = HEIGHT - 80
+GRID_LEFT = WIDTH / 2 - (WORD_LENGTH * (CELL_SIZE + CELL_GAP) - CELL_GAP) / 2
+
+# Keyboard layout
+KB_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"]
+KB_KEY_W = 44
+KB_KEY_H = 54
+KB_KEY_GAP = 6
+KB_Y_START = 110
+
+# Word list (200+ common 5-letter words)
+WORDS = [
+    "about", "above", "abuse", "actor", "acute", "admit", "adopt", "adult",
+    "after", "again", "agent", "agree", "ahead", "alarm", "album", "alert",
+    "alien", "align", "alike", "alive", "alley", "allow", "alone", "along",
+    "alter", "among", "angel", "anger", "angle", "angry", "ankle", "apart",
+    "apple", "apply", "arena", "argue", "arise", "armor", "array", "aside",
+    "asset", "avoid", "awake", "award", "aware", "badly", "baker", "basic",
+    "basis", "beach", "begun", "being", "below", "bench", "bible", "birth",
+    "black", "blade", "blame", "bland", "blank", "blast", "blaze", "bleed",
+    "blend", "blind", "block", "blood", "blown", "board", "bonus", "booth",
+    "bound", "brain", "brand", "brave", "bread", "break", "breed", "brick",
+    "bride", "brief", "bring", "broad", "broke", "brook", "brown", "brush",
+    "buddy", "build", "built", "bunch", "burst", "buyer", "cabin", "cable",
+    "camel", "candy", "cargo", "carry", "catch", "cause", "cedar", "chain",
+    "chair", "chalk", "chaos", "charm", "chase", "cheap", "check", "cheek",
+    "cheer", "chess", "chest", "chief", "child", "china", "chunk", "cited",
+    "civic", "civil", "claim", "class", "clean", "clear", "climb", "cling",
+    "clock", "clone", "close", "cloth", "cloud", "coach", "coast", "color",
+    "comet", "comic", "coral", "could", "count", "court", "cover", "crack",
+    "craft", "crane", "crash", "crazy", "cream", "crime", "crisp", "cross",
+    "crowd", "crown", "crush", "curve", "cycle", "daily", "dance", "death",
+    "debug", "decay", "delay", "depot", "depth", "derby", "devil", "diary",
+    "dirty", "doubt", "dough", "draft", "drain", "drama", "drank", "drawn",
+    "dream", "dress", "dried", "drift", "drink", "drive", "drove", "dying",
+    "eager", "eagle", "early", "earth", "eight", "elect", "elite", "email",
+    "empty", "enemy", "enjoy", "enter", "entry", "equal", "error", "essay",
+    "event", "every", "exact", "exile", "exist", "extra", "faint", "faith",
+    "false", "fancy", "fatal", "fault", "feast", "fence", "fewer", "fiber",
+    "field", "fifth", "fifty", "fight", "final", "first", "flame", "flash",
+    "fleet", "flesh", "float", "flood", "floor", "flour", "fluid", "flush",
+    "focus", "force", "forge", "forth", "forum", "found", "frame", "frank",
+    "fraud", "fresh", "front", "frost", "fruit", "fully", "funny", "ghost",
+    "giant", "given", "glass", "globe", "glory", "going", "grace", "grade",
+    "grain", "grand", "grant", "graph", "grasp", "grass", "grave", "great",
+    "green", "greet", "grief", "grill", "grind", "gross", "group", "grove",
+    "grown", "guard", "guess", "guest", "guide", "guild", "guilt", "happy",
+    "harsh", "haven", "heart", "heavy", "hence", "herbs", "hobby", "honey",
+    "honor", "horse", "hotel", "house", "human", "humor", "ideal", "image",
+    "imply", "index", "inner", "input", "irony", "issue", "ivory", "jewel",
+    "joint", "jones", "judge", "juice", "knock", "known", "label", "labor",
+    "large", "laser", "later", "laugh", "layer", "learn", "lease", "leave",
+    "legal", "lemon", "level", "light", "limit", "linen", "liver", "local",
+    "lodge", "logic", "loose", "lover", "lower", "loyal", "lucky", "lunch",
+    "magic", "major", "maker", "manor", "maple", "march", "match", "mayor",
+    "media", "mercy", "merit", "metal", "meter", "might", "minor", "minus",
+    "model", "money", "month", "moral", "motor", "mount", "mouse", "mouth",
+    "movie", "music", "naked", "nasty", "naval", "nerve", "never", "night",
+    "noble", "noise", "north", "noted", "novel", "nurse", "nylon", "occur",
+    "ocean", "offer", "often", "olive", "onset", "opera", "orbit", "order",
+    "organ", "other", "ought", "outer", "owned", "owner", "oxide", "ozone",
+    "paint", "panel", "panic", "party", "paste", "patch", "pause", "peace",
+    "pearl", "penny", "phase", "phone", "photo", "piano", "piece", "pilot",
+    "pitch", "pixel", "pizza", "place", "plain", "plane", "plant", "plate",
+    "plaza", "plead", "plumb", "plump", "point", "polar", "pound", "power",
+    "press", "price", "pride", "prime", "prince","print", "prior", "prize",
+    "probe", "proof", "prose", "proud", "prove", "proxy", "pulse", "punch",
+    "pupil", "queen", "query", "quest", "queue", "quick", "quiet", "quite",
+    "quota", "quote", "radar", "radio", "raise", "rally", "ranch", "range",
+    "rapid", "ratio", "reach", "ready", "realm", "rebel", "refer", "reign",
+    "relax", "renew", "reply", "rider", "ridge", "rifle", "right", "rigid",
+    "rival", "river", "robin", "robot", "rocky", "rouge", "rough", "round",
+    "route", "royal", "rugby", "ruler", "rural", "sadly", "saint", "salad",
+    "sauce", "scale", "scene", "scope", "score", "sense", "serve", "setup",
+    "seven", "shade", "shake", "shall", "shame", "shape", "share", "shark",
+    "sharp", "sheep", "sheer", "sheet", "shelf", "shell", "shift", "shine",
+    "shirt", "shock", "shoot", "shore", "short", "shout", "sight", "skill",
+    "skull", "slave", "sleep", "slice", "slide", "slope", "smart", "smell",
+    "smile", "smoke", "snake", "solar", "solid", "solve", "sorry", "sound",
+    "south", "space", "spare", "speak", "speed", "spend", "spent", "spill",
+    "spine", "spite", "split", "spoke", "spoon", "sport", "spray", "squad",
+    "stack", "staff", "stage", "stain", "stake", "stall", "stamp", "stand",
+    "stark", "start", "state", "stays", "steam", "steel", "steep", "steer",
+    "stern", "stick", "stiff", "still", "stock", "stone", "stood", "store",
+    "storm", "story", "stove", "strap", "straw", "strip", "stuck", "study",
+    "stuff", "style", "sugar", "suite", "super", "surge", "swamp", "swear",
+    "sweep", "sweet", "swept", "swift", "swing", "sword", "swore", "sworn",
+    "table", "taken", "taste", "teach", "teeth", "thank", "theme", "there",
+    "thick", "thing", "think", "third", "those", "three", "threw", "throw",
+    "thumb", "tiger", "tight", "timer", "tired", "title", "today", "token",
+    "topic", "total", "touch", "tough", "towel", "tower", "toxic", "trace",
+    "track", "trade", "trail", "train", "trait", "trash", "treat", "trend",
+    "trial", "tribe", "trick", "tried", "troop", "truck", "truly", "trump",
+    "trunk", "trust", "truth", "tumor", "tutor", "twice", "twist", "ultra",
+    "uncle", "under", "union", "unite", "unity", "until", "upper", "upset",
+    "urban", "usage", "usual", "valid", "value", "vapor", "vault", "venue",
+    "verse", "video", "vigor", "virus", "visit", "vital", "vivid", "vocal",
+    "voice", "voter", "wages", "waste", "watch", "water", "weave", "weigh",
+    "weird", "whale", "wheat", "wheel", "where", "which", "while", "white",
+    "whole", "whose", "width", "witch", "woman", "women", "world", "worry",
+    "worse", "worst", "worth", "would", "wound", "write", "wrong", "wrote",
+    "yacht", "yield", "young", "youth",
+]
+
+VALID_GUESSES = set(WORDS)
+
+
+class WordleView(arcade.View):
+    def __init__(self, menu_view):
+        super().__init__()
+        self.menu_view = menu_view
+        self.reset_game()
+
+    def reset_game(self):
+        """Initialize or reset all game state."""
+        self.answer = random.choice(WORDS).upper()
+        self.guesses = []           # list of submitted 5-letter strings
+        self.guess_colors = []      # list of lists of color tuples per guess
+        self.current_input = ""
+        self.game_over = False
+        self.won = False
+        self.message = ""
+        self.message_time = 0
+        self.key_colors = {}        # letter -> best color so far
+
+    def on_show(self):
+        arcade.set_background_color(BG_COLOR)
+
+    # ── Drawing ──────────────────────────────────────────────────────
+
+    def on_draw(self):
+        self.clear()
+
+        # Title
+        arcade.draw_text(
+            "Wordle", WIDTH / 2, HEIGHT - 30,
+            arcade.color.WHITE, font_size=28,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Back button
+        self._draw_button(60, HEIGHT - 30, 90, 36, "Back", (50, 50, 70))
+        # New Game button
+        self._draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", (30, 100, 50))
+        # Help button
+        self._draw_button(WIDTH - 145, HEIGHT - 30, 40, 40, "?", (50, 50, 70))
+
+        # Grid
+        self._draw_grid()
+
+        # On-screen keyboard
+        self._draw_keyboard()
+
+        # Toast message (invalid word, win, lose)
+        if self.message:
+            elapsed = time.time() - self.message_time
+            if elapsed < 2.0 or self.game_over:
+                arcade.draw_rect_filled(
+                    arcade.XYWH(WIDTH / 2, HEIGHT / 2 + 40, 300, 50),
+                    (255, 255, 255),
+                )
+                arcade.draw_text(
+                    self.message, WIDTH / 2, HEIGHT / 2 + 40,
+                    (0, 0, 0), font_size=16,
+                    anchor_x="center", anchor_y="center", bold=True,
+                )
+            else:
+                self.message = ""
+
+    def _draw_button(self, cx, cy, w, h, text, color):
+        arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
+        arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE)
+        arcade.draw_text(
+            text, cx, cy, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+
+    def _cell_xy(self, row, col):
+        """Return center (x, y) for grid cell at (row, col)."""
+        total_w = WORD_LENGTH * (CELL_SIZE + CELL_GAP) - CELL_GAP
+        total_h = MAX_GUESSES * (CELL_SIZE + CELL_GAP) - CELL_GAP
+        start_x = WIDTH / 2 - total_w / 2 + CELL_SIZE / 2
+        start_y = GRID_TOP - CELL_SIZE / 2
+        x = start_x + col * (CELL_SIZE + CELL_GAP)
+        y = start_y - row * (CELL_SIZE + CELL_GAP)
+        return x, y
+
+    def _draw_grid(self):
+        for row in range(MAX_GUESSES):
+            for col in range(WORD_LENGTH):
+                x, y = self._cell_xy(row, col)
+
+                if row < len(self.guesses):
+                    # Submitted row - colored
+                    color = self.guess_colors[row][col]
+                    letter = self.guesses[row][col]
+                    arcade.draw_rect_filled(
+                        arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), color,
+                    )
+                    arcade.draw_rect_outline(
+                        arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), color, 2,
+                    )
+                    arcade.draw_text(
+                        letter, x, y, arcade.color.WHITE,
+                        font_size=28, anchor_x="center", anchor_y="center",
+                        bold=True,
+                    )
+                elif row == len(self.guesses) and not self.game_over:
+                    # Current input row
+                    letter = self.current_input[col] if col < len(self.current_input) else ""
+                    border = CELL_ACTIVE_BORDER if letter else CELL_BORDER
+                    arcade.draw_rect_filled(
+                        arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), EMPTY_CELL,
+                    )
+                    arcade.draw_rect_outline(
+                        arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), border, 2,
+                    )
+                    if letter:
+                        arcade.draw_text(
+                            letter, x, y, arcade.color.WHITE,
+                            font_size=28, anchor_x="center",
+                            anchor_y="center", bold=True,
+                        )
+                else:
+                    # Empty future row
+                    arcade.draw_rect_filled(
+                        arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), EMPTY_CELL,
+                    )
+                    arcade.draw_rect_outline(
+                        arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), CELL_BORDER, 2,
+                    )
+
+    def _draw_keyboard(self):
+        for r, row_letters in enumerate(KB_ROWS):
+            row_width = len(row_letters) * (KB_KEY_W + KB_KEY_GAP) - KB_KEY_GAP
+            if r == 2:
+                # Add space for ENTER and BACK keys
+                row_width += 2 * (KB_KEY_W * 1.5 + KB_KEY_GAP)
+            start_x = WIDTH / 2 - row_width / 2 + KB_KEY_W / 2
+            y = KB_Y_START - r * (KB_KEY_H + KB_KEY_GAP)
+
+            if r == 2:
+                # Draw ENTER key
+                enter_w = KB_KEY_W * 1.5
+                ex = start_x
+                arcade.draw_rect_filled(
+                    arcade.XYWH(ex, y, enter_w, KB_KEY_H), KEY_BG,
+                )
+                arcade.draw_text(
+                    "ENT", ex, y, KEY_TEXT,
+                    font_size=11, anchor_x="center", anchor_y="center", bold=True,
+                )
+                start_x += enter_w + KB_KEY_GAP
+
+            for i, letter in enumerate(row_letters):
+                x = start_x + i * (KB_KEY_W + KB_KEY_GAP)
+                color = self.key_colors.get(letter, KEY_BG)
+                arcade.draw_rect_filled(
+                    arcade.XYWH(x, y, KB_KEY_W, KB_KEY_H), color,
+                )
+                arcade.draw_text(
+                    letter, x, y, KEY_TEXT,
+                    font_size=14, anchor_x="center", anchor_y="center",
+                    bold=True,
+                )
+
+            if r == 2:
+                # Draw BACK key
+                back_w = KB_KEY_W * 1.5
+                bx = start_x + len(row_letters) * (KB_KEY_W + KB_KEY_GAP)
+                arcade.draw_rect_filled(
+                    arcade.XYWH(bx, y, back_w, KB_KEY_H), KEY_BG,
+                )
+                arcade.draw_text(
+                    "DEL", bx, y, KEY_TEXT,
+                    font_size=11, anchor_x="center", anchor_y="center", bold=True,
+                )
+
+    # ── Game Logic ───────────────────────────────────────────────────
+
+    def _evaluate_guess(self, guess):
+        """Return list of 5 colors for the guess, handling duplicate letters correctly."""
+        colors = [DARK_GRAY] * WORD_LENGTH
+        answer_chars = list(self.answer)
+        guess_chars = list(guess)
+
+        # First pass: mark greens
+        for i in range(WORD_LENGTH):
+            if guess_chars[i] == answer_chars[i]:
+                colors[i] = GREEN
+                answer_chars[i] = None
+                guess_chars[i] = None
+
+        # Second pass: mark yellows
+        for i in range(WORD_LENGTH):
+            if guess_chars[i] is not None and guess_chars[i] in answer_chars:
+                colors[i] = YELLOW
+                answer_chars[answer_chars.index(guess_chars[i])] = None
+
+        return colors
+
+    def _update_key_colors(self, guess, colors):
+        """Update on-screen keyboard colors. Green > Yellow > Gray."""
+        priority = {GREEN: 3, YELLOW: 2, DARK_GRAY: 1}
+        for letter, color in zip(guess, colors):
+            existing = self.key_colors.get(letter)
+            if existing is None or priority[color] > priority.get(existing, 0):
+                self.key_colors[letter] = color
+
+    def _submit_guess(self):
+        if len(self.current_input) != WORD_LENGTH:
+            return
+
+        word = self.current_input.lower()
+        if word not in VALID_GUESSES:
+            self.message = "Not in word list"
+            self.message_time = time.time()
+            return
+
+        guess = self.current_input.upper()
+        colors = self._evaluate_guess(guess)
+        self.guesses.append(guess)
+        self.guess_colors.append(colors)
+        self._update_key_colors(guess, colors)
+        self.current_input = ""
+
+        if guess == self.answer:
+            self.game_over = True
+            self.won = True
+            n = len(self.guesses)
+            self.message = f"You got it! ({n}/6)"
+            self.message_time = time.time()
+        elif len(self.guesses) >= MAX_GUESSES:
+            self.game_over = True
+            self.won = False
+            self.message = f"The word was: {self.answer}"
+            self.message_time = time.time()
+
+    def _type_letter(self, letter):
+        if self.game_over:
+            return
+        if len(self.current_input) < WORD_LENGTH:
+            self.current_input += letter.upper()
+
+    def _backspace(self):
+        if self.game_over:
+            return
+        self.current_input = self.current_input[:-1]
+
+    # ── Input Handling ───────────────────────────────────────────────
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            self.window.show_view(self.menu_view)
+            return
+
+        if key == arcade.key.RETURN or key == arcade.key.NUM_ENTER:
+            self._submit_guess()
+            return
+
+        if key == arcade.key.BACKSPACE:
+            self._backspace()
+            return
+
+        # A-Z keys
+        if arcade.key.A <= key <= arcade.key.Z:
+            letter = chr(key).upper()
+            self._type_letter(letter)
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        # Back button
+        if 15 <= x <= 105 and HEIGHT - 48 <= y <= HEIGHT - 12:
+            self.window.show_view(self.menu_view)
+            return
+
+        # New Game button
+        if WIDTH - 125 <= x <= WIDTH - 15 and HEIGHT - 48 <= y <= HEIGHT - 12:
+            self.reset_game()
+            return
+
+        # Help button
+        if WIDTH - 165 <= x <= WIDTH - 125 and HEIGHT - 50 <= y <= HEIGHT - 10:
+            rules_view = RulesView(
+                "Wordle", "wordle.txt", None, self.menu_view,
+                existing_game_view=self,
+            )
+            self.window.show_view(rules_view)
+            return
+
+        # On-screen keyboard clicks
+        self._handle_keyboard_click(x, y)
+
+    def _handle_keyboard_click(self, mx, my):
+        """Check if a virtual keyboard key was clicked."""
+        for r, row_letters in enumerate(KB_ROWS):
+            row_width = len(row_letters) * (KB_KEY_W + KB_KEY_GAP) - KB_KEY_GAP
+            if r == 2:
+                row_width += 2 * (KB_KEY_W * 1.5 + KB_KEY_GAP)
+            start_x = WIDTH / 2 - row_width / 2 + KB_KEY_W / 2
+            y = KB_Y_START - r * (KB_KEY_H + KB_KEY_GAP)
+
+            if r == 2:
+                # Check ENTER key
+                enter_w = KB_KEY_W * 1.5
+                ex = start_x
+                if (ex - enter_w / 2 <= mx <= ex + enter_w / 2 and
+                        y - KB_KEY_H / 2 <= my <= y + KB_KEY_H / 2):
+                    self._submit_guess()
+                    return
+                start_x += enter_w + KB_KEY_GAP
+
+            for i, letter in enumerate(row_letters):
+                kx = start_x + i * (KB_KEY_W + KB_KEY_GAP)
+                if (kx - KB_KEY_W / 2 <= mx <= kx + KB_KEY_W / 2 and
+                        y - KB_KEY_H / 2 <= my <= y + KB_KEY_H / 2):
+                    self._type_letter(letter)
+                    return
+
+            if r == 2:
+                # Check BACK/DEL key
+                back_w = KB_KEY_W * 1.5
+                bx = start_x + len(row_letters) * (KB_KEY_W + KB_KEY_GAP)
+                if (bx - back_w / 2 <= mx <= bx + back_w / 2 and
+                        y - KB_KEY_H / 2 <= my <= y + KB_KEY_H / 2):
+                    self._backspace()
+                    return

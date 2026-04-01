@@ -1,0 +1,12 @@
+TIC-TAC-TOE
+
+Get three in a row before the computer does.
+
+HOW TO PLAY
+- You are X, the computer is O.
+- Click an empty cell to place your mark.
+- The computer will respond automatically.
+
+WINNING
+- Get 3 of your marks in a horizontal, vertical, or diagonal line.
+- If all 9 cells are filled with no winner, it's a draw.

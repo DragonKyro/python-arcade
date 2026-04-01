@@ -1,0 +1,22 @@
+BACKGAMMON
+
+Bear off all 15 of your checkers before the computer.
+
+HOW TO PLAY
+- Click "Roll Dice" to roll two dice.
+- Click a checker to select it, then click a valid destination
+  (highlighted in green) to move it.
+- You must use both dice if possible (or all 4 on doubles).
+
+MOVEMENT
+- You are White, moving from point 24 toward point 1.
+- You can land on empty points, your own points, or points with
+  exactly 1 opponent checker (a "blot" — it gets sent to the bar).
+
+BAR AND BEARING OFF
+- Checkers on the bar must re-enter before any other move.
+- Once all your checkers are in your home board (points 1-6),
+  you can bear them off. Exact or higher dice values work.
+
+WINNING
+- First player to bear off all 15 checkers wins.

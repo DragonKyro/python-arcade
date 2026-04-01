@@ -1,5 +1,7 @@
 import arcade
 from ai.othello_ai import OthelloAI, get_valid_moves, apply_move, check_game_over
+from pages.components import Button
+from pages.rules import RulesView
 
 # Window constants
 WIDTH = 800
@@ -36,6 +38,7 @@ class OthelloView(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.ai = OthelloAI(depth=4)
+        self.help_button = Button(WIDTH - 145, HEIGHT - 30, 40, 36, "?", color=arcade.color.DARK_SLATE_BLUE)
         self.reset_game()
 
     def reset_game(self):
@@ -145,6 +148,8 @@ class OthelloView(arcade.View):
         self._draw_button(60, HEIGHT - 30, 90, 36, "Back", arcade.color.DARK_SLATE_BLUE)
         # New Game button
         self._draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", arcade.color.DARK_GREEN)
+        # Help button
+        self.help_button.draw()
 
     def _draw_button(self, cx, cy, w, h, text, color):
         arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
@@ -215,6 +220,12 @@ class OthelloView(arcade.View):
         # New Game button
         if self._hit_rect(x, y, WIDTH - 70, HEIGHT - 30, 110, 36):
             self.reset_game()
+            return
+
+        # Help button
+        if self.help_button.hit_test(x, y):
+            rules_view = RulesView("Othello", "othello.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         if self.game_over or self.current_turn != BLACK:

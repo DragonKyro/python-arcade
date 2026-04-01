@@ -1,0 +1,16 @@
+BATTLESHIP
+
+Sink all enemy ships before yours are sunk.
+
+PLACEMENT PHASE
+- Place your 5 ships on the left grid.
+- Click to place a ship. Press R to rotate (horizontal/vertical).
+- Ships: Carrier (5), Battleship (4), Cruiser (3), Submarine (3), Destroyer (2).
+
+BATTLE PHASE
+- Click a cell on the right grid (enemy waters) to fire a shot.
+- Red = hit, white dot = miss.
+- You and the computer take turns firing.
+
+WINNING
+- Sink all 5 enemy ships to win. The game ends if all your ships are sunk.

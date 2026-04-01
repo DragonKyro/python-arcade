@@ -1,0 +1,17 @@
+OTHELLO (REVERSI)
+
+Capture the most pieces by flipping your opponent's discs.
+
+HOW TO PLAY
+- You are Black, the computer is White. Black goes first.
+- Click a valid cell (shown with a dot) to place your disc.
+- Your disc must bracket one or more opponent discs in a straight
+  line (horizontal, vertical, or diagonal).
+- All bracketed opponent discs are flipped to your color.
+
+SPECIAL RULES
+- If you have no valid moves, your turn is skipped.
+- The game ends when neither player can move.
+
+WINNING
+- The player with the most discs on the board wins.

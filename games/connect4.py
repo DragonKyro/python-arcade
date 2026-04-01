@@ -3,6 +3,8 @@ Connect Four game view using Arcade 2.6.x APIs.
 """
 
 import arcade
+from pages.components import Button
+from pages.rules import RulesView
 from ai.connect4_ai import (
     Connect4AI,
     check_winner,
@@ -51,6 +53,7 @@ class Connect4View(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.ai = Connect4AI()
+        self.help_button = Button(WIDTH - 145, HEIGHT - 30, 40, 36, "?", color=arcade.color.DARK_SLATE_BLUE)
         self.board = None
         self.state = None
         self.winner = None
@@ -133,6 +136,9 @@ class Connect4View(arcade.View):
         arcade.draw_rect_filled(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.DARK_GREEN)
         arcade.draw_rect_outline(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.WHITE, 2)
         arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
+
+        # Help button
+        self.help_button.draw()
 
         # Title
         arcade.draw_text(
@@ -238,6 +244,12 @@ class Connect4View(arcade.View):
         # New Game button
         if self._in_button(x, y, WIDTH - 70, HEIGHT - 30):
             self.new_game()
+            return
+
+        # Help button
+        if self.help_button.hit_test(x, y):
+            rules_view = RulesView("Connect Four", "connect4.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # Player move

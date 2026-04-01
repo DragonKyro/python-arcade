@@ -7,6 +7,7 @@ import arcade
 import random
 
 from ai.battleship_ai import BattleshipAI
+from pages.rules import RulesView
 
 # Window constants
 WIDTH = 800
@@ -164,6 +165,12 @@ class BattleshipView(arcade.View):
         arcade.draw_rect_outline(arcade.XYWH(nx, ny, BTN_W, BTN_H), arcade.color.WHITE)
         arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
 
+        # Help button
+        hx, hy = WIDTH - 140, HEIGHT - 22
+        arcade.draw_rect_filled(arcade.XYWH(hx, hy, 40, 30), arcade.color.DARK_SLATE_BLUE)
+        arcade.draw_rect_outline(arcade.XYWH(hx, hy, 40, 30), arcade.color.WHITE)
+        arcade.draw_text("?", hx, hy, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+
     def _draw_grid(self, left, board, show_ships=False):
         """Draw a 10x10 grid from a 2D board array."""
         for row in range(GRID_SIZE):
@@ -317,6 +324,13 @@ class BattleshipView(arcade.View):
         bx, by = 55, HEIGHT - 22
         if abs(x - bx) < BTN_W // 2 and abs(y - by) < BTN_H // 2:
             self.window.show_view(self.menu_view)
+            return
+
+        # Help button
+        hx, hy = WIDTH - 140, HEIGHT - 22
+        if abs(x - hx) < 20 and abs(y - hy) < 15:
+            rules_view = RulesView("Battleship", "battleship.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # New Game button

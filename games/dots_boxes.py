@@ -6,6 +6,8 @@ import arcade
 import copy
 
 from ai.dots_boxes_ai import DotsBoxesAI
+from pages.components import Button
+from pages.rules import RulesView
 
 # Window / layout constants
 WIDTH = 800
@@ -61,6 +63,7 @@ class DotsBoxesView(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.ai = DotsBoxesAI()
+        self.help_button = Button(WIDTH - 135, HEIGHT - 25, 40, 32, "?", color=arcade.color.DARK_SLATE_BLUE)
         self._init_game()
 
     # ------------------------------------------------------------------ #
@@ -183,6 +186,12 @@ class DotsBoxesView(arcade.View):
         if (BTN_NEW_X - BTN_W / 2 <= x <= BTN_NEW_X + BTN_W / 2
                 and BTN_NEW_Y - BTN_H / 2 <= y <= BTN_NEW_Y + BTN_H / 2):
             self._init_game()
+            return
+
+        # Help button
+        if self.help_button.hit_test(x, y):
+            rules_view = RulesView("Dots and Boxes", "dots_boxes.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         if self.game_over or self.current_turn != 'player':
@@ -317,3 +326,6 @@ class DotsBoxesView(arcade.View):
         arcade.draw_rect_outline(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
         arcade.draw_text("New Game", BTN_NEW_X, BTN_NEW_Y, COLOR_TEXT, 13,
                          anchor_x="center", anchor_y="center")
+
+        # Help button
+        self.help_button.draw()

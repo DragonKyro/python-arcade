@@ -1,5 +1,6 @@
 import arcade
 import random
+from pages.rules import RulesView
 
 # Window constants
 WIDTH = 800
@@ -77,6 +78,9 @@ class MastermindView(arcade.View):
 
         # New Game button
         self._draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", arcade.color.DARK_GREEN)
+
+        # Help button
+        self._draw_button(WIDTH - 140, HEIGHT - 30, 40, 36, "?", arcade.color.DARK_SLATE_BLUE)
 
         # Draw the guess board
         self._draw_board()
@@ -251,6 +255,12 @@ class MastermindView(arcade.View):
         # New Game button
         if self._hit_rect(x, y, WIDTH - 70, HEIGHT - 30, 110, 36):
             self.reset_game()
+            return
+
+        # Help button
+        if self._hit_rect(x, y, WIDTH - 140, HEIGHT - 30, 40, 36):
+            rules_view = RulesView("Mastermind", "mastermind.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         if self.game_over:

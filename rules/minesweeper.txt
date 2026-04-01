@@ -1,0 +1,16 @@
+MINESWEEPER
+
+Reveal all safe cells without detonating a mine.
+
+HOW TO PLAY
+- Left-click a cell to reveal it.
+- Right-click a cell to place or remove a flag.
+- Numbers show how many of the 8 neighboring cells contain mines.
+- Empty cells (no adjacent mines) auto-reveal their neighbors.
+- Your first click is always safe.
+
+WINNING AND LOSING
+- Win: all non-mine cells are revealed.
+- Lose: you click on a mine.
+
+The counter at the top shows remaining mines (total mines minus flags placed).

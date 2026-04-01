@@ -5,6 +5,7 @@ Human plays X, AI plays O.
 
 import arcade
 from ai.tictactoe_ai import TicTacToeAI, check_winner, get_winning_line
+from pages.rules import RulesView
 
 WIDTH = 800
 HEIGHT = 600
@@ -100,6 +101,7 @@ class TicTacToeView(arcade.View):
         # Buttons
         self.btn_back = _Button(70, HEIGHT - 30, 100, 36, "Back")
         self.btn_new = _Button(WIDTH - 80, HEIGHT - 30, 120, 36, "New Game")
+        self.btn_help = _Button(WIDTH - 155, HEIGHT - 30, 40, 36, "?")
         self.btn_play_again = _Button(WIDTH // 2, HEIGHT // 2 - 60, 160, 44, "Play Again")
 
     def _reset(self):
@@ -163,6 +165,7 @@ class TicTacToeView(arcade.View):
         # Buttons
         self.btn_back.draw(hover=self.btn_back.contains(self.mouse_x, self.mouse_y))
         self.btn_new.draw(hover=self.btn_new.contains(self.mouse_x, self.mouse_y))
+        self.btn_help.draw(hover=self.btn_help.contains(self.mouse_x, self.mouse_y))
 
         # Turn / status text
         if not self.game_over:
@@ -285,6 +288,12 @@ class TicTacToeView(arcade.View):
         # New Game button
         if self.btn_new.contains(x, y):
             self._reset()
+            return
+
+        # Help button
+        if self.btn_help.contains(x, y):
+            rules_view = RulesView("Tic-Tac-Toe", "tictactoe.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # Play Again button (only visible when game over)

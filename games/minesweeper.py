@@ -1,5 +1,6 @@
 import arcade
 import random
+from pages.rules import RulesView
 
 # Window constants
 WIDTH = 800
@@ -193,6 +194,13 @@ class MinesweeperView(arcade.View):
         arcade.draw_text("New Game", new_bx, new_by, arcade.color.WHITE,
                          font_size=14, anchor_x="center", anchor_y="center")
 
+        # Help button
+        help_bx, help_by, help_bw, help_bh = WIDTH - 135, bar_y, 40, 35
+        arcade.draw_rect_filled(arcade.XYWH(help_bx, help_by, help_bw, help_bh), arcade.color.DARK_SLATE_BLUE)
+        arcade.draw_rect_outline(arcade.XYWH(help_bx, help_by, help_bw, help_bh), arcade.color.WHITE)
+        arcade.draw_text("?", help_bx, help_by, arcade.color.WHITE,
+                         font_size=14, anchor_x="center", anchor_y="center")
+
         # --- Grid ---
         for row in range(ROWS):
             for col in range(COLS):
@@ -281,6 +289,12 @@ class MinesweeperView(arcade.View):
         # New Game button
         if self._hit_test_button(x, y, WIDTH - 65, bar_y, 110, 35):
             self._init_game()
+            return
+
+        # Help button
+        if self._hit_test_button(x, y, WIDTH - 135, bar_y, 40, 35):
+            rules_view = RulesView("Minesweeper", "minesweeper.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # If game is over, ignore grid clicks

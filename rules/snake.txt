@@ -1,0 +1,14 @@
+SNAKE
+
+Eat food to grow as long as possible without crashing.
+
+HOW TO PLAY
+- Use the arrow keys to change direction.
+- Eat the red food to grow longer and score points.
+- The snake moves continuously in the current direction.
+
+GAME OVER
+- Hitting a wall ends the game.
+- Running into your own tail ends the game.
+
+Try to beat your high score!

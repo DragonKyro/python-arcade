@@ -26,12 +26,12 @@ class GamesView(arcade.View):
         )
 
         self.game_buttons = []
-        self.game_classes = []
+        self.game_entries = []  # (view_class, rules_file, display_name)
         self._build_game_list()
 
     def _build_game_list(self):
         self.game_buttons.clear()
-        self.game_classes.clear()
+        self.game_entries.clear()
         self.scroll_y = 0
 
         if self.view_mode == "list":
@@ -41,14 +41,14 @@ class GamesView(arcade.View):
             total_height = len(GAME_LIST) * btn_h + (len(GAME_LIST) - 1) * spacing
             available = HEIGHT - TOP_BAR_HEIGHT
             start_y = available / 2 + total_height / 2 - btn_h / 2
-            for i, (name, view_cls) in enumerate(GAME_LIST):
+            for i, (name, view_cls, rules_file) in enumerate(GAME_LIST):
                 cy = start_y - i * (btn_h + spacing)
                 btn = Button(
                     WIDTH / 2, cy, btn_w, btn_h, name,
                     color=arcade.color.DARK_SLATE_BLUE,
                 )
                 self.game_buttons.append(btn)
-                self.game_classes.append(view_cls)
+                self.game_entries.append((view_cls, rules_file, name))
         else:
             icon_size = 120
             spacing = 20
@@ -59,7 +59,7 @@ class GamesView(arcade.View):
             available = HEIGHT - TOP_BAR_HEIGHT
             start_x = WIDTH / 2 - total_w / 2 + icon_size / 2
             start_y = available / 2 + total_h / 2 - icon_size / 2
-            for i, (name, view_cls) in enumerate(GAME_LIST):
+            for i, (name, view_cls, rules_file) in enumerate(GAME_LIST):
                 col = i % cols
                 row = i // cols
                 cx = start_x + col * (icon_size + spacing)
@@ -69,7 +69,7 @@ class GamesView(arcade.View):
                     color=arcade.color.DARK_SLATE_BLUE,
                 )
                 self.game_buttons.append(btn)
-                self.game_classes.append(view_cls)
+                self.game_entries.append((view_cls, rules_file, name))
 
     def _max_scroll(self):
         if not self.game_buttons:
@@ -135,8 +135,10 @@ class GamesView(arcade.View):
                 and y >= shifted_y - btn.height / 2
                 and y <= shifted_y + btn.height / 2
             ):
-                game_view = self.game_classes[i](menu_view=self)
-                self.window.show_view(game_view)
+                from pages.rules import RulesView
+                view_cls, rules_file, name = self.game_entries[i]
+                rules_view = RulesView(name, rules_file, view_cls, menu_view=self)
+                self.window.show_view(rules_view)
                 return
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):

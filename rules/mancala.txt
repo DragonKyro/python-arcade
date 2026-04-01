@@ -1,0 +1,22 @@
+MANCALA (KALAH)
+
+Collect the most stones in your store.
+
+SETUP
+- 6 pits per side, each starting with 4 stones.
+- Your store is on the right; the computer's store is on the left.
+
+HOW TO PLAY
+- Click one of your pits (bottom row) to pick up its stones.
+- Stones are sown one per pit counter-clockwise, including your
+  store but skipping the opponent's store.
+
+SPECIAL RULES
+- Extra turn: if your last stone lands in your store, you go again.
+- Capture: if your last stone lands in an empty pit on your side,
+  you capture that stone plus all stones in the opposite pit.
+
+WINNING
+- The game ends when one side's pits are all empty.
+- Remaining stones go to the other player's store.
+- Highest store total wins.

@@ -5,23 +5,27 @@ A collection of single-player and AI-opponent games built with the `arcade` libr
 
 ## Architecture
 - `main.py` — minimal entry point, creates window and shows HomeView
-- `pages/` — UI views (HomeView, GamesView) and shared components (Button)
+- `pages/` — UI views (HomeView, GamesView, RulesView) and shared components (Button)
 - `games/` — each game is an `arcade.View` subclass accepting `menu_view` in its constructor
 - `ai/` — pure Python AI logic (no arcade imports), one module per game
-- `games/__init__.py` — `GAME_LIST` registry; add new games here
+- `rules/` — plain text rules files (one per game), displayed in RulesView
+- `games/__init__.py` — `GAME_LIST` registry (name, ViewClass, rules_file); add new games here
 
 ## Conventions
 - All games use arcade 3.x APIs (`self.clear()`, `arcade.draw_rect_filled`, `arcade.XYWH`, etc.)
 - Window size: 800x600 (WIDTH/HEIGHT constants)
-- Every game view has "Back" (top-left) and "New Game" (top-right) buttons
+- Every game view has "Back" (top-left), "New Game" (top-right), and "?" help (top-right) buttons
+- Game selection shows rules/instructions first; "?" button re-opens rules mid-game
 - AI moves use `on_update` with a short delay (0.3-0.5s), never blocking
 - AI modules are pure logic with no UI dependencies, making them independently testable
 
 ## Adding a New Game
 1. Create `games/your_game.py` with `YourGameView(arcade.View)` taking `menu_view` param
 2. If AI-based, create `ai/your_game_ai.py` with pure logic class
-3. Import and register in `games/__init__.py` GAME_LIST
-4. The game selection page auto-populates from GAME_LIST
+3. Create `rules/your_game.txt` with game instructions
+4. Import and register in `games/__init__.py` GAME_LIST as `(name, ViewClass, "rules_file.txt")`
+5. Add a "?" help button that opens `RulesView(name, rules_file, None, self.menu_view, existing_game_view=self)`
+6. The game selection page auto-populates from GAME_LIST
 
 ## Commands
 - Run: `python main.py`

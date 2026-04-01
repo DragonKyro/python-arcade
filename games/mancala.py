@@ -1,6 +1,7 @@
 import arcade
 import copy
 from ai.mancala_ai import MancalaAI, sow
+from pages.rules import RulesView
 
 # Window constants
 WIDTH = 800
@@ -82,6 +83,8 @@ class MancalaView(arcade.View):
         self._draw_button(60, HEIGHT - 30, 90, 36, "Back", arcade.color.DARK_SLATE_BLUE)
         # New Game button
         self._draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", arcade.color.DARK_GREEN)
+        # Help button
+        self._draw_button(WIDTH - 140, HEIGHT - 30, 40, 36, "?", arcade.color.DARK_SLATE_BLUE)
 
         self._draw_board()
         self._draw_pits()
@@ -339,6 +342,12 @@ class MancalaView(arcade.View):
         # Back button
         if self._hit_rect(x, y, 60, HEIGHT - 30, 90, 36):
             self.window.show_view(self.menu_view)
+            return
+
+        # Help button
+        if self._hit_rect(x, y, WIDTH - 140, HEIGHT - 30, 40, 36):
+            rules_view = RulesView("Mancala", "mancala.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # New Game button

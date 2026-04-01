@@ -1,0 +1,21 @@
+CHECKERS
+
+Capture all of the computer's pieces or block them from moving.
+
+HOW TO PLAY
+- You are Red (bottom), the computer is Black (top).
+- Click a piece to select it, then click a highlighted square to move.
+- Regular pieces move diagonally forward one square.
+- Capture by jumping diagonally over an opponent's piece into an
+  empty square beyond it.
+- Multi-jumps are allowed if another capture is available after landing.
+
+KINGS
+- When a piece reaches the far row, it becomes a King.
+- Kings can move and capture diagonally in both directions.
+
+MANDATORY CAPTURES
+- If a capture is available, you must take it.
+
+WINNING
+- Capture all opponent pieces, or leave them with no valid moves.

@@ -1,0 +1,19 @@
+SUDOKU
+
+Fill the 9x9 grid so every row, column, and 3x3 box contains
+the digits 1 through 9 exactly once.
+
+HOW TO PLAY
+- Click a cell to select it (empty cells only).
+- Type a number (1-9) to place it. Press 0, Delete, or Backspace
+  to clear a cell.
+- Pre-filled cells (darker text) cannot be changed.
+
+RULES
+- Each row must contain 1-9 with no repeats.
+- Each column must contain 1-9 with no repeats.
+- Each 3x3 box must contain 1-9 with no repeats.
+
+WINNING
+- The puzzle is solved when all cells are correctly filled.
+- Conflicts are highlighted in red to help you spot mistakes.

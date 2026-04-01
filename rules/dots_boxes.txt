@@ -1,0 +1,17 @@
+DOTS AND BOXES
+
+Complete more boxes than the computer on a 5x5 grid.
+
+HOW TO PLAY
+- Click between two adjacent dots to draw a line.
+- If your line completes a box (all 4 sides drawn), you score a
+  point and get another turn.
+- The computer follows the same rules.
+
+STRATEGY
+- Try to avoid drawing the third side of a box, as the opponent
+  will complete it and score.
+- Force the opponent into giving you chains of boxes.
+
+WINNING
+- The player with the most completed boxes when all lines are drawn wins.

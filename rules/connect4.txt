@@ -1,0 +1,12 @@
+CONNECT FOUR
+
+Drop discs to connect four in a row before the computer.
+
+HOW TO PLAY
+- You are Red, the computer is Yellow.
+- Click a column to drop your disc into the lowest available slot.
+- Hover over columns to preview your drop.
+
+WINNING
+- Connect 4 of your discs in a horizontal, vertical, or diagonal line.
+- If the board fills up with no winner, it's a draw.

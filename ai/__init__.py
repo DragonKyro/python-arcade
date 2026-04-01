@@ -6,3 +6,5 @@ from ai.battleship_ai import BattleshipAI
 from ai.dots_boxes_ai import DotsBoxesAI
 from ai.mancala_ai import MancalaAI
 from ai.backgammon_ai import BackgammonAI
+from ai.nim_ai import NimAI
+from ai.checkers_ai import CheckersAI

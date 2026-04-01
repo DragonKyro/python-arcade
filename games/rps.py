@@ -4,6 +4,8 @@ Rock Paper Scissors game view for Python Arcade 2.6.x.
 
 import arcade
 from ai.rps_ai import RPSAI, COUNTERS
+from pages.components import Button
+from pages.rules import RulesView
 
 WIDTH = 800
 HEIGHT = 600
@@ -44,6 +46,7 @@ class RPSView(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.ai = RPSAI()
+        self.help_button = Button(WIDTH - 155, HEIGHT - 30, 40, 36, "?", color=arcade.color.DARK_SLATE_BLUE)
         self._reset()
 
     # ------------------------------------------------------------------ state
@@ -81,6 +84,9 @@ class RPSView(arcade.View):
         # -- New Game button (top-right) --
         arcade.draw_rect_filled(arcade.XYWH(WIDTH - 70, HEIGHT - 30, 120, 36), BTN_COLOR)
         arcade.draw_text("New Game", WIDTH - 70, HEIGHT - 30, TEXT_COLOR, 14, anchor_x="center", anchor_y="center")
+
+        # -- Help button --
+        self.help_button.draw()
 
         # -- Choice buttons (bottom) --
         labels = ["Rock", "Paper", "Scissors"]
@@ -172,6 +178,12 @@ class RPSView(arcade.View):
         # New Game button
         if WIDTH - 130 <= x <= WIDTH - 10 and HEIGHT - 48 <= y <= HEIGHT - 12:
             self._reset()
+            return
+
+        # Help button
+        if self.help_button.hit_test(x, y):
+            rules_view = RulesView("Rock Paper Scissors", "rps.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # Ignore clicks while waiting for reveal

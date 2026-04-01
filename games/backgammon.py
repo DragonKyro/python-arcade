@@ -9,6 +9,7 @@ import arcade
 import random
 import time
 
+from pages.rules import RulesView
 from ai.backgammon_ai import (
     BackgammonAI, initial_board, get_all_legal_moves, apply_moves,
     _single_die_moves, _apply_single_move, _all_in_home,
@@ -569,6 +570,8 @@ class BackgammonView(arcade.View):
 
         # New Game button
         self._draw_button(WIDTH - 65, HEIGHT - 20, 110, 30, "New Game", (30, 100, 30))
+        # Help button
+        self._draw_button(WIDTH - 135, HEIGHT - 20, 40, 30, "?", arcade.color.DARK_SLATE_BLUE)
 
         # Roll Dice button
         if self.state == STATE_PLAYER_ROLL:
@@ -642,6 +645,12 @@ class BackgammonView(arcade.View):
         # Back button
         if self._hit_rect(x, y, 55, HEIGHT - 20, 90, 30):
             self.window.show_view(self.menu_view)
+            return
+
+        # Help button
+        if self._hit_rect(x, y, WIDTH - 135, HEIGHT - 20, 40, 30):
+            rules_view = RulesView("Backgammon", "backgammon.txt", None, self.menu_view, existing_game_view=self)
+            self.window.show_view(rules_view)
             return
 
         # New Game button

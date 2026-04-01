@@ -17,12 +17,17 @@ A collection of classic games built with the [Python Arcade](https://api.arcade.
 | Dots and Boxes | Territory | Greedy |
 | Mancala | Seed sowing | Minimax + alpha-beta |
 | Backgammon | Board game | Heuristic evaluation |
+| Nim | Strategy | Optimal (XOR) |
+| Snake | Arcade | - |
+| Checkers | Board game | Minimax + alpha-beta |
+| Wordle | Word puzzle | - |
+| Sudoku | Number puzzle | - |
 
 ## Getting Started
 
 ### Requirements
-- Python 3.8+
-- arcade 2.6.x
+- Python 3.13+
+- arcade 3.x
 
 ### Install and Run
 
@@ -35,16 +40,19 @@ python main.py
 
 ```
 main.py              Entry point
-pages/               UI screens (home menu, game selection)
+pages/               UI screens (home menu, game selection, rules)
   components.py      Shared UI components (Button)
+  rules.py           Rules/instructions view
 games/               Game views (one file per game)
 ai/                  AI logic (pure Python, no UI dependencies)
+rules/               Game rules text files
 ```
 
 ## Adding a New Game
 
 1. Create `games/your_game.py` with a `YourGameView(arcade.View)` class that accepts a `menu_view` parameter
 2. If AI-based, create `ai/your_game_ai.py` with pure game logic
-3. Register it in `games/__init__.py` by adding to `GAME_LIST`
+3. Create `rules/your_game.txt` with game instructions
+4. Register it in `games/__init__.py` by adding to `GAME_LIST` as `(name, ViewClass, "rules_file.txt")`
 
-The game selection screen auto-populates from the registry.
+The game selection screen auto-populates from the registry. Selecting a game shows its rules first, with a Play button to launch. Each game also has a "?" button to re-read rules mid-game.
