@@ -1,0 +1,14 @@
+NURIKABE
+Shade sea cells so each numbered cell anchors an island of that size, with a connected sea and no 2x2 black squares.
+
+HOW TO PLAY
+- A grid contains some numbered cells; the rest are blank.
+- Shade blank cells to form the sea; unshaded cells form islands.
+- Each number defines the size of its island.
+
+RULES
+1. Each number belongs to exactly one island of that many unshaded cells.
+2. Each island contains exactly one numbered cell.
+3. No 2x2 area may be entirely shaded (no pools in the sea).
+4. All shaded (sea) cells must be orthogonally connected as one group.
+5. Islands may not touch each other orthogonally.

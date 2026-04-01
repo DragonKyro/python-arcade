@@ -1,0 +1,16 @@
+GOMOKU
+
+A classic strategy board game also known as "Five in a Row."
+
+HOW TO PLAY
+- The game is played on a 15x15 grid.
+- Black goes first, then players alternate turns.
+- Click an empty intersection to place your stone.
+- The first player to get exactly 5 stones in a row wins.
+- Rows can be horizontal, vertical, or diagonal.
+
+RULES
+- Players take turns placing one stone per turn.
+- Stones cannot be moved or removed once placed.
+- The game ends when a player forms an unbroken line of 5 stones.
+- If the board fills up with no winner, the game is a draw.

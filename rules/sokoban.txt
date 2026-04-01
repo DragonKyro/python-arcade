@@ -1,0 +1,14 @@
+SOKOBAN
+Push boxes onto goal squares; you cannot pull them.
+
+HOW TO PLAY
+- You control a character in a grid-based warehouse.
+- Walk into a box to push it one space in that direction.
+- Push every box onto a marked goal square to complete the level.
+
+RULES
+1. You can only push one box at a time, never pull.
+2. You cannot push a box into a wall or into another box.
+3. A box pushed into a corner may become permanently stuck.
+4. All goal squares must be covered by boxes to win.
+5. Plan ahead; there is no undo in classic Sokoban.

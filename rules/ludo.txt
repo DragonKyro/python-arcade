@@ -1,0 +1,17 @@
+LUDO
+
+A classic board game of strategy and luck for 2-4 players.
+
+HOW TO PLAY
+- Each player has 4 pieces that start in their home base.
+- Roll the die on your turn. Roll a 6 to move a piece from home onto the board.
+- Click a piece to move it forward by the number rolled.
+- Move all 4 of your pieces to the finish area to win.
+
+RULES
+- You must roll a 6 to enter a new piece onto the starting square.
+- Rolling a 6 grants an extra turn.
+- Landing on an opponent's piece sends it back to their home base.
+- Pieces travel around the shared outer track, then up their own colored home column.
+- You must roll the exact number needed to enter the finish area.
+- The first player to get all 4 pieces to the finish wins.

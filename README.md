@@ -1,6 +1,6 @@
 # Python Arcade
 
-A collection of 28 classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, retro arcade classics, and VS modes — all playable from a single launcher.
+A collection of 52 classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, retro arcade classics, multiplayer party games, and VS modes — all playable from a single launcher.
 
 ## Games
 
@@ -34,6 +34,30 @@ A collection of 28 classic games built with the [Python Arcade](https://api.arca
 | Peg Solitaire | Peg jumping | - |
 | Breakout | Arcade | - |
 | Puzzle Bubble | Arcade (+ VS AI) | Target evaluation |
+| Lights Out | Logic puzzle | - |
+| Rush Hour | Sliding puzzle | - |
+| Ricochet Robots | Sliding puzzle | - |
+| Towers of Hanoi | Logic puzzle | - |
+| Sokoban | Push puzzle | - |
+| Nonograms | Grid puzzle | - |
+| Slitherlink | Loop puzzle | - |
+| Hashi | Bridge puzzle | - |
+| Hitori | Shading puzzle | - |
+| Nurikabe | Island puzzle | - |
+| Kakuro | Number puzzle | - |
+| KenKen | Cage puzzle | - |
+| Flow Free | Path puzzle | - |
+| Bloxorz | Block rolling | - |
+| Laser Maze | Reflection puzzle | - |
+| Mahjong Solitaire | Tile matching | - |
+| Skyscrapers | Visibility puzzle | - |
+| Picross | Grid puzzle | - |
+| Gomoku | Board game | Minimax + alpha-beta |
+| Go (9x9) | Board game | Monte Carlo playouts |
+| Chess | Board game | Minimax + piece-square tables |
+| Snakes & Ladders | Party (2-6) | Auto-roll |
+| Ludo | Party (2-4) | Heuristic |
+| Yahtzee | Dice (1-4) | Expected value |
 
 ## Getting Started
 

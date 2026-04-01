@@ -1,0 +1,14 @@
+FLOW FREE
+Connect matching colored dots with pipes and fill the entire board.
+
+HOW TO PLAY
+- A grid contains pairs of colored dots.
+- Draw a path (pipe) connecting each pair of same-colored dots.
+- Pipes must fill every cell on the board.
+
+RULES
+1. Each pipe connects exactly two dots of the same color.
+2. Pipes travel horizontally or vertically, never diagonally.
+3. Pipes may not cross, overlap, or share cells.
+4. Every cell on the board must be occupied by a pipe.
+5. There is exactly one valid solution for each puzzle.

@@ -1,0 +1,14 @@
+LASER MAZE
+Rotate and place mirrors to guide a laser beam to one or more targets.
+
+HOW TO PLAY
+- A grid contains a laser emitter, targets, and mirror pieces.
+- Rotate or place mirrors to redirect the laser beam.
+- The beam must hit all targets to solve the puzzle.
+
+RULES
+1. The laser travels in a straight line until it hits a mirror, wall, or target.
+2. Mirrors reflect the beam at 90 degrees according to their orientation.
+3. Some mirrors are fixed; only free mirrors can be rotated or moved.
+4. The beam must reach every target on the board.
+5. The beam cannot pass through solid blockers.

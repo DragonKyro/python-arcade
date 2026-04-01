@@ -1,0 +1,14 @@
+BLOXORZ
+Roll a 1x1x2 block across a grid to land it upright on the goal hole.
+
+HOW TO PLAY
+- A rectangular block stands on a grid of tiles.
+- Tilt the block in any cardinal direction to roll it.
+- The block must end standing upright on the single goal square.
+
+RULES
+1. The block rolls by tipping over one edge in the chosen direction.
+2. Every part of the block must remain on solid tiles; falling off the edge loses.
+3. The goal is a single square hole; the block must be upright to fit into it.
+4. Some tiles are switches that activate bridges or toggle platforms.
+5. Fragile tiles break if the block stands upright on them.

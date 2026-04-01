@@ -1,0 +1,14 @@
+HASHI
+Connect numbered islands with one or two bridges; no crossing; all islands must form a single network.
+
+HOW TO PLAY
+- Circles with numbers (islands) are placed on a grid.
+- Draw horizontal or vertical bridges between islands.
+- Connect all islands into one connected group.
+
+RULES
+1. Bridges run in straight horizontal or vertical lines between two islands.
+2. Each pair of islands may be connected by at most two bridges.
+3. Bridges may not cross other bridges or pass through islands.
+4. The number on an island equals the total bridges connected to it.
+5. All islands must be reachable from any other island through bridges.

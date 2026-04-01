@@ -1,0 +1,20 @@
+YAHTZEE
+
+A dice game of risk and reward for 1-4 players across 13 rounds.
+
+HOW TO PLAY
+- Roll 5 dice at the start of each turn.
+- Click dice to keep them, then reroll the rest (up to 2 additional rolls per turn).
+- After rolling, choose a scoring category to fill for that round.
+- After 13 rounds, the player with the highest total score wins.
+
+RULES
+- Upper Section: Ones through Sixes - score the sum of matching dice. Bonus 35 points if upper total is 63 or more.
+- Three of a Kind: 3 matching dice, score sum of all dice.
+- Four of a Kind: 4 matching dice, score sum of all dice.
+- Full House: 3 of one kind + 2 of another, scores 25 points.
+- Small Straight: 4 sequential dice, scores 30 points.
+- Large Straight: 5 sequential dice, scores 40 points.
+- Yahtzee: All 5 dice the same, scores 50 points. Bonus 100 for each additional Yahtzee.
+- Chance: Score the sum of all dice (no requirements).
+- Each category can only be used once. You may score 0 in a category if needed.

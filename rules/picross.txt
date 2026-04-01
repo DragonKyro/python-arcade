@@ -1,0 +1,14 @@
+PICROSS
+Fill grid cells using number clues along rows and columns to reveal a hidden image (also known as Nonograms).
+
+HOW TO PLAY
+- A grid has number clues listed for each row and column.
+- Fill in cells to match the clue sequences.
+- The completed grid reveals a pixel-art picture.
+
+RULES
+1. Each clue number represents a consecutive block of filled cells in that row or column.
+2. Blocks appear in the order listed, from left-to-right or top-to-bottom.
+3. At least one empty cell must separate consecutive blocks.
+4. Cells that are not part of any block remain empty.
+5. Every puzzle has a unique solution solvable by logic alone.

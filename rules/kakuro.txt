@@ -1,0 +1,14 @@
+KAKURO
+Fill digits 1-9 so each run of cells sums to its clue, with no repeats within a run.
+
+HOW TO PLAY
+- A crossword-style grid has clue cells and blank cells.
+- Clue cells show target sums for the horizontal run to the right and/or vertical run below.
+- Fill blank cells with digits 1-9 to match the sums.
+
+RULES
+1. Only digits 1 through 9 may be used.
+2. Each continuous run of blank cells must sum to the given clue.
+3. No digit may repeat within the same run.
+4. Digits may repeat across different runs.
+5. Every blank cell belongs to exactly one horizontal and one vertical run.

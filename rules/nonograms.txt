@@ -1,0 +1,14 @@
+NONOGRAMS
+Fill grid cells using row and column number clues to reveal a hidden picture.
+
+HOW TO PLAY
+- A grid has number clues along each row and column.
+- Fill in cells to match the clue sequences for each line.
+- The completed grid reveals a pixel-art image.
+
+RULES
+1. Each clue number represents a consecutive group of filled cells.
+2. Groups in a row/column appear in the order listed, left-to-right or top-to-bottom.
+3. There must be at least one empty cell between consecutive groups.
+4. Cells not part of any group remain empty.
+5. Use logic and elimination; no guessing is needed for valid puzzles.

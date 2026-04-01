@@ -1,0 +1,14 @@
+MAHJONG SOLITAIRE
+Remove matching pairs of free tiles from a layered layout.
+
+HOW TO PLAY
+- Tiles are stacked in a layered formation.
+- Select two matching free tiles to remove them from the board.
+- Clear all tiles to win.
+
+RULES
+1. A tile is free if no tile is on top of it and at least one side (left or right) is open.
+2. Only free tiles may be selected.
+3. Two tiles match if they show the same face (identical symbol).
+4. Tiles are removed in pairs only.
+5. Not all layouts are solvable; if no more matches exist among free tiles, the game is stuck.

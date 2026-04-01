@@ -1,0 +1,14 @@
+TOWERS OF HANOI
+Move an entire stack of disks between three pegs, never placing a larger disk on a smaller one.
+
+HOW TO PLAY
+- Three pegs hold a stack of disks sorted by size on the first peg.
+- Move one disk at a time from the top of any peg to another peg.
+- Rebuild the full stack on the last peg.
+
+RULES
+1. Only one disk may be moved at a time.
+2. Only the top disk of a peg can be moved.
+3. A larger disk may never be placed on top of a smaller disk.
+4. The minimum number of moves for N disks is 2^N - 1.
+5. All disks must end on the target peg to win.

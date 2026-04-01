@@ -554,6 +554,302 @@ def icon_puzzle_bubble_vs():
     _save(img, "puzzle_bubble_vs.png")
 
 
+def icon_lights_out():
+    img, d = _new(BLACK)
+    for r in range(5):
+        for c in range(5):
+            x, y = 8 + c * 22, 8 + r * 22
+            on = (r + c) % 2 == 0
+            d.rectangle([x, y, x + 18, y + 18], fill=YELLOW if on else (40, 40, 40), outline=GRAY)
+    _save(img, "lights_out.png")
+
+def icon_rush_hour():
+    img, d = _new((180, 180, 180))
+    for i in range(7):
+        d.line([(10, 10 + i * 17), (110, 10 + i * 17)], fill=(120, 120, 120), width=1)
+        d.line([(10 + i * 17, 10), (10 + i * 17, 110)], fill=(120, 120, 120), width=1)
+    d.rectangle([27, 44, 61, 58], fill=RED)
+    d.rectangle([27, 10, 41, 41], fill=BLUE)
+    d.rectangle([78, 61, 110, 75], fill=GREEN)
+    d.rectangle([110, 48, 115, 58], fill=YELLOW, outline=YELLOW)
+    _save(img, "rush_hour.png")
+
+def icon_ricochet_robots():
+    img, d = _new((220, 220, 200))
+    for i in range(5):
+        d.line([(15, 15 + i * 22), (105, 15 + i * 22)], fill=GRAY)
+        d.line([(15 + i * 22, 15), (15 + i * 22, 105)], fill=GRAY)
+    d.ellipse([20, 20, 32, 32], fill=RED)
+    d.ellipse([64, 42, 76, 54], fill=BLUE)
+    d.ellipse([42, 86, 54, 98], fill=GREEN)
+    d.rectangle([82, 82, 98, 98], outline=RED, width=2)
+    _save(img, "ricochet_robots.png")
+
+def icon_towers_of_hanoi():
+    img, d = _new()
+    base_y = 95
+    d.rectangle([10, base_y, 110, base_y + 5], fill=BROWN)
+    for px in [30, 60, 90]:
+        d.rectangle([px - 2, 30, px + 2, base_y], fill=BROWN)
+    widths = [40, 30, 20]
+    colors = [RED, GREEN, BLUE]
+    for i, (w, c) in enumerate(zip(widths, colors)):
+        x = 30 - w // 2
+        y = base_y - (i + 1) * 12
+        d.rectangle([x, y, x + w, y + 10], fill=c, outline=WHITE)
+    _save(img, "towers_of_hanoi.png")
+
+def icon_sokoban():
+    img, d = _new((60, 60, 60))
+    d.rectangle([20, 20, 100, 100], fill=(80, 80, 80))
+    d.rectangle([30, 50, 46, 66], fill=ORANGE, outline=BROWN)
+    d.rectangle([60, 30, 76, 46], fill=ORANGE, outline=BROWN)
+    d.ellipse([52, 70, 68, 86], outline=RED, width=2)
+    d.ellipse([72, 50, 88, 66], outline=RED, width=2)
+    d.rectangle([42, 82, 52, 98], fill=BLUE)
+    _save(img, "sokoban.png")
+
+def icon_nonograms():
+    img, d = _new(WHITE)
+    for i in range(6):
+        d.line([(30, 30 + i * 15), (105, 30 + i * 15)], fill=GRAY)
+        d.line([(30 + i * 15, 30), (30 + i * 15, 105)], fill=GRAY)
+    fills = [(0,0),(0,1),(1,0),(2,2),(3,3),(4,4),(1,1),(2,1),(3,2)]
+    for r, c in fills:
+        d.rectangle([31 + c * 15, 31 + r * 15, 44 + c * 15, 44 + r * 15], fill=BLACK)
+    d.text((5, 32), "2", fill=BLACK, font=_font(9))
+    d.text((5, 47), "1", fill=BLACK, font=_font(9))
+    _save(img, "nonograms.png")
+
+def icon_slitherlink():
+    img, d = _new(LIGHT)
+    sp = 22
+    for r in range(5):
+        for c in range(5):
+            d.ellipse([12 + c * sp - 2, 12 + r * sp - 2, 12 + c * sp + 2, 12 + r * sp + 2], fill=BLACK)
+    d.line([(12, 12), (12 + sp, 12)], fill=BLUE, width=2)
+    d.line([(12, 12), (12, 12 + sp)], fill=BLUE, width=2)
+    d.line([(12 + sp, 12), (12 + sp, 12 + sp)], fill=BLUE, width=2)
+    d.text((18, 16), "3", fill=BLACK, font=_font(12))
+    d.text((40, 16), "2", fill=BLACK, font=_font(12))
+    _save(img, "slitherlink.png")
+
+def icon_hashi():
+    img, d = _new(LIGHT)
+    islands = [(25, 25, 3), (75, 25, 2), (25, 75, 4), (75, 75, 1), (50, 50, 2)]
+    for x, y, n in islands:
+        d.ellipse([x - 12, y - 12, x + 12, y + 12], fill=WHITE, outline=BLACK, width=2)
+        d.text((x - 4, y - 6), str(n), fill=BLACK, font=_font(12))
+    d.line([(37, 25), (63, 25)], fill=BLACK, width=2)
+    d.line([(25, 37), (25, 63)], fill=BLACK, width=2)
+    _save(img, "hashi.png")
+
+def icon_hitori():
+    img, d = _new(WHITE)
+    nums = [[1,2,3],[2,3,1],[3,1,2]]
+    for r in range(3):
+        for c in range(3):
+            x, y = 20 + c * 28, 20 + r * 28
+            shaded = (r == 0 and c == 2) or (r == 2 and c == 0)
+            d.rectangle([x, y, x + 26, y + 26], fill=BLACK if shaded else WHITE, outline=GRAY)
+            if not shaded:
+                d.text((x + 7, y + 5), str(nums[r][c]), fill=BLACK, font=_font(14))
+    _save(img, "hitori.png")
+
+def icon_nurikabe():
+    img, d = _new(LIGHT)
+    grid = [[1,0,0,0],[0,0,0,0],[0,0,0,2],[0,0,0,0]]
+    for r in range(4):
+        for c in range(4):
+            x, y = 15 + c * 24, 15 + r * 24
+            sea = (r in [1,3] and c in [1,2]) or (r == 2 and c in [0,1])
+            d.rectangle([x, y, x + 22, y + 22], fill=BLACK if sea else WHITE, outline=GRAY)
+            if grid[r][c] > 0:
+                d.text((x + 6, y + 3), str(grid[r][c]), fill=BLACK, font=_font(14))
+    _save(img, "nurikabe.png")
+
+def icon_kakuro():
+    img, d = _new(WHITE)
+    for r in range(4):
+        for c in range(4):
+            x, y = 15 + c * 24, 15 + r * 24
+            if (r == 0 or c == 0) and not (r == 0 and c == 0):
+                d.rectangle([x, y, x + 22, y + 22], fill=(50, 50, 50))
+                d.line([(x, y), (x + 22, y + 22)], fill=WHITE)
+                d.text((x + 12, y + 2), "7", fill=WHITE, font=_font(8))
+            elif r == 0 and c == 0:
+                d.rectangle([x, y, x + 22, y + 22], fill=BLACK)
+            else:
+                d.rectangle([x, y, x + 22, y + 22], fill=WHITE, outline=GRAY)
+    _save(img, "kakuro.png")
+
+def icon_kenken():
+    img, d = _new(WHITE)
+    for i in range(5):
+        d.line([(15, 15 + i * 22), (103, 15 + i * 22)], fill=BLACK, width=1)
+        d.line([(15 + i * 22, 15), (15 + i * 22, 103)], fill=BLACK, width=1)
+    d.rectangle([15, 15, 59, 37], outline=BLACK, width=2)
+    d.text((17, 16), "6+", fill=BLACK, font=_font(9))
+    d.rectangle([59, 15, 103, 37], outline=BLACK, width=2)
+    d.text((61, 16), "3-", fill=BLACK, font=_font(9))
+    _save(img, "kenken.png")
+
+def icon_flow_free():
+    img, d = _new((40, 40, 40))
+    for i in range(6):
+        d.line([(15, 15 + i * 18), (105, 15 + i * 18)], fill=(60, 60, 60))
+        d.line([(15 + i * 18, 15), (15 + i * 18, 105)], fill=(60, 60, 60))
+    pairs = [(RED, (24, 24), (78, 78)), (BLUE, (60, 24), (24, 78)), (GREEN, (78, 24), (60, 78))]
+    for c, p1, p2 in pairs:
+        d.ellipse([p1[0] - 6, p1[1] - 6, p1[0] + 6, p1[1] + 6], fill=c)
+        d.ellipse([p2[0] - 6, p2[1] - 6, p2[0] + 6, p2[1] + 6], fill=c)
+    _save(img, "flow_free.png")
+
+def icon_bloxorz():
+    img, d = _new((100, 130, 160))
+    for r in range(4):
+        for c in range(5):
+            x, y = 10 + c * 22, 30 + r * 18
+            d.rectangle([x, y, x + 20, y + 16], fill=(180, 190, 200), outline=(120, 130, 140))
+    d.rectangle([32, 48, 54, 64], fill=ORANGE, outline=BROWN, width=2)
+    d.rectangle([76, 66, 98, 82], fill=(20, 20, 20), outline=BLACK)
+    _save(img, "bloxorz.png")
+
+def icon_laser_maze():
+    img, d = _new((30, 30, 50))
+    d.rectangle([15, 55, 25, 65], fill=RED)
+    d.line([(25, 60), (50, 60)], fill=RED, width=2)
+    d.line([(50, 60), (50, 30)], fill=RED, width=2)
+    d.line([(50, 30), (90, 30)], fill=RED, width=2)
+    d.polygon([(45, 55), (55, 65), (55, 55)], fill=GRAY, outline=WHITE)
+    d.polygon([(45, 25), (55, 35), (45, 35)], fill=GRAY, outline=WHITE)
+    d.ellipse([85, 25, 95, 35], fill=GREEN)
+    _save(img, "laser_maze.png")
+
+def icon_mahjong_solitaire():
+    img, d = _new(DARK_GREEN)
+    for layer in range(3):
+        off = layer * 4
+        for r in range(3):
+            for c in range(4):
+                x = 15 + c * 22 - off
+                y = 20 + r * 26 - off
+                d.rectangle([x, y, x + 20, y + 24], fill=(240, 230, 200), outline=(100, 80, 60))
+                d.text((x + 4, y + 5), str((r * 4 + c) % 9 + 1), fill=BLACK, font=_font(10))
+    _save(img, "mahjong_solitaire.png")
+
+def icon_skyscrapers():
+    img, d = _new(LIGHT)
+    for i in range(5):
+        d.line([(25, 25 + i * 18), (97, 25 + i * 18)], fill=BLACK)
+        d.line([(25 + i * 18, 25), (25 + i * 18, 97)], fill=BLACK)
+    d.text((35, 8), "2", fill=RED, font=_font(10))
+    d.text((53, 8), "1", fill=RED, font=_font(10))
+    d.text((8, 30), "3", fill=RED, font=_font(10))
+    d.text((30, 30), "1", fill=BLACK, font=_font(12))
+    d.text((48, 30), "4", fill=BLACK, font=_font(12))
+    _save(img, "skyscrapers.png")
+
+def icon_picross():
+    img, d = _new(WHITE)
+    for i in range(6):
+        d.line([(30, 30 + i * 15), (105, 30 + i * 15)], fill=GRAY)
+        d.line([(30 + i * 15, 30), (30 + i * 15, 105)], fill=GRAY)
+    fills = [(0,2),(1,1),(1,2),(1,3),(2,0),(2,1),(2,2),(2,3),(2,4),(3,2),(4,1),(4,3)]
+    for r, c in fills:
+        d.rectangle([31 + c * 15, 31 + r * 15, 44 + c * 15, 44 + r * 15], fill=PURPLE)
+    d.text((10, 62), "5", fill=BLACK, font=_font(9))
+    _save(img, "picross.png")
+
+
+def icon_gomoku():
+    img, d = _new((210, 180, 140))
+    for i in range(7):
+        d.line([(15, 15 + i * 15), (105, 15 + i * 15)], fill=BLACK, width=1)
+        d.line([(15 + i * 15, 15), (15 + i * 15, 105)], fill=BLACK, width=1)
+    d.ellipse([25, 25, 39, 39], fill=BLACK)
+    d.ellipse([40, 40, 54, 54], fill=WHITE, outline=BLACK)
+    d.ellipse([55, 25, 69, 39], fill=BLACK)
+    d.ellipse([40, 55, 54, 69], fill=BLACK)
+    d.ellipse([25, 40, 39, 54], fill=WHITE, outline=BLACK)
+    d.ellipse([70, 40, 84, 54], fill=BLACK)
+    _save(img, "gomoku.png")
+
+def icon_go():
+    img, d = _new((210, 180, 140))
+    for i in range(9):
+        d.line([(12, 12 + i * 11), (100, 12 + i * 11)], fill=BLACK, width=1)
+        d.line([(12 + i * 11, 12), (12 + i * 11, 100)], fill=BLACK, width=1)
+    stones = [(23, 23, BLACK), (34, 34, WHITE, BLACK), (45, 23, BLACK),
+              (56, 34, BLACK), (34, 56, WHITE, BLACK), (67, 45, WHITE, BLACK)]
+    for s in stones:
+        x, y = s[0], s[1]
+        fill = s[2]
+        outline = s[3] if len(s) > 3 else None
+        d.ellipse([x-5, y-5, x+5, y+5], fill=fill, outline=outline)
+    _save(img, "go.png")
+
+def icon_chess():
+    img, d = _new()
+    for r in range(4):
+        for c in range(4):
+            x, y = 18 + c * 22, 18 + r * 22
+            color = WHITE if (r + c) % 2 == 0 else (80, 50, 20)
+            d.rectangle([x, y, x + 22, y + 22], fill=color)
+    d.text((24, 24), "\u265A", fill=BLACK, font=_font(18))
+    d.text((68, 24), "\u265B", fill=BLACK, font=_font(18))
+    d.text((24, 68), "\u2654", fill=WHITE, font=_font(18))
+    d.text((46, 68), "\u2655", fill=WHITE, font=_font(18))
+    _save(img, "chess.png")
+
+def icon_snakes_and_ladders():
+    img, d = _new(LIGHT)
+    for r in range(5):
+        for c in range(5):
+            x, y = 10 + c * 20, 10 + r * 20
+            d.rectangle([x, y, x + 18, y + 18], fill=WHITE, outline=GRAY)
+    # snake
+    d.line([(60, 25), (40, 55), (60, 75)], fill=RED, width=3)
+    # ladder
+    d.line([(25, 80), (25, 30)], fill=BROWN, width=2)
+    d.line([(35, 80), (35, 30)], fill=BROWN, width=2)
+    for y in [35, 45, 55, 65, 75]:
+        d.line([(25, y), (35, y)], fill=BROWN, width=1)
+    _save(img, "snakes_and_ladders.png")
+
+def icon_ludo():
+    img, d = _new(WHITE)
+    d.rectangle([10, 10, 50, 50], fill=RED)
+    d.rectangle([70, 10, 110, 50], fill=BLUE)
+    d.rectangle([10, 70, 50, 110], fill=GREEN)
+    d.rectangle([70, 70, 110, 110], fill=YELLOW)
+    d.rectangle([50, 45, 70, 75], fill=WHITE, outline=GRAY)
+    for x, y, c in [(25, 25, WHITE), (85, 25, WHITE), (25, 85, WHITE), (85, 85, WHITE)]:
+        d.ellipse([x-6, y-6, x+6, y+6], fill=c, outline=BLACK)
+    _save(img, "ludo.png")
+
+def icon_yahtzee():
+    img, d = _new()
+    positions = [(15, 35), (45, 30), (75, 40), (30, 70), (65, 65)]
+    pips = [5, 3, 6, 2, 5]
+    for (dx, dy), n in zip(positions, pips):
+        d.rectangle([dx, dy, dx + 24, dy + 24], fill=WHITE, outline=BLACK, width=2)
+        r = 3
+        cx, cy = dx + 12, dy + 12
+        if n >= 2:
+            d.ellipse([dx + 3, dy + 3, dx + 3 + 2*r, dy + 3 + 2*r], fill=BLACK)
+            d.ellipse([dx + 24 - 3 - 2*r, dy + 24 - 3 - 2*r, dx + 21, dy + 21], fill=BLACK)
+        if n >= 4:
+            d.ellipse([dx + 24 - 3 - 2*r, dy + 3, dx + 21, dy + 3 + 2*r], fill=BLACK)
+            d.ellipse([dx + 3, dy + 24 - 3 - 2*r, dx + 3 + 2*r, dy + 21], fill=BLACK)
+        if n % 2 == 1:
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=BLACK)
+        if n == 6:
+            d.ellipse([dx + 3, cy - r, dx + 3 + 2*r, cy + r], fill=BLACK)
+            d.ellipse([dx + 24 - 3 - 2*r, cy - r, dx + 21, cy + r], fill=BLACK)
+    _save(img, "yahtzee.png")
+
+
 # ── UI Assets ────────────────────────────────────────────────────────
 
 def ui_help():
@@ -624,6 +920,30 @@ def main():
     icon_puzzle_bubble()
     icon_tetris_vs()
     icon_puzzle_bubble_vs()
+    icon_lights_out()
+    icon_rush_hour()
+    icon_ricochet_robots()
+    icon_towers_of_hanoi()
+    icon_sokoban()
+    icon_nonograms()
+    icon_slitherlink()
+    icon_hashi()
+    icon_hitori()
+    icon_nurikabe()
+    icon_kakuro()
+    icon_kenken()
+    icon_flow_free()
+    icon_bloxorz()
+    icon_laser_maze()
+    icon_mahjong_solitaire()
+    icon_skyscrapers()
+    icon_picross()
+    icon_gomoku()
+    icon_go()
+    icon_chess()
+    icon_snakes_and_ladders()
+    icon_ludo()
+    icon_yahtzee()
 
     print("Generating UI assets...")
     ui_help()

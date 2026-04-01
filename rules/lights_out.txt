@@ -1,0 +1,14 @@
+LIGHTS OUT
+Toggle a light and its neighbors to turn all lights off.
+
+HOW TO PLAY
+- You are presented with a grid of lights, some on and some off.
+- Click any light to toggle it and its orthogonal neighbors (up, down, left, right).
+- Your goal is to turn all lights off.
+
+RULES
+1. Toggling a light switches it and all directly adjacent lights.
+2. Lights on the edges or corners have fewer neighbors.
+3. Every puzzle has a solution, but order of moves matters for efficiency.
+4. The fewest moves possible is the optimal solution.
+5. There is no undo unless the game provides one; plan carefully.

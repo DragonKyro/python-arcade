@@ -1,0 +1,14 @@
+RICOCHET ROBOTS
+Slide robots that move until hitting a wall or another robot to reach a target.
+
+HOW TO PLAY
+- A grid contains several robots and a designated target square.
+- Move any robot in a cardinal direction; it slides until blocked.
+- Get the target robot onto the target square.
+
+RULES
+1. A robot slides in a straight line until it hits a wall or another robot.
+2. You may move any robot, not just the target robot, to create blockers.
+3. The goal is to reach the target in the fewest total moves.
+4. Robots cannot move diagonally.
+5. All robots remain where they stop after each move.

@@ -1,0 +1,16 @@
+SNAKES AND LADDERS
+
+A classic race-to-the-finish board game of luck for 2-6 players.
+
+HOW TO PLAY
+- Choose the number of AI opponents (1-5) before starting.
+- Players take turns rolling a single die and moving forward that many spaces.
+- Navigate the numbered board from square 1 to square 100.
+- The first player to land on or reach square 100 wins.
+
+RULES
+- Landing on the bottom of a ladder moves you up to the top of that ladder.
+- Landing on the head of a snake slides you down to its tail.
+- You must land exactly on 100 to win; excess rolls do not count or bounce back.
+- Players move in turn order. Roll the die by clicking the roll button.
+- The game continues until one player reaches square 100.

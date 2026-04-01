@@ -1,0 +1,14 @@
+KENKEN
+Fill an NxN grid with digits so each row and column has unique values, and cages satisfy their operation and target.
+
+HOW TO PLAY
+- An NxN grid is divided into groups of cells called cages.
+- Each cage shows a target number and a math operation (+, -, x, /).
+- Fill the grid with digits 1 through N.
+
+RULES
+1. Each row must contain digits 1 to N exactly once.
+2. Each column must contain digits 1 to N exactly once.
+3. The digits in a cage must produce the target when combined with the given operation.
+4. For subtraction and division, the order of operands does not matter (use the larger minus smaller).
+5. A single-cell cage simply equals its target value with no operation.

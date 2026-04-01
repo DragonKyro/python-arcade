@@ -1,0 +1,18 @@
+CHESS
+
+The classic game of strategy and tactics between two armies.
+
+HOW TO PLAY
+- White moves first. Players alternate turns.
+- Click a piece to select it, then click a valid destination to move.
+- Capture opponent pieces by moving onto their square.
+- Put the opponent's king in checkmate to win.
+
+RULES
+- Each piece moves differently: King (1 square), Queen (any direction), Rook (straight lines), Bishop (diagonals), Knight (L-shape), Pawn (forward, captures diagonally).
+- Castling: King moves 2 squares toward a rook if neither has moved and no squares between are attacked.
+- En Passant: A pawn that advances 2 squares can be captured by an adjacent enemy pawn as if it moved only 1.
+- Pawn Promotion: A pawn reaching the opposite end of the board promotes to any piece (except king).
+- Check: Your king is under attack. You must escape check on your next move.
+- Checkmate: Your king is in check with no legal escape. The game is over.
+- Stalemate (no legal moves but not in check) is a draw.

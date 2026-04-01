@@ -1,0 +1,14 @@
+RUSH HOUR
+Slide cars on a grid to free the red car and reach the exit.
+
+HOW TO PLAY
+- A 6x6 grid contains vehicles of various sizes placed horizontally or vertically.
+- Slide vehicles along their orientation to clear a path.
+- Move the red car to the right edge exit.
+
+RULES
+1. Vehicles can only slide forward or backward along their orientation.
+2. Vehicles cannot pass through or overlap other vehicles.
+3. Only the red car needs to reach the exit on the right side.
+4. Cars occupy 2 spaces; trucks occupy 3 spaces.
+5. There is no limit on the number of moves, but fewer is better.

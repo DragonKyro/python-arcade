@@ -1,0 +1,14 @@
+SLITHERLINK
+Draw a single closed loop on grid edges using numbers that show how many edges surround each cell.
+
+HOW TO PLAY
+- A grid of dots forms cells; some cells contain a number (0-3).
+- Draw line segments between adjacent dots to form a loop.
+- The loop must satisfy all number clues.
+
+RULES
+1. The loop must be a single continuous closed path with no branches.
+2. A number in a cell indicates exactly how many of its four edges are part of the loop.
+3. Cells without numbers can have any number of edges used.
+4. Lines connect orthogonally adjacent dots only.
+5. The loop may not cross or touch itself.

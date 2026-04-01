@@ -1,0 +1,17 @@
+GO (SIMPLIFIED)
+
+An ancient strategy game of territorial control, played on a 9x9 board.
+
+HOW TO PLAY
+- Black goes first. Players alternate placing stones on empty intersections.
+- Click an intersection to place your stone.
+- Surround opponent stones to capture them (remove all their liberties).
+- Pass your turn if you have no useful moves. Two consecutive passes end the game.
+
+RULES
+- A liberty is an empty point directly adjacent to a stone or connected group.
+- A group with zero liberties is captured and removed from the board.
+- Ko Rule: You may not immediately recapture a single stone that just captured yours.
+- Self-capture (suicide) is not allowed.
+- Scoring: Territory (empty points you surround) + Captured stones.
+- The player with the higher score wins.

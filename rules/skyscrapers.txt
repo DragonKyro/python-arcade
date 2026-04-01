@@ -1,0 +1,14 @@
+SKYSCRAPERS
+Fill a grid with building heights so edge clues match the number of visible buildings from that direction.
+
+HOW TO PLAY
+- An NxN grid must be filled with heights 1 through N.
+- Clues around the border indicate how many buildings are visible looking into that row or column.
+- Taller buildings block shorter ones behind them.
+
+RULES
+1. Each row must contain heights 1 to N exactly once.
+2. Each column must contain heights 1 to N exactly once.
+3. A clue number shows how many buildings are visible from that edge.
+4. A building is visible if no taller building stands between it and the observer.
+5. A clue of 1 means the tallest building (N) is at the edge; a clue of N means heights are ascending.

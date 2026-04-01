@@ -1,0 +1,14 @@
+HITORI
+Shade cells to eliminate duplicate numbers in each row and column.
+
+HOW TO PLAY
+- A grid is filled with numbers, some of which repeat in rows or columns.
+- Shade cells to remove duplicates so each row and column has unique unshaded numbers.
+- Follow connectivity and adjacency constraints.
+
+RULES
+1. No unshaded number may appear more than once in any row or column.
+2. Shaded cells may not be orthogonally adjacent to each other.
+3. All unshaded cells must form a single connected group (orthogonally).
+4. A shaded cell's value is considered removed from its row and column.
+5. Use logic to determine which duplicates to shade.

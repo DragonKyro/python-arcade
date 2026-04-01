@@ -26,6 +26,30 @@ from games.fifteen_puzzle import FifteenPuzzleView
 from games.peg_solitaire import PegSolitaireView
 from games.breakout import BreakoutView
 from games.puzzle_bubble import PuzzleBubbleView
+from games.lights_out import LightsOutView
+from games.rush_hour import RushHourView
+from games.ricochet_robots import RicochetRobotsView
+from games.towers_of_hanoi import TowersOfHanoiView
+from games.sokoban import SokobanView
+from games.nonograms import NonogramsView
+from games.slitherlink import SlitherlinkView
+from games.hashi import HashiView
+from games.hitori import HitoriView
+from games.nurikabe import NurikabeView
+from games.kakuro import KakuroView
+from games.kenken import KenKenView
+from games.flow_free import FlowFreeView
+from games.bloxorz import BloxorzView
+from games.laser_maze import LaserMazeView
+from games.mahjong_solitaire import MahjongSolitaireView
+from games.skyscrapers import SkyscrapersView
+from games.picross import PicrossView
+from games.gomoku import GomokuView
+from games.go import GoView
+from games.chess import ChessView
+from games.snakes_and_ladders import SnakesAndLaddersView
+from games.ludo import LudoView
+from games.yahtzee import YahtzeeView
 
 # Each entry: (display name, view class, rules filename, icon filename)
 GAME_LIST = [
@@ -57,4 +81,28 @@ GAME_LIST = [
     ("Peg Solitaire", PegSolitaireView, "peg_solitaire.txt", "peg_solitaire.png"),
     ("Breakout", BreakoutView, "breakout.txt", "breakout.png"),
     ("Puzzle Bubble", PuzzleBubbleView, "puzzle_bubble.txt", "puzzle_bubble.png"),
+    ("Lights Out", LightsOutView, "lights_out.txt", "lights_out.png"),
+    ("Rush Hour", RushHourView, "rush_hour.txt", "rush_hour.png"),
+    ("Ricochet Robots", RicochetRobotsView, "ricochet_robots.txt", "ricochet_robots.png"),
+    ("Towers of Hanoi", TowersOfHanoiView, "towers_of_hanoi.txt", "towers_of_hanoi.png"),
+    ("Sokoban", SokobanView, "sokoban.txt", "sokoban.png"),
+    ("Nonograms", NonogramsView, "nonograms.txt", "nonograms.png"),
+    ("Slitherlink", SlitherlinkView, "slitherlink.txt", "slitherlink.png"),
+    ("Hashi", HashiView, "hashi.txt", "hashi.png"),
+    ("Hitori", HitoriView, "hitori.txt", "hitori.png"),
+    ("Nurikabe", NurikabeView, "nurikabe.txt", "nurikabe.png"),
+    ("Kakuro", KakuroView, "kakuro.txt", "kakuro.png"),
+    ("KenKen", KenKenView, "kenken.txt", "kenken.png"),
+    ("Flow Free", FlowFreeView, "flow_free.txt", "flow_free.png"),
+    ("Bloxorz", BloxorzView, "bloxorz.txt", "bloxorz.png"),
+    ("Laser Maze", LaserMazeView, "laser_maze.txt", "laser_maze.png"),
+    ("Mahjong Solitaire", MahjongSolitaireView, "mahjong_solitaire.txt", "mahjong_solitaire.png"),
+    ("Skyscrapers", SkyscrapersView, "skyscrapers.txt", "skyscrapers.png"),
+    ("Picross", PicrossView, "picross.txt", "picross.png"),
+    ("Gomoku", GomokuView, "gomoku.txt", "gomoku.png"),
+    ("Go", GoView, "go.txt", "go.png"),
+    ("Chess", ChessView, "chess.txt", "chess.png"),
+    ("Snakes & Ladders", SnakesAndLaddersView, "snakes_and_ladders.txt", "snakes_and_ladders.png"),
+    ("Ludo", LudoView, "ludo.txt", "ludo.png"),
+    ("Yahtzee", YahtzeeView, "yahtzee.txt", "yahtzee.png"),
 ]

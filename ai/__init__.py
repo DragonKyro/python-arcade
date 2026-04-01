@@ -13,3 +13,9 @@ from ai.liars_dice_ai import LiarsDiceAI
 from ai.tron_ai import TronAI
 from ai.tetris_ai import TetrisAI
 from ai.puzzle_bubble_ai import PuzzleBubbleAI
+from ai.gomoku_ai import GomokuAI
+from ai.go_ai import GoAI
+from ai.chess_ai import ChessAI
+from ai.snakes_and_ladders_ai import SnakesAndLaddersAI
+from ai.ludo_ai import LudoAI
+from ai.yahtzee_ai import YahtzeeAI

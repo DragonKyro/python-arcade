@@ -27,8 +27,9 @@ def draw(game):
     """
     _draw_background(game)
     _draw_grid_border(game)
-    _draw_trails(game)
-    _draw_heads(game)
+    if game.grid:
+        _draw_trails(game)
+        _draw_heads(game)
     _draw_ui(game)
 
 
@@ -50,11 +51,13 @@ def _draw_grid_border(game):
 
 def _draw_trails(game):
     """Draw every trail cell as a small filled rectangle."""
+    if not game.grid:
+        return
     cs = game.cell_size
     ox, oy = game.grid_offset_x, game.grid_offset_y
 
-    for y in range(game.grid_h):
-        for x in range(game.grid_w):
+    for y in range(len(game.grid)):
+        for x in range(len(game.grid[y])):
             pid = game.grid[y][x]
             if pid != 0:
                 color = PLAYER_COLORS.get(pid, ((180, 180, 180), (255, 255, 255)))[0]
