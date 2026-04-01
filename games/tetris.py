@@ -156,10 +156,27 @@ class TetrisView(arcade.View):
         self.mouse_x = 0
         self.mouse_y = 0
 
+        # Mode selection: "select" -> "solo" (or launches VS view)
+        self.mode = "select"
+
+        # Mode selection buttons
+        self.btn_solo = _Button(WIDTH / 2, HEIGHT / 2 + 30, 250, 50, "Solo")
+        self.btn_vs = _Button(WIDTH / 2, HEIGHT / 2 - 30, 250, 50, "VS AI")
+
         # Buttons
         self.btn_back = _Button(60, HEIGHT - 25, 90, 34, "Back")
         self.btn_new = _Button(WIDTH - 80, HEIGHT - 25, 110, 34, "New Game")
         self.btn_help = _Button(WIDTH - 150, HEIGHT - 25, 40, 40, "?")
+
+        # Mode select text
+        self.txt_mode_title = arcade.Text(
+            "TETRIS", WIDTH / 2, HEIGHT / 2 + 120, SCORE_COLOR,
+            font_size=48, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_mode_subtitle = arcade.Text(
+            "Choose Mode", WIDTH / 2, HEIGHT / 2 + 75, STATUS_TEXT_COLOR,
+            font_size=18, anchor_x="center", anchor_y="center",
+        )
 
         self._create_texts()
         self._init_game()
@@ -405,6 +422,8 @@ class TetrisView(arcade.View):
         arcade.set_background_color(BG_COLOR)
 
     def on_update(self, delta_time):
+        if self.mode == "select":
+            return
         if self.game_over:
             return
 
@@ -431,6 +450,8 @@ class TetrisView(arcade.View):
                     self._lock_piece()
 
     def on_key_press(self, key, modifiers):
+        if self.mode == "select":
+            return
         if self.game_over:
             # Allow new game on Enter
             if key == arcade.key.RETURN:
@@ -458,16 +479,41 @@ class TetrisView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.btn_back.contains(x, y):
-            self.window.show_view(self.menu_view)
-        elif self.btn_new.contains(x, y):
-            self._init_game()
-        elif self.btn_help.contains(x, y):
+            if self.mode == "select":
+                self.window.show_view(self.menu_view)
+            else:
+                self.mode = "select"
+            return
+        if self.btn_help.contains(x, y):
             rules_view = RulesView("Tetris", "tetris.txt", None, self.menu_view, existing_game_view=self)
             self.window.show_view(rules_view)
+            return
+
+        if self.mode == "select":
+            if self.btn_solo.contains(x, y):
+                self.mode = "solo"
+                self._init_game()
+            elif self.btn_vs.contains(x, y):
+                from games.tetris_vs import TetrisVSView
+                vs_view = TetrisVSView(self.menu_view)
+                self.window.show_view(vs_view)
+            return
+
+        if self.btn_new.contains(x, y):
+            self._init_game()
 
     # ------------------------------------------------------------------
     # Drawing
     # ------------------------------------------------------------------
     def on_draw(self):
         self.clear()
-        tetris_renderer.draw(self)
+        if self.mode == "select":
+            arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), BG_COLOR)
+            self.txt_mode_title.draw()
+            self.txt_mode_subtitle.draw()
+            self.btn_solo.draw(self.btn_solo.contains(self.mouse_x, self.mouse_y))
+            self.btn_vs.draw(self.btn_vs.contains(self.mouse_x, self.mouse_y))
+            self.btn_back.draw(self.btn_back.contains(self.mouse_x, self.mouse_y))
+            self.btn_help.draw(self.btn_help.contains(self.mouse_x, self.mouse_y))
+        else:
+            tetris_renderer.draw(self)

@@ -132,6 +132,19 @@ class PuzzleBubbleView(arcade.View):
         self.mouse_x = 0
         self.mouse_y = 0
 
+        # Mode selection
+        self.mode = "select"
+        self.btn_solo = _Button(WIDTH / 2, HEIGHT / 2 + 30, 250, 50, "Solo")
+        self.btn_vs = _Button(WIDTH / 2, HEIGHT / 2 - 30, 250, 50, "VS AI")
+        self.txt_mode_title = arcade.Text(
+            "PUZZLE BUBBLE", WIDTH / 2, HEIGHT / 2 + 120, (249, 226, 175),
+            font_size=36, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_mode_subtitle = arcade.Text(
+            "Choose Mode", WIDTH / 2, HEIGHT / 2 + 75, (205, 214, 244),
+            font_size=18, anchor_x="center", anchor_y="center",
+        )
+
         # Buttons
         self.btn_back = _Button(60, HEIGHT - 25, 90, 34, "Back")
         self.btn_new = _Button(WIDTH - 80, HEIGHT - 25, 110, 34, "New Game")
@@ -354,20 +367,28 @@ class PuzzleBubbleView(arcade.View):
 
     def _snap_and_process(self):
         """Snap flying bubble to grid and check for matches."""
-        col, row = screen_to_grid(self.fly_x, self.fly_y)
+        # Find nearest empty grid cell that is adjacent to an existing bubble OR in row 0
+        best_dist = float('inf')
+        best_pos = None
 
-        # Ensure position is not already occupied; find nearest free
-        if (col, row) in self.grid:
-            best_dist = float('inf')
-            best_pos = (col, row)
-            for nc, nr in self._neighbors(col, row):
-                if (nc, nr) not in self.grid:
-                    gx, gy = grid_to_screen(nc, nr)
+        for row in range(GRID_ROWS):
+            max_cols = GRID_COLS - (1 if row % 2 == 1 else 0)
+            for col in range(max_cols):
+                if (col, row) in self.grid:
+                    continue
+                # Valid if row 0 (top) or adjacent to an existing bubble
+                if row == 0 or any((nc, nr) in self.grid for nc, nr in self._neighbors(col, row)):
+                    gx, gy = grid_to_screen(col, row)
                     d = (self.fly_x - gx) ** 2 + (self.fly_y - gy) ** 2
                     if d < best_dist:
                         best_dist = d
-                        best_pos = (nc, nr)
-            col, row = best_pos
+                        best_pos = (col, row)
+
+        if best_pos is None:
+            # Fallback: snap to nearest grid position
+            best_pos = screen_to_grid(self.fly_x, self.fly_y)
+
+        col, row = best_pos
 
         # Place the bubble
         self.grid[(col, row)] = self.fly_color
@@ -474,6 +495,8 @@ class PuzzleBubbleView(arcade.View):
         arcade.set_background_color(BG_COLOR)
 
     def on_update(self, delta_time):
+        if self.mode == "select":
+            return
         if self.game_over or self.level_clear:
             return
 
@@ -511,6 +534,8 @@ class PuzzleBubbleView(arcade.View):
                     return
 
     def on_key_press(self, key, modifiers):
+        if self.mode == "select":
+            return
         if self.game_over:
             if key == arcade.key.RETURN:
                 self._init_game()
@@ -540,16 +565,42 @@ class PuzzleBubbleView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.btn_back.contains(x, y):
-            self.window.show_view(self.menu_view)
-        elif self.btn_new.contains(x, y):
-            self._init_game()
-        elif self.btn_help.contains(x, y):
+            if self.mode == "select":
+                self.window.show_view(self.menu_view)
+            else:
+                self.mode = "select"
+            return
+        if self.btn_help.contains(x, y):
             rules_view = RulesView("Puzzle Bubble", "puzzle_bubble.txt", None, self.menu_view, existing_game_view=self)
             self.window.show_view(rules_view)
+            return
+
+        if self.mode == "select":
+            if self.btn_solo.contains(x, y):
+                self.mode = "solo"
+                self._init_game()
+            elif self.btn_vs.contains(x, y):
+                from games.puzzle_bubble_vs import PuzzleBubbleVSView
+                vs_view = PuzzleBubbleVSView(self.menu_view)
+                self.window.show_view(vs_view)
+            return
+
+        if self.btn_new.contains(x, y):
+            self._init_game()
 
     # ------------------------------------------------------------------
     # Drawing
     # ------------------------------------------------------------------
     def on_draw(self):
         self.clear()
-        puzzle_bubble_renderer.draw(self)
+        if self.mode == "select":
+            BG = (20, 20, 40)
+            arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), BG)
+            self.txt_mode_title.draw()
+            self.txt_mode_subtitle.draw()
+            self.btn_solo.draw(self.btn_solo.contains(self.mouse_x, self.mouse_y))
+            self.btn_vs.draw(self.btn_vs.contains(self.mouse_x, self.mouse_y))
+            self.btn_back.draw(self.btn_back.contains(self.mouse_x, self.mouse_y))
+            self.btn_help.draw(self.btn_help.contains(self.mouse_x, self.mouse_y))
+        else:
+            puzzle_bubble_renderer.draw(self)

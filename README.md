@@ -1,6 +1,6 @@
 # Python Arcade
 
-A collection of classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, and retro arcade classics, all playable from a single launcher.
+A collection of 28 classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, retro arcade classics, and VS modes — all playable from a single launcher.
 
 ## Games
 
@@ -23,10 +23,17 @@ A collection of classic games built with the [Python Arcade](https://api.arcade.
 | Wordle | Word puzzle | - |
 | Sudoku | Number puzzle | - |
 | Pong | Arcade | Difficulty-scaled |
-| Tetris | Arcade | - |
+| Tetris | Arcade (+ VS AI) | Placement evaluation |
 | Space Invaders | Arcade | - |
 | Frogger | Arcade | - |
 | Flappy Bird | Arcade | - |
+| Asteroids | Arcade | - |
+| Liar's Dice | Dice (1-4 AI) | Probability-based |
+| Tron | Arcade (1-3 AI) | Flood-fill |
+| 15 Puzzle | Sliding puzzle | - |
+| Peg Solitaire | Peg jumping | - |
+| Breakout | Arcade | - |
+| Puzzle Bubble | Arcade (+ VS AI) | Target evaluation |
 
 ## Getting Started
 
@@ -39,6 +46,13 @@ A collection of classic games built with the [Python Arcade](https://api.arcade.
 ```bash
 pip install -r requirements.txt
 python main.py
+```
+
+### Run Tests
+
+```bash
+pip install pytest
+python -m pytest tests/ -v
 ```
 
 ## Project Structure
@@ -55,6 +69,10 @@ rules/               Game rules text files
 assets/              Generated PNG icons and sprites
   icons/             Game selection icons (120x120)
   ui/                Shared UI icons
+tests/               Test suite (pytest)
+  ai/                AI module unit tests
+  games/             Game logic tests
+  integration/       Full game flow simulations
 generate_assets.py   Regenerate all assets (requires Pillow)
 ```
 
@@ -66,5 +84,6 @@ generate_assets.py   Regenerate all assets (requires Pillow)
 4. Create `rules/your_game.txt` with game instructions
 5. Add an icon: create a function in `generate_assets.py` and run it, or add a 120x120 PNG to `assets/icons/`
 6. Register it in `games/__init__.py` by adding to `GAME_LIST` as `(name, ViewClass, "rules.txt", "icon.png")`
+7. Add tests in `tests/ai/` and/or `tests/games/`
 
 The game selection screen auto-populates from the registry. Selecting a game shows its rules first, with a Play button to launch. Each game also has a "?" button to re-read rules mid-game.

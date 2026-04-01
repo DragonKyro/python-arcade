@@ -26,8 +26,6 @@ from games.fifteen_puzzle import FifteenPuzzleView
 from games.peg_solitaire import PegSolitaireView
 from games.breakout import BreakoutView
 from games.puzzle_bubble import PuzzleBubbleView
-from games.tetris_vs import TetrisVSView
-from games.puzzle_bubble_vs import PuzzleBubbleVSView
 
 # Each entry: (display name, view class, rules filename, icon filename)
 GAME_LIST = [
@@ -59,6 +57,4 @@ GAME_LIST = [
     ("Peg Solitaire", PegSolitaireView, "peg_solitaire.txt", "peg_solitaire.png"),
     ("Breakout", BreakoutView, "breakout.txt", "breakout.png"),
     ("Puzzle Bubble", PuzzleBubbleView, "puzzle_bubble.txt", "puzzle_bubble.png"),
-    ("Tetris VS", TetrisVSView, "tetris_vs.txt", "tetris_vs.png"),
-    ("Puzzle Bubble VS", PuzzleBubbleVSView, "puzzle_bubble_vs.txt", "puzzle_bubble_vs.png"),
 ]

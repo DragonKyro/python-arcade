@@ -45,7 +45,7 @@ def _draw_grid_border(game):
     ox, oy = game.grid_offset_x, game.grid_offset_y
     w = game.grid_w * game.cell_size
     h = game.grid_h * game.cell_size
-    arcade.draw_lrtb_rectangle_outline(ox, ox + w, oy + h, oy, GRID_BORDER_COLOR, 2)
+    arcade.draw_rect_outline(arcade.XYWH(ox + w / 2, oy + h / 2, w, h), GRID_BORDER_COLOR, 2)
 
 
 def _draw_trails(game):
