@@ -72,7 +72,7 @@ A collection of 55 classic games built with the [Python Arcade](https://api.arca
 
 ```bash
 pip install -r requirements.txt
-python main.py
+python game_launcher.py
 ```
 
 ### Run Tests
@@ -85,7 +85,7 @@ python -m pytest tests/ -v
 ## Project Structure
 
 ```
-main.py              Entry point
+game_launcher.py              Entry point
 pages/               UI screens (home menu, game selection, rules)
   components.py      Shared UI components (Button)
   rules.py           Rules/instructions view

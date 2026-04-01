@@ -4,7 +4,7 @@
 A collection of 55 games built with the `arcade` library (3.x). Includes single-player puzzles, AI-opponent board games, retro arcade classics, multiplayer party games, and VS modes.
 
 ## Architecture
-- `main.py` — minimal entry point, creates window and shows HomeView
+- `game_launcher.py` — minimal entry point, creates window and shows HomeView
 - `pages/` — UI views (HomeView, GamesView, RulesView) and shared components (Button)
 - `games/` — game state, input handling, and logic only (no drawing code)
 - `renderers/` — all drawing/rendering code, one module per game (`{game}_renderer.py`)
@@ -48,7 +48,7 @@ Tests are in `tests/` using pytest:
 8. Add tests in `tests/ai/` and/or `tests/games/`
 
 ## Commands
-- Run: `python main.py`
+- Run: `python game_launcher.py`
 - Install deps: `pip install -r requirements.txt`
 - Run tests: `python -m pytest tests/ -v`
 - Regenerate assets: `python generate_assets.py`

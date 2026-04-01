@@ -19,5 +19,5 @@ from ai.chess_ai import ChessAI
 from ai.snakes_and_ladders_ai import SnakesAndLaddersAI
 from ai.ludo_ai import LudoAI
 from ai.yahtzee_ai import YahtzeeAI
-from ai.galaga_ai import GalagaAI
-from ai.pacman_ai import PacmanAI
+from ai.galaga_ai import BeeAI, ButterflyAI, BossGalagaAI
+from ai.pacman_ai import BlinkyAI, PinkyAI, InkyAI, ClydeAI
