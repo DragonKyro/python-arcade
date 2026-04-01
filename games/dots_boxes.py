@@ -8,6 +8,7 @@ import copy
 from ai.dots_boxes_ai import DotsBoxesAI
 from pages.components import Button
 from pages.rules import RulesView
+from renderers import dots_boxes_renderer
 
 # Window / layout constants
 WIDTH = 800
@@ -240,92 +241,4 @@ class DotsBoxesView(arcade.View):
     # ------------------------------------------------------------------ #
     def on_draw(self):
         self.clear()
-        self.draw_background()
-        self.draw_filled_boxes()
-        self.draw_lines()
-        self.draw_dots()
-        self.draw_ui()
-
-    def draw_background(self):
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), COLOR_BG)
-
-    def draw_filled_boxes(self):
-        for r in range(GRID_ROWS):
-            for c in range(GRID_COLS):
-                owner = self.box_owner[r][c]
-                if owner is None:
-                    continue
-                x1, y1 = _dot_pos(r, c)
-                x2, y2 = _dot_pos(r + 1, c + 1)
-                cx = (x1 + x2) / 2
-                cy = (y1 + y2) / 2
-                color = COLOR_PLAYER_FILL if owner == 'player' else COLOR_AI_FILL
-                arcade.draw_rect_filled(arcade.XYWH(cx, cy, DOT_SPACING, DOT_SPACING), color)
-
-    def draw_lines(self):
-        # Horizontal
-        for r in range(GRID_ROWS + 1):
-            for c in range(GRID_COLS):
-                x1, y1 = _dot_pos(r, c)
-                x2, y2 = _dot_pos(r, c + 1)
-                if self.h_lines[r][c]:
-                    owner = self.h_owners[r][c]
-                    color = COLOR_PLAYER_LINE if owner == 'player' else COLOR_AI_LINE
-                    arcade.draw_line(x1, y1, x2, y2, color, LINE_WIDTH)
-                else:
-                    arcade.draw_line(x1, y1, x2, y2, COLOR_UNDRAWN, 1)
-
-        # Vertical
-        for r in range(GRID_ROWS):
-            for c in range(GRID_COLS + 1):
-                x1, y1 = _dot_pos(r, c)
-                x2, y2 = _dot_pos(r + 1, c)
-                if self.v_lines[r][c]:
-                    owner = self.v_owners[r][c]
-                    color = COLOR_PLAYER_LINE if owner == 'player' else COLOR_AI_LINE
-                    arcade.draw_line(x1, y1, x2, y2, color, LINE_WIDTH)
-                else:
-                    arcade.draw_line(x1, y1, x2, y2, COLOR_UNDRAWN, 1)
-
-    def draw_dots(self):
-        for r in range(DOT_COUNT_Y):
-            for c in range(DOT_COUNT_X):
-                x, y = _dot_pos(r, c)
-                arcade.draw_circle_filled(x, y, DOT_RADIUS, COLOR_DOT)
-
-    def draw_ui(self):
-        # Score
-        arcade.draw_text(
-            f"Player (Blue): {self.player_score}    AI (Red): {self.ai_score}",
-            WIDTH / 2, HEIGHT - 55, COLOR_TEXT, 16, anchor_x="center"
-        )
-
-        # Turn / game-over indicator
-        if self.game_over:
-            if self.player_score > self.ai_score:
-                msg = "You win!"
-            elif self.ai_score > self.player_score:
-                msg = "AI wins!"
-            else:
-                msg = "It's a tie!"
-            arcade.draw_text(msg, WIDTH / 2, HEIGHT - 80, COLOR_TEXT, 18,
-                             anchor_x="center", bold=True)
-        else:
-            turn_msg = "Your turn" if self.current_turn == 'player' else "AI thinking..."
-            arcade.draw_text(turn_msg, WIDTH / 2, HEIGHT - 80, COLOR_TEXT, 14,
-                             anchor_x="center")
-
-        # Back button
-        arcade.draw_rect_filled(arcade.XYWH(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H), arcade.color.LIGHT_GRAY)
-        arcade.draw_rect_outline(arcade.XYWH(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
-        arcade.draw_text("Back", BTN_BACK_X, BTN_BACK_Y, COLOR_TEXT, 13,
-                         anchor_x="center", anchor_y="center")
-
-        # New Game button
-        arcade.draw_rect_filled(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.LIGHT_GRAY)
-        arcade.draw_rect_outline(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
-        arcade.draw_text("New Game", BTN_NEW_X, BTN_NEW_Y, COLOR_TEXT, 13,
-                         anchor_x="center", anchor_y="center")
-
-        # Help button
-        self.help_button.draw()
+        dots_boxes_renderer.draw(self)

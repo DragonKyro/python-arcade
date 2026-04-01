@@ -48,7 +48,8 @@ main.py              Entry point
 pages/               UI screens (home menu, game selection, rules)
   components.py      Shared UI components (Button)
   rules.py           Rules/instructions view
-games/               Game views (one file per game)
+games/               Game state, input, and logic (no drawing code)
+renderers/           All rendering code (one *_renderer.py per game)
 ai/                  AI logic (pure Python, no UI dependencies)
 rules/               Game rules text files
 assets/              Generated PNG icons and sprites
@@ -59,10 +60,11 @@ generate_assets.py   Regenerate all assets (requires Pillow)
 
 ## Adding a New Game
 
-1. Create `games/your_game.py` with a `YourGameView(arcade.View)` class that accepts a `menu_view` parameter
-2. If AI-based, create `ai/your_game_ai.py` with pure game logic
-3. Create `rules/your_game.txt` with game instructions
-4. Add an icon: create a function in `generate_assets.py` and run it, or add a 120x120 PNG to `assets/icons/`
-5. Register it in `games/__init__.py` by adding to `GAME_LIST` as `(name, ViewClass, "rules.txt", "icon.png")`
+1. Create `games/your_game.py` with a `YourGameView(arcade.View)` class (state + input only, no drawing)
+2. Create `renderers/your_game_renderer.py` with a `draw(game)` function for all rendering
+3. If AI-based, create `ai/your_game_ai.py` with pure game logic
+4. Create `rules/your_game.txt` with game instructions
+5. Add an icon: create a function in `generate_assets.py` and run it, or add a 120x120 PNG to `assets/icons/`
+6. Register it in `games/__init__.py` by adding to `GAME_LIST` as `(name, ViewClass, "rules.txt", "icon.png")`
 
 The game selection screen auto-populates from the registry. Selecting a game shows its rules first, with a Play button to launch. Each game also has a "?" button to re-read rules mid-game.

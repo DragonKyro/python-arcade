@@ -6,6 +6,7 @@ Human plays X, AI plays O.
 import arcade
 from ai.tictactoe_ai import TicTacToeAI, check_winner, get_winning_line
 from pages.rules import RulesView
+from renderers import tictactoe_renderer
 
 WIDTH = 800
 HEIGHT = 600
@@ -145,128 +146,7 @@ class TicTacToeView(arcade.View):
     # ------------------------------------------------------------------
     def on_draw(self):
         self.clear()
-
-        # Background
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), BG_COLOR)
-
-        # Title
-        arcade.draw_text(
-            "Tic-Tac-Toe",
-            WIDTH // 2,
-            HEIGHT - 30,
-            LINE_COLOR,
-            font_size=20,
-            anchor_x="center",
-            anchor_y="center",
-            bold=True,
-        )
-
-        # Buttons
-        self.btn_back.draw(hover=self.btn_back.contains(self.mouse_x, self.mouse_y))
-        self.btn_new.draw(hover=self.btn_new.contains(self.mouse_x, self.mouse_y))
-        self.btn_help.draw(hover=self.btn_help.contains(self.mouse_x, self.mouse_y))
-
-        # Turn / status text
-        if not self.game_over:
-            if self.ai_thinking:
-                status = "AI is thinking..."
-            else:
-                status = "Your turn (X)"
-        else:
-            status = ""
-        arcade.draw_text(
-            status,
-            WIDTH // 2,
-            HEIGHT - 65,
-            LINE_COLOR,
-            font_size=15,
-            anchor_x="center",
-            anchor_y="center",
-        )
-
-        # Draw grid lines
-        self._draw_grid()
-
-        # Draw markers
-        self._draw_markers()
-
-        # Highlight winning line
-        if self.winning_line:
-            self._draw_winning_highlight()
-
-        # Game-over overlay
-        if self.game_over:
-            self._draw_overlay()
-
-    def _draw_grid(self):
-        """Draw the 3x3 grid lines."""
-        # Convert grid boundaries to screen coords
-        left = GRID_LEFT
-        right = GRID_LEFT + GRID_SIZE
-        top_y = HEIGHT - GRID_TOP
-        bottom_y = HEIGHT - GRID_TOP - GRID_SIZE
-
-        # Vertical lines
-        for i in range(4):
-            x = left + i * CELL_SIZE
-            arcade.draw_line(x, top_y, x, bottom_y, LINE_COLOR, 3)
-
-        # Horizontal lines
-        for i in range(4):
-            y = top_y - i * CELL_SIZE
-            arcade.draw_line(left, y, right, y, LINE_COLOR, 3)
-
-    def _draw_markers(self):
-        """Draw X and O in each occupied cell."""
-        pad = 28  # padding inside cell
-        for r in range(3):
-            for c in range(3):
-                val = self.board[r][c]
-                if val is None:
-                    continue
-                cx, cy = _grid_to_screen(r, c)
-                half = CELL_SIZE // 2 - pad
-                if val == "X":
-                    arcade.draw_line(cx - half, cy - half, cx + half, cy + half, X_COLOR, 4)
-                    arcade.draw_line(cx - half, cy + half, cx + half, cy - half, X_COLOR, 4)
-                else:
-                    arcade.draw_circle_outline(cx, cy, half, O_COLOR, 4)
-
-    def _draw_winning_highlight(self):
-        """Draw a thick line through the winning cells."""
-        if not self.winning_line or len(self.winning_line) < 2:
-            return
-        start = self.winning_line[0]
-        end = self.winning_line[-1]
-        x1, y1 = _grid_to_screen(start[0], start[1])
-        x2, y2 = _grid_to_screen(end[0], end[1])
-        arcade.draw_line(x1, y1, x2, y2, HIGHLIGHT_COLOR, 6)
-
-    def _draw_overlay(self):
-        """Draw a translucent overlay with the result message and Play Again button."""
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), OVERLAY_COLOR)
-
-        if self.result == "X":
-            msg = "You win!"
-        elif self.result == "O":
-            msg = "AI wins!"
-        else:
-            msg = "It's a draw!"
-
-        arcade.draw_text(
-            msg,
-            WIDTH // 2,
-            HEIGHT // 2 + 20,
-            MESSAGE_COLOR,
-            font_size=36,
-            anchor_x="center",
-            anchor_y="center",
-            bold=True,
-        )
-
-        self.btn_play_again.draw(
-            hover=self.btn_play_again.contains(self.mouse_x, self.mouse_y)
-        )
+        tictactoe_renderer.draw(self)
 
     # ------------------------------------------------------------------
     # Input

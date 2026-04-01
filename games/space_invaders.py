@@ -7,6 +7,7 @@ import arcade
 import random
 import math
 from pages.rules import RulesView
+from renderers import space_invaders_renderer
 
 # Window constants
 WIDTH = 800
@@ -551,143 +552,7 @@ class SpaceInvadersView(arcade.View):
 
     def on_draw(self):
         self.clear()
-
-        # --- Draw play area ---
-
-        # Shields
-        for block in self.shields:
-            if block[2]:
-                arcade.draw_rect_filled(
-                    arcade.XYWH(block[0], block[1], SHIELD_BLOCK_SIZE, SHIELD_BLOCK_SIZE),
-                    SHIELD_COLOR,
-                )
-
-        # Aliens
-        alive_aliens = self._alive_aliens()
-        for a in alive_aliens:
-            a.draw(self.alien_anim_frame)
-
-        # Alien bullets
-        for b in self.alien_bullets:
-            b.draw()
-
-        # Player bullets
-        for b in self.player_bullets:
-            b.draw()
-
-        # Player ship (draw with blinking if invincible)
-        draw_player = True
-        if self.player_invincible > 0:
-            # Blink effect
-            if int(self.player_invincible * 10) % 2 == 0:
-                draw_player = False
-
-        if draw_player and not self.game_over:
-            px, py = self.player_x, PLAYER_Y
-            # Main body
-            arcade.draw_rect_filled(
-                arcade.XYWH(px, py, PLAYER_WIDTH, PLAYER_HEIGHT), PLAYER_COLOR
-            )
-            # Turret
-            arcade.draw_rect_filled(
-                arcade.XYWH(px, py + PLAYER_HEIGHT / 2 + PLAYER_TURRET_H / 2,
-                             PLAYER_TURRET_W, PLAYER_TURRET_H),
-                PLAYER_TURRET_COLOR,
-            )
-            # Angled sides for a more ship-like look
-            arcade.draw_triangle_filled(
-                px - PLAYER_WIDTH / 2, py - PLAYER_HEIGHT / 2,
-                px - PLAYER_WIDTH / 2 - 4, py - PLAYER_HEIGHT / 2,
-                px - PLAYER_WIDTH / 2, py + PLAYER_HEIGHT / 2,
-                PLAYER_COLOR,
-            )
-            arcade.draw_triangle_filled(
-                px + PLAYER_WIDTH / 2, py - PLAYER_HEIGHT / 2,
-                px + PLAYER_WIDTH / 2 + 4, py - PLAYER_HEIGHT / 2,
-                px + PLAYER_WIDTH / 2, py + PLAYER_HEIGHT / 2,
-                PLAYER_COLOR,
-            )
-
-        # UFO
-        self.ufo.draw()
-
-        # UFO score display
-        if self.ufo_score_display:
-            ux, uy = self.ufo_score_display
-            arcade.draw_text(
-                f"{self.ufo.points}", ux, uy, (255, 255, 100),
-                font_size=14, anchor_x="center", anchor_y="center", bold=True,
-            )
-
-        # --- Top bar ---
-        arcade.draw_rect_filled(
-            arcade.XYWH(WIDTH // 2, HEIGHT - TOP_BAR_HEIGHT // 2, WIDTH, TOP_BAR_HEIGHT),
-            BG_COLOR,
-        )
-        arcade.draw_line(0, HEIGHT - TOP_BAR_HEIGHT, WIDTH, HEIGHT - TOP_BAR_HEIGHT, LINE_COLOR, 1)
-
-        # Score
-        arcade.draw_text(
-            f"SCORE: {self.score}", 140, HEIGHT - 18, SCORE_COLOR,
-            font_size=14, anchor_x="left", anchor_y="center",
-        )
-        arcade.draw_text(
-            f"HI: {self.high_score}", 140, HEIGHT - 38, (180, 180, 180),
-            font_size=11, anchor_x="left", anchor_y="center",
-        )
-
-        # Wave number
-        arcade.draw_text(
-            f"WAVE {self.wave}", WIDTH - 80, HEIGHT - 18, (200, 200, 255),
-            font_size=14, anchor_x="center", anchor_y="center",
-        )
-
-        # Buttons
-        hover_back = self.btn_back.contains(self.mouse_x, self.mouse_y)
-        hover_help = self.btn_help.contains(self.mouse_x, self.mouse_y)
-        self.btn_back.draw(hover=hover_back)
-        self.btn_help.draw(hover=hover_help)
-
-        # --- Bottom bar ---
-        arcade.draw_rect_filled(
-            arcade.XYWH(WIDTH // 2, BOTTOM_BAR_HEIGHT // 2, WIDTH, BOTTOM_BAR_HEIGHT),
-            BG_COLOR,
-        )
-        arcade.draw_line(0, BOTTOM_BAR_HEIGHT, WIDTH, BOTTOM_BAR_HEIGHT, LINE_COLOR, 1)
-
-        # Lives as ship icons
-        arcade.draw_text(
-            "LIVES:", 10, BOTTOM_BAR_HEIGHT // 2, SCORE_COLOR,
-            font_size=12, anchor_x="left", anchor_y="center",
-        )
-        for i in range(self.lives):
-            lx = 80 + i * 35
-            ly = BOTTOM_BAR_HEIGHT // 2
-            arcade.draw_rect_filled(arcade.XYWH(lx, ly, 20, 10), PLAYER_COLOR)
-            arcade.draw_rect_filled(arcade.XYWH(lx, ly + 7, 3, 5), PLAYER_TURRET_COLOR)
-
-        # --- Overlays ---
-        if self.game_over:
-            arcade.draw_rect_filled(
-                arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), OVERLAY_COLOR
-            )
-            arcade.draw_text(
-                "GAME OVER", WIDTH // 2, HEIGHT // 2 + 50,
-                (255, 80, 80), font_size=36,
-                anchor_x="center", anchor_y="center", bold=True,
-            )
-            arcade.draw_text(
-                f"Final Score: {self.score}  |  Wave: {self.wave}",
-                WIDTH // 2, HEIGHT // 2,
-                SCORE_COLOR, font_size=18,
-                anchor_x="center", anchor_y="center",
-            )
-            arcade.draw_text(
-                "Press ENTER to play again",
-                WIDTH // 2, HEIGHT // 2 - 45,
-                (180, 180, 180), font_size=14,
-                anchor_x="center", anchor_y="center",
-            )
+        space_invaders_renderer.draw(self)
 
     def on_key_press(self, key, modifiers):
         if self.game_over:

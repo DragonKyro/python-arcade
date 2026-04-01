@@ -2,6 +2,7 @@ import arcade
 import random
 import copy
 from pages.rules import RulesView
+from renderers import sudoku_renderer
 
 # Window constants
 WIDTH = 800
@@ -185,149 +186,7 @@ class SudokuView(arcade.View):
 
     def on_draw(self):
         self.clear()
-
-        # Background
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), BG_COLOR)
-
-        # --- Top bar ---
-        bar_y = HEIGHT - TOP_BAR_HEIGHT / 2
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, bar_y, WIDTH, TOP_BAR_HEIGHT), (50, 50, 50))
-
-        # Back button
-        bx, by, bw, bh = 55, bar_y, 90, 35
-        arcade.draw_rect_filled(arcade.XYWH(bx, by, bw, bh), arcade.color.DARK_SLATE_BLUE)
-        arcade.draw_rect_outline(arcade.XYWH(bx, by, bw, bh), arcade.color.WHITE)
-        arcade.draw_text("Back", bx, by, arcade.color.WHITE,
-                         font_size=14, anchor_x="center", anchor_y="center")
-
-        # Timer
-        mins = int(self.elapsed_time) // 60
-        secs = int(self.elapsed_time) % 60
-        arcade.draw_text(f"{mins:02d}:{secs:02d}", WIDTH / 2, bar_y, arcade.color.WHITE,
-                         font_size=16, anchor_x="center", anchor_y="center", bold=True)
-
-        # Difficulty label
-        arcade.draw_text(self.difficulty, WIDTH / 2, bar_y - 15, arcade.color.LIGHT_GRAY,
-                         font_size=10, anchor_x="center", anchor_y="center")
-
-        # New Game button
-        nx, ny, nw, nh = WIDTH - 65, bar_y, 110, 35
-        arcade.draw_rect_filled(arcade.XYWH(nx, ny, nw, nh), arcade.color.DARK_GREEN)
-        arcade.draw_rect_outline(arcade.XYWH(nx, ny, nw, nh), arcade.color.WHITE)
-        arcade.draw_text("New Game", nx, ny, arcade.color.WHITE,
-                         font_size=14, anchor_x="center", anchor_y="center")
-
-        # Help button
-        hx, hy, hw, hh = WIDTH - 135, bar_y, 40, 40
-        arcade.draw_rect_filled(arcade.XYWH(hx, hy, hw, hh), arcade.color.DARK_SLATE_BLUE)
-        arcade.draw_rect_outline(arcade.XYWH(hx, hy, hw, hh), arcade.color.WHITE)
-        arcade.draw_text("?", hx, hy, arcade.color.WHITE,
-                         font_size=16, anchor_x="center", anchor_y="center", bold=True)
-
-        # Difficulty buttons (small, left side under bar)
-        diff_y = HEIGHT - TOP_BAR_HEIGHT - 20
-        for i, diff in enumerate(["Easy", "Medium", "Hard"]):
-            dx = GRID_ORIGIN_X + i * 65
-            color = arcade.color.DARK_GREEN if diff == self.difficulty else (80, 80, 80)
-            arcade.draw_rect_filled(arcade.XYWH(dx + 30, diff_y, 58, 22), color)
-            arcade.draw_rect_outline(arcade.XYWH(dx + 30, diff_y, 58, 22), arcade.color.WHITE)
-            arcade.draw_text(diff, dx + 30, diff_y, arcade.color.WHITE,
-                             font_size=10, anchor_x="center", anchor_y="center")
-
-        # --- Grid background ---
-        arcade.draw_rect_filled(
-            arcade.XYWH(GRID_ORIGIN_X + GRID_PX / 2, GRID_ORIGIN_Y + GRID_PX / 2, GRID_PX, GRID_PX),
-            GRID_BG
-        )
-
-        # --- Cell highlights ---
-        if self.selected is not None:
-            sr, sc = self.selected
-            sbr, sbc = 3 * (sr // 3), 3 * (sc // 3)
-            for r in range(9):
-                for c in range(9):
-                    # Highlight row, column, and box of selected cell
-                    if r == sr or c == sc or (3 * (r // 3) == sbr and 3 * (c // 3) == sbc):
-                        cx, cy = self._cell_center(r, c)
-                        arcade.draw_rect_filled(
-                            arcade.XYWH(cx, cy, CELL_SIZE, CELL_SIZE),
-                            CELL_HIGHLIGHT
-                        )
-
-            # Conflict cells
-            for r in range(9):
-                for c in range(9):
-                    if self.conflicts[r][c]:
-                        cx, cy = self._cell_center(r, c)
-                        arcade.draw_rect_filled(
-                            arcade.XYWH(cx, cy, CELL_SIZE, CELL_SIZE),
-                            CONFLICT_COLOR
-                        )
-
-            # Selected cell bold highlight
-            cx, cy = self._cell_center(sr, sc)
-            arcade.draw_rect_outline(
-                arcade.XYWH(cx, cy, CELL_SIZE, CELL_SIZE),
-                SELECTED_COLOR, border_width=3
-            )
-
-        # --- Numbers ---
-        for r in range(9):
-            for c in range(9):
-                val = self.board[r][c]
-                if val == 0:
-                    continue
-                cx, cy = self._cell_center(r, c)
-                if self.conflicts[r][c]:
-                    color = CONFLICT_TEXT_COLOR
-                elif self.given[r][c]:
-                    color = GIVEN_TEXT_COLOR
-                else:
-                    color = PLAYER_TEXT_COLOR
-                arcade.draw_text(
-                    str(val), cx, cy, color,
-                    font_size=20 if self.given[r][c] else 18,
-                    anchor_x="center", anchor_y="center",
-                    bold=self.given[r][c]
-                )
-
-        # --- Grid lines ---
-        # Thin lines for each cell
-        for i in range(10):
-            x0 = GRID_ORIGIN_X + i * CELL_SIZE
-            y0 = GRID_ORIGIN_Y
-            y1 = GRID_ORIGIN_Y + GRID_PX
-            lw = 3 if i % 3 == 0 else 1
-            col = THICK_LINE_COLOR if i % 3 == 0 else THIN_LINE_COLOR
-            arcade.draw_line(x0, y0, x0, y1, col, lw)
-
-            y_h = GRID_ORIGIN_Y + i * CELL_SIZE
-            x1 = GRID_ORIGIN_X + GRID_PX
-            arcade.draw_line(GRID_ORIGIN_X, y_h, x1, y_h, col, lw)
-
-        # --- Win overlay ---
-        if self.game_won:
-            arcade.draw_rect_filled(
-                arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT),
-                WIN_OVERLAY
-            )
-            arcade.draw_text(
-                "Congratulations!", WIDTH / 2, HEIGHT / 2 + 30,
-                arcade.color.GOLD, font_size=36,
-                anchor_x="center", anchor_y="center", bold=True
-            )
-            arcade.draw_text(
-                f"Completed in {mins:02d}:{secs:02d}",
-                WIDTH / 2, HEIGHT / 2 - 20,
-                arcade.color.WHITE, font_size=20,
-                anchor_x="center", anchor_y="center"
-            )
-            arcade.draw_text(
-                "Click New Game to play again",
-                WIDTH / 2, HEIGHT / 2 - 60,
-                arcade.color.LIGHT_GRAY, font_size=14,
-                anchor_x="center", anchor_y="center"
-            )
+        sudoku_renderer.draw(self)
 
     def on_mouse_press(self, x, y, button, modifiers):
         bar_y = HEIGHT - TOP_BAR_HEIGHT / 2

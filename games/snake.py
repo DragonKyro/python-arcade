@@ -6,6 +6,7 @@ Classic snake gameplay with arrow key controls.
 import arcade
 import random
 from pages.rules import RulesView
+from renderers import snake_renderer
 
 # Window constants
 WIDTH = 800
@@ -178,111 +179,7 @@ class SnakeView(arcade.View):
 
     def on_draw(self):
         self.clear()
-
-        # Draw faint grid lines
-        for c in range(GRID_COLS + 1):
-            x = GRID_ORIGIN_X + c * CELL_SIZE
-            arcade.draw_line(x, GRID_ORIGIN_Y, x, GRID_ORIGIN_Y + GRID_ROWS * CELL_SIZE, GRID_LINE_COLOR, 1)
-        for r in range(GRID_ROWS + 1):
-            y = GRID_ORIGIN_Y + r * CELL_SIZE
-            arcade.draw_line(GRID_ORIGIN_X, y, GRID_ORIGIN_X + GRID_COLS * CELL_SIZE, y, GRID_LINE_COLOR, 1)
-
-        # Draw food
-        if self.food:
-            fx, fy = _cell_to_screen(*self.food)
-            arcade.draw_rect_filled(
-                arcade.XYWH(fx, fy, CELL_SIZE - 2, CELL_SIZE - 2),
-                FOOD_COLOR,
-            )
-
-        # Draw snake body
-        for i, segment in enumerate(self.snake):
-            sx, sy = _cell_to_screen(*segment)
-            is_head = (i == len(self.snake) - 1)
-            color = SNAKE_HEAD_COLOR if is_head else SNAKE_BODY_COLOR
-            arcade.draw_rect_filled(
-                arcade.XYWH(sx, sy, CELL_SIZE - 2, CELL_SIZE - 2),
-                color,
-            )
-
-        # Draw play area border
-        bx = GRID_ORIGIN_X + (GRID_COLS * CELL_SIZE) / 2
-        by = GRID_ORIGIN_Y + (GRID_ROWS * CELL_SIZE) / 2
-        arcade.draw_rect_outline(
-            arcade.XYWH(bx, by, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE),
-            LINE_COLOR,
-            2,
-        )
-
-        # Top status bar background
-        arcade.draw_rect_filled(
-            arcade.XYWH(WIDTH // 2, HEIGHT - TOP_BAR_HEIGHT // 2, WIDTH, TOP_BAR_HEIGHT),
-            BG_COLOR,
-        )
-        arcade.draw_line(0, HEIGHT - TOP_BAR_HEIGHT, WIDTH, HEIGHT - TOP_BAR_HEIGHT, LINE_COLOR, 2)
-
-        # Score display
-        arcade.draw_text(
-            f"Score: {self.score}",
-            WIDTH // 2 - 80,
-            HEIGHT - 33,
-            SCORE_COLOR,
-            font_size=16,
-            anchor_x="center",
-            anchor_y="center",
-        )
-        arcade.draw_text(
-            f"High: {self.high_score}",
-            WIDTH // 2 + 80,
-            HEIGHT - 33,
-            STATUS_TEXT_COLOR,
-            font_size=16,
-            anchor_x="center",
-            anchor_y="center",
-        )
-
-        # Buttons
-        hover_back = self.btn_back.contains(self.mouse_x, self.mouse_y)
-        hover_new = self.btn_new.contains(self.mouse_x, self.mouse_y)
-        hover_help = self.btn_help.contains(self.mouse_x, self.mouse_y)
-        self.btn_back.draw(hover=hover_back)
-        self.btn_new.draw(hover=hover_new)
-        self.btn_help.draw(hover=hover_help)
-
-        # Game over overlay
-        if self.game_over:
-            arcade.draw_rect_filled(
-                arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT),
-                OVERLAY_COLOR,
-            )
-            arcade.draw_text(
-                "GAME OVER",
-                WIDTH // 2,
-                HEIGHT // 2 + 50,
-                (243, 139, 168),
-                font_size=36,
-                anchor_x="center",
-                anchor_y="center",
-                bold=True,
-            )
-            arcade.draw_text(
-                f"Score: {self.score}",
-                WIDTH // 2,
-                HEIGHT // 2,
-                SCORE_COLOR,
-                font_size=22,
-                anchor_x="center",
-                anchor_y="center",
-            )
-            arcade.draw_text(
-                "Click 'New Game' or press ENTER to play again",
-                WIDTH // 2,
-                HEIGHT // 2 - 45,
-                STATUS_TEXT_COLOR,
-                font_size=14,
-                anchor_x="center",
-                anchor_y="center",
-            )
+        snake_renderer.draw(self)
 
     def on_key_press(self, key, modifiers):
         if self.game_over:

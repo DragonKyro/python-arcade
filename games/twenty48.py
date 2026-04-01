@@ -6,6 +6,7 @@ import arcade
 import random
 import copy
 from pages.rules import RulesView
+from renderers import twenty48_renderer
 
 WIDTH = 800
 HEIGHT = 600
@@ -252,94 +253,7 @@ class Twenty48View(arcade.View):
 
     def on_draw(self):
         self.clear()
-
-        # Background
-        arcade.set_background_color((250, 248, 239))
-
-        # Title
-        arcade.draw_text(
-            "2048",
-            WIDTH / 2, HEIGHT - 30,
-            DARK_TEXT,
-            font_size=36,
-            anchor_x="center",
-            anchor_y="center",
-            bold=True,
-        )
-
-        # Score
-        arcade.draw_text(
-            f"Score: {self.score}",
-            WIDTH / 2, HEIGHT - 65,
-            DARK_TEXT,
-            font_size=20,
-            anchor_x="center",
-            anchor_y="center",
-        )
-
-        # Buttons
-        self.back_button.draw()
-        self.new_game_button.draw()
-        self.help_button.draw()
-
-        # Grid background
-        grid_cx = GRID_LEFT + GRID_PIXEL / 2
-        grid_cy = GRID_BOTTOM + GRID_PIXEL / 2
-        arcade.draw_rect_filled(arcade.XYWH(grid_cx, grid_cy, GRID_PIXEL + 6, GRID_PIXEL + 6), GRID_BG_COLOR)
-
-        # Draw each cell
-        for r in range(GRID_SIZE):
-            for c in range(GRID_SIZE):
-                value = self.grid[r][c]
-                # Cell position: row 0 is top row visually
-                x = GRID_LEFT + CELL_GAP + c * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2
-                y = GRID_BOTTOM + GRID_PIXEL - (CELL_GAP + r * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2)
-
-                color = _get_tile_color(value)
-                arcade.draw_rect_filled(arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), color)
-
-                if value != 0:
-                    txt_color = _get_text_color(value)
-                    fsize = _font_size_for_value(value)
-                    arcade.draw_text(
-                        str(value),
-                        x, y,
-                        txt_color,
-                        font_size=fsize,
-                        anchor_x="center",
-                        anchor_y="center",
-                        bold=True,
-                    )
-
-        # Win overlay
-        if self.won and not self.won_acknowledged:
-            self._draw_overlay("You Win!", "Click to continue")
-
-        # Game over overlay
-        if self.game_over:
-            self._draw_overlay("Game Over!", "Click New Game to restart")
-
-    def _draw_overlay(self, title, subtitle):
-        """Draw a semi-transparent overlay with a message."""
-        # Semi-transparent backdrop over the grid
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), (255, 255, 255, 150))
-        arcade.draw_text(
-            title,
-            WIDTH / 2, HEIGHT / 2 + 20,
-            (119, 110, 101),
-            font_size=52,
-            anchor_x="center",
-            anchor_y="center",
-            bold=True,
-        )
-        arcade.draw_text(
-            subtitle,
-            WIDTH / 2, HEIGHT / 2 - 30,
-            (119, 110, 101),
-            font_size=20,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        twenty48_renderer.draw(self)
 
     # ------------------------------------------------------------------ #
     # Input handling

@@ -5,6 +5,7 @@ Connect Four game view using Arcade 2.6.x APIs.
 import arcade
 from pages.components import Button
 from pages.rules import RulesView
+from renderers import connect4_renderer
 from ai.connect4_ai import (
     Connect4AI,
     check_winner,
@@ -117,115 +118,7 @@ class Connect4View(arcade.View):
 
     def on_draw(self):
         self.clear()
-        self._draw_buttons()
-        self._draw_board()
-        self._draw_hover()
-        if self.state == STATE_GAME_OVER:
-            self._draw_win_highlights()
-            self._draw_overlay()
-
-    def _draw_buttons(self):
-        # Back button (top-left)
-        bx, by = 60, HEIGHT - 30
-        arcade.draw_rect_filled(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.DARK_GRAY)
-        arcade.draw_rect_outline(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.WHITE, 2)
-        arcade.draw_text("Back", bx, by, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
-
-        # New Game button (top-right)
-        nx, ny = WIDTH - 70, HEIGHT - 30
-        arcade.draw_rect_filled(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.DARK_GREEN)
-        arcade.draw_rect_outline(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.WHITE, 2)
-        arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
-
-        # Help button
-        self.help_button.draw()
-
-        # Title
-        arcade.draw_text(
-            "Connect Four",
-            WIDTH // 2, HEIGHT - 30,
-            arcade.color.WHITE, 22, anchor_x="center", anchor_y="center",
-            bold=True,
-        )
-
-        # Turn indicator
-        if self.state == STATE_PLAYER_TURN:
-            msg = "Your turn (Red)"
-            color = PLAYER_COLOR
-        elif self.state == STATE_AI_THINKING:
-            msg = "AI is thinking..."
-            color = AI_COLOR
-        else:
-            msg = ""
-            color = arcade.color.WHITE
-
-        if msg:
-            board_top = BOARD_MARGIN_Y + ROWS * CELL_SIZE
-            arcade.draw_text(
-                msg, WIDTH // 2, board_top + 18,
-                color, 16, anchor_x="center", anchor_y="center", bold=True,
-            )
-
-    def _draw_board(self):
-        # Blue board background
-        bx = BOARD_MARGIN_X + (COLS * CELL_SIZE) // 2
-        by = BOARD_MARGIN_Y + (ROWS * CELL_SIZE) // 2
-        arcade.draw_rect_filled(arcade.XYWH(bx, by, COLS * CELL_SIZE, ROWS * CELL_SIZE), BOARD_COLOR)
-
-        # Circles
-        for row in range(ROWS):
-            for col in range(COLS):
-                cx, cy = self._cell_center(row, col)
-                piece = self.board[row][col]
-                if piece == PLAYER_PIECE:
-                    color = PLAYER_COLOR
-                elif piece == AI_PIECE:
-                    color = AI_COLOR
-                else:
-                    color = EMPTY_COLOR
-                arcade.draw_circle_filled(cx, cy, CIRCLE_RADIUS, color)
-
-    def _draw_hover(self):
-        """Draw a translucent highlight over the hovered column."""
-        if self.state != STATE_PLAYER_TURN or self.hover_col < 0:
-            return
-        hx = BOARD_MARGIN_X + self.hover_col * CELL_SIZE + CELL_SIZE // 2
-        hy = BOARD_MARGIN_Y + (ROWS * CELL_SIZE) // 2
-        arcade.draw_rect_filled(arcade.XYWH(hx, hy, CELL_SIZE, ROWS * CELL_SIZE), HIGHLIGHT_COLOR)
-
-        # Preview piece at top
-        preview_y = BOARD_MARGIN_Y + ROWS * CELL_SIZE + 18
-        arcade.draw_circle_filled(hx, preview_y + 18, CIRCLE_RADIUS // 2, PLAYER_COLOR)
-
-    def _draw_win_highlights(self):
-        """Draw white rings around the winning four pieces."""
-        for row, col in self.winning_positions:
-            cx, cy = self._cell_center(row, col)
-            arcade.draw_circle_outline(cx, cy, CIRCLE_RADIUS + 3, arcade.color.WHITE, 4)
-
-    def _draw_overlay(self):
-        """Draw a semi-transparent overlay with the result message."""
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), OVERLAY_BG)
-
-        if self.winner == PLAYER_PIECE:
-            msg = "You Win!"
-            color = PLAYER_COLOR
-        elif self.winner == AI_PIECE:
-            msg = "AI Wins!"
-            color = AI_COLOR
-        else:
-            msg = "It's a Draw!"
-            color = arcade.color.WHITE
-
-        arcade.draw_text(
-            msg, WIDTH // 2, HEIGHT // 2 + 30,
-            color, 48, anchor_x="center", anchor_y="center", bold=True,
-        )
-        arcade.draw_text(
-            "Click 'New Game' to play again",
-            WIDTH // 2, HEIGHT // 2 - 30,
-            arcade.color.WHITE, 18, anchor_x="center", anchor_y="center",
-        )
+        connect4_renderer.draw(self)
 
     # ------------------------------------------------------------------ input
 
