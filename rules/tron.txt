@@ -1,0 +1,19 @@
+TRON (LIGHT CYCLES)
+
+Leave a trail and survive longer than your opponents.
+
+CONTROLS
+- Arrow keys to change direction (Up/Down/Left/Right).
+- You cannot reverse direction.
+
+GAMEPLAY
+- Your light cycle leaves a permanent trail behind it.
+- Hitting any trail (yours or an opponent's) or a wall
+  eliminates you.
+- Choose the number of computer opponents (1-3) before starting.
+- Last player alive wins the round.
+
+STRATEGY
+- Cut off opponents by boxing them in.
+- Keep open space for yourself.
+- Watch all trails, not just your own.

@@ -1,0 +1,14 @@
+15 PUZZLE
+
+Slide tiles to arrange them in order from 1 to 15.
+
+HOW TO PLAY
+- Click a tile adjacent to the empty space to slide it.
+- Or use arrow keys to move tiles into the empty space.
+- Arrange all tiles in numerical order, left to right,
+  top to bottom, with the empty space in the bottom-right.
+
+WINNING
+- The puzzle is solved when tiles read 1-15 in order.
+- A move counter tracks how many slides you've made.
+- Try to solve it in as few moves as possible!

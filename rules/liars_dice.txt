@@ -1,0 +1,24 @@
+LIAR'S DICE
+
+Bluff and call bluffs in this dice-betting game.
+
+SETUP
+- Each player starts with 5 dice, rolled secretly.
+- You can see your own dice but not others'.
+- Choose the number of computer opponents (1-4) before starting.
+
+HOW TO PLAY
+- Players take turns making bids: "there are at least N dice
+  showing face X among ALL players' dice."
+- Each bid must be higher than the last (higher quantity, or same
+  quantity with a higher face value).
+- Instead of bidding, you can call "Liar!" on the previous bid.
+
+CALLING LIAR
+- All dice are revealed and counted.
+- If the bid was correct (or exceeded), the caller loses a die.
+- If the bid was wrong, the bidder loses a die.
+
+WINNING
+- A player with zero dice is eliminated.
+- Last player standing wins.

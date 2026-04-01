@@ -1,0 +1,18 @@
+PEG SOLITAIRE
+
+Remove pegs by jumping until only one remains.
+
+HOW TO PLAY
+- The board starts full of pegs with one empty hole in the center.
+- Click a peg to select it, then click an empty hole to jump.
+- A peg can jump over an adjacent peg into an empty hole beyond it.
+- The jumped-over peg is removed from the board.
+- Jumps can be horizontal or vertical (not diagonal).
+
+WINNING
+- Win by leaving exactly one peg on the board.
+- The game ends when no more jumps are possible.
+
+STRATEGY
+- Work from the edges toward the center.
+- Avoid isolating single pegs with no neighbors to jump.

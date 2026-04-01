@@ -1,0 +1,21 @@
+PUZZLE BUBBLE VS
+
+Compete head-to-head against the computer in split-screen Puzzle Bubble.
+
+CONTROLS
+- Left/Right arrow: aim the shooter.
+- Space: fire a bubble.
+
+VS MECHANICS
+- Pop bubbles to send junk bubbles to your opponent.
+- 3-match = 1 junk, 4-match = 2 junk, 5+ match = 3 junk.
+- Dropping floating bubbles sends extra junk.
+- Junk bubbles appear as gray bubbles on top of your opponent's board.
+
+DIFFICULTY
+- Choose Easy, Medium, or Hard before the match.
+- Harder AI aims more accurately and shoots faster.
+
+WINNING
+- Your opponent's bubbles reach the danger line = you win.
+- Your bubbles reach the danger line = you lose.

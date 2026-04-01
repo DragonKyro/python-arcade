@@ -1,0 +1,22 @@
+ASTEROIDS
+
+Destroy asteroids and survive as long as possible.
+
+CONTROLS
+- Left/Right arrow: rotate your ship.
+- Up arrow: thrust forward.
+- Space: fire bullets.
+
+GAMEPLAY
+- Shoot asteroids to break them into smaller pieces.
+- Large asteroids split into medium, medium into small.
+- Small asteroids are destroyed completely.
+- Your ship wraps around screen edges.
+- Avoid colliding with asteroids — costs a life.
+
+SCORING
+- Large asteroid: 20 points.
+- Medium asteroid: 50 points.
+- Small asteroid: 100 points.
+
+You start with 3 lives. A new wave spawns when all asteroids are cleared.

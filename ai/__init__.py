@@ -9,3 +9,7 @@ from ai.backgammon_ai import BackgammonAI
 from ai.nim_ai import NimAI
 from ai.checkers_ai import CheckersAI
 from ai.pong_ai import PongAI
+from ai.liars_dice_ai import LiarsDiceAI
+from ai.tron_ai import TronAI
+from ai.tetris_ai import TetrisAI
+from ai.puzzle_bubble_ai import PuzzleBubbleAI

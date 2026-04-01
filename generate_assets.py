@@ -398,6 +398,162 @@ def icon_flappy_bird():
     _save(img, "flappy_bird.png")
 
 
+def icon_asteroids():
+    img, d = _new(BLACK)
+    # ship
+    d.polygon([(60, 80), (50, 60), (60, 65), (70, 60)], fill=WHITE)
+    # asteroids
+    d.polygon([(20, 30), (35, 20), (45, 30), (40, 45), (25, 45)], outline=GRAY, width=2)
+    d.polygon([(75, 40), (90, 35), (95, 50), (85, 55), (70, 50)], outline=GRAY, width=2)
+    d.polygon([(30, 80), (40, 75), (45, 85), (35, 95)], outline=GRAY, width=2)
+    # bullet
+    d.ellipse([58, 48, 62, 52], fill=WHITE)
+    _save(img, "asteroids.png")
+
+
+def icon_liars_dice():
+    img, d = _new()
+    # dice
+    for i, (dx, dy) in enumerate([(25, 35), (55, 30), (85, 40), (40, 70), (70, 65)]):
+        d.rectangle([dx, dy, dx + 20, dy + 20], fill=WHITE, outline=BLACK)
+        # pips
+        d.ellipse([dx + 8, dy + 8, dx + 12, dy + 12], fill=BLACK)
+    # question mark for hidden dice
+    d.text((45, 10), "?!", fill=YELLOW, font=_font(20))
+    _save(img, "liars_dice.png")
+
+
+def icon_tron():
+    img, d = _new(BLACK)
+    # trails
+    path1 = [(20, 100), (20, 50), (60, 50), (60, 30)]
+    path2 = [(100, 20), (100, 70), (50, 70), (50, 90)]
+    for i in range(len(path1) - 1):
+        d.line([path1[i], path1[i + 1]], fill=(0, 255, 255), width=4)
+    for i in range(len(path2) - 1):
+        d.line([path2[i], path2[i + 1]], fill=RED, width=4)
+    # heads
+    d.ellipse([56, 26, 64, 34], fill=(0, 255, 255))
+    d.ellipse([46, 86, 54, 94], fill=RED)
+    _save(img, "tron.png")
+
+
+def icon_fifteen_puzzle():
+    img, d = _new()
+    cell = 24
+    gap = 3
+    off = 12
+    nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
+    colors = [BLUE, BLUE, BLUE, BLUE, GREEN, GREEN, GREEN, GREEN,
+              ORANGE, ORANGE, ORANGE, ORANGE, RED, RED, RED, GRAY]
+    small = _font(11)
+    for i, n in enumerate(nums):
+        r, c = divmod(i, 4)
+        x = off + c * (cell + gap)
+        y = off + r * (cell + gap)
+        if n == 0:
+            d.rectangle([x, y, x + cell, y + cell], fill=(40, 40, 40))
+        else:
+            d.rectangle([x, y, x + cell, y + cell], fill=colors[i], outline=WHITE)
+            d.text((x + 5, y + 5), str(n), fill=WHITE, font=small)
+    _save(img, "fifteen_puzzle.png")
+
+
+def icon_peg_solitaire():
+    img, d = _new()
+    # Draw cross-shaped board with pegs
+    valid = set()
+    for r in range(7):
+        for c in range(7):
+            if (r < 2 or r > 4) and (c < 2 or c > 4):
+                continue
+            valid.add((r, c))
+    for r, c in valid:
+        x = 15 + c * 14
+        y = 12 + r * 14
+        if (r, c) == (3, 3):
+            d.ellipse([x, y, x + 10, y + 10], outline=GRAY, width=1)
+        else:
+            d.ellipse([x, y, x + 10, y + 10], fill=BLUE, outline=WHITE)
+    _save(img, "peg_solitaire.png")
+
+
+def icon_breakout():
+    img, d = _new(BLACK)
+    # bricks
+    colors_b = [RED, RED, ORANGE, ORANGE, GREEN, GREEN, YELLOW, YELLOW]
+    for row in range(8):
+        for col in range(6):
+            x = 10 + col * 17
+            y = 10 + row * 8
+            d.rectangle([x, y, x + 15, y + 6], fill=colors_b[row])
+    # paddle
+    d.rectangle([40, 100, 80, 106], fill=WHITE)
+    # ball
+    d.ellipse([58, 90, 64, 96], fill=WHITE)
+    _save(img, "breakout.png")
+
+
+def icon_puzzle_bubble():
+    img, d = _new((20, 20, 40))
+    # bubbles in hex grid
+    colors_pb = [RED, BLUE, GREEN, YELLOW, PURPLE, ORANGE]
+    r = 10
+    for row in range(4):
+        offset = 7 if row % 2 == 1 else 0
+        for col in range(5):
+            x = 15 + offset + col * 22
+            y = 15 + row * 19
+            c = colors_pb[(row + col) % len(colors_pb)]
+            d.ellipse([x, y, x + r * 2, y + r * 2], fill=c, outline=WHITE)
+    # shooter
+    d.polygon([(55, 105), (60, 90), (65, 105)], fill=GRAY, outline=WHITE)
+    # aim line
+    d.line([(60, 90), (45, 60)], fill=WHITE, width=1)
+    _save(img, "puzzle_bubble.png")
+
+
+def icon_tetris_vs():
+    img, d = _new(BLACK)
+    # Two small boards side by side
+    colors_t = [RED, BLUE, GREEN, YELLOW, PURPLE, ORANGE]
+    # Left board
+    for i in range(6):
+        x = 8 + (i % 3) * 12
+        y = 60 + (i // 3) * 12
+        d.rectangle([x, y, x + 10, y + 10], fill=colors_t[i], outline=(40, 40, 40))
+    # Right board
+    for i in range(6):
+        x = 68 + (i % 3) * 12
+        y = 55 + (i // 3) * 12
+        d.rectangle([x, y, x + 10, y + 10], fill=colors_t[(i + 3) % 6], outline=(40, 40, 40))
+    # VS text
+    d.text((42, 35), "VS", fill=RED, font=_font(22))
+    # Board borders
+    d.rectangle([5, 20, 50, 100], outline=WHITE, width=1)
+    d.rectangle([65, 20, 110, 100], outline=WHITE, width=1)
+    _save(img, "tetris_vs.png")
+
+
+def icon_puzzle_bubble_vs():
+    img, d = _new((20, 20, 40))
+    # Two boards with bubbles
+    for bx in [10, 70]:
+        for row in range(3):
+            offset = 5 if row % 2 == 1 else 0
+            for col in range(3):
+                x = bx + offset + col * 14
+                y = 15 + row * 12
+                c = [RED, BLUE, GREEN, YELLOW][((row + col) * 3 + bx) % 4]
+                d.ellipse([x, y, x + 10, y + 10], fill=c, outline=WHITE)
+    # VS text
+    d.text((42, 40), "VS", fill=RED, font=_font(20))
+    # Shooters
+    d.polygon([(25, 100), (30, 85), (35, 100)], fill=GRAY)
+    d.polygon([(85, 100), (90, 85), (95, 100)], fill=GRAY)
+    _save(img, "puzzle_bubble_vs.png")
+
+
 # ── UI Assets ────────────────────────────────────────────────────────
 
 def ui_help():
@@ -459,6 +615,15 @@ def main():
     icon_space_invaders()
     icon_frogger()
     icon_flappy_bird()
+    icon_asteroids()
+    icon_liars_dice()
+    icon_tron()
+    icon_fifteen_puzzle()
+    icon_peg_solitaire()
+    icon_breakout()
+    icon_puzzle_bubble()
+    icon_tetris_vs()
+    icon_puzzle_bubble_vs()
 
     print("Generating UI assets...")
     ui_help()

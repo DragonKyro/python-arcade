@@ -1,0 +1,23 @@
+TETRIS VS
+
+Compete head-to-head against the computer in split-screen Tetris.
+
+CONTROLS
+- Left/Right arrow: move piece sideways.
+- Down arrow: soft drop.
+- Up arrow: rotate clockwise.
+- Space: hard drop.
+
+VS MECHANICS
+- Clear 2+ lines at once to send garbage lines to your opponent.
+- 2 lines = 1 garbage, 3 lines = 2 garbage, 4 lines (Tetris) = 4 garbage.
+- Garbage lines appear at the bottom with one random gap.
+- Your opponent plays by the same rules.
+
+DIFFICULTY
+- Choose Easy, Medium, or Hard before the match.
+- Harder AI plays faster and makes smarter placement decisions.
+
+WINNING
+- Your opponent tops out (pieces stack past the top) = you win.
+- You top out = you lose.

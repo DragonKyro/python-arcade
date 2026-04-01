@@ -1,0 +1,22 @@
+BREAKOUT
+
+Destroy all bricks by bouncing a ball off your paddle.
+
+CONTROLS
+- Move your paddle with the mouse (or Left/Right arrow keys).
+- Click or press Space to launch the ball.
+
+GAMEPLAY
+- The ball bounces off walls, the paddle, and bricks.
+- Each brick hit destroys the brick and scores points.
+- Different colored bricks are worth different points.
+- The ball speeds up slightly as bricks are cleared.
+- If the ball falls below your paddle, you lose a life.
+
+SCORING
+- Red bricks: 10 points.
+- Orange bricks: 20 points.
+- Green bricks: 30 points.
+- Yellow bricks: 50 points.
+
+You start with 3 lives. Clear all bricks to advance to the next level.

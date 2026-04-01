@@ -1,0 +1,21 @@
+PUZZLE BUBBLE (BUST-A-MOVE)
+
+Shoot colored bubbles to match 3 or more and clear the board.
+
+CONTROLS
+- Left/Right arrow: aim the shooter.
+- Space: fire a bubble.
+
+GAMEPLAY
+- A bubble launches from the bottom center in the aimed direction.
+- The bubble sticks where it hits other bubbles or the top wall.
+- When 3 or more bubbles of the same color connect, they pop.
+- Any bubbles hanging without a path to the top also fall.
+
+SCORING
+- Points for each bubble popped.
+- Bonus for chain reactions (falling disconnected clusters).
+
+GAME OVER
+- The game ends if bubbles reach the bottom of the screen.
+- Clear all bubbles to win the level.
