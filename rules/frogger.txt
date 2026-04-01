@@ -1,0 +1,22 @@
+FROGGER
+
+Guide your frog across busy roads and a river to reach home.
+
+CONTROLS
+- Arrow keys to hop: Up, Down, Left, Right.
+- Each press moves the frog one step.
+
+ROAD (bottom half)
+- Dodge cars and trucks moving across the lanes.
+- Getting hit costs a life.
+
+RIVER (top half)
+- Jump onto logs and turtles to cross the water.
+- Falling in the water costs a life.
+- Ride logs and turtles as they move sideways.
+
+WINNING
+- Reach one of the home spots at the top.
+- Fill all home spots to complete the level.
+
+You start with 3 lives. There is a time limit for each frog.

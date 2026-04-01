@@ -1,0 +1,17 @@
+FLAPPY BIRD
+
+Tap to fly through as many pipe gaps as possible.
+
+CONTROLS
+- Press Space or click the mouse to flap.
+- Each flap gives a small upward boost.
+- Gravity pulls the bird down constantly.
+
+GAMEPLAY
+- Pipes scroll from right to left with gaps to fly through.
+- Each pipe pair you pass scores 1 point.
+- The gap size and speed stay consistent — it's all about timing.
+
+GAME OVER
+- Hitting a pipe or the ground ends the game.
+- Try to beat your high score!

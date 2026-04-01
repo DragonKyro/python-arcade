@@ -1,0 +1,21 @@
+TETRIS
+
+Stack falling blocks to clear lines and survive as long as possible.
+
+CONTROLS
+- Left/Right arrow: move piece sideways.
+- Down arrow: soft drop (faster fall).
+- Up arrow: rotate piece clockwise.
+- Space: hard drop (instant drop to bottom).
+
+SCORING
+- Clear 1 line: 100 points.
+- Clear 2 lines: 300 points.
+- Clear 3 lines: 500 points.
+- Clear 4 lines (Tetris!): 800 points.
+
+LEVELS
+- Every 10 lines cleared, the level increases and pieces fall faster.
+
+GAME OVER
+- The game ends when new pieces can no longer fit on the board.

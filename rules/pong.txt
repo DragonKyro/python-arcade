@@ -1,0 +1,16 @@
+PONG
+
+Classic paddle game — score 10 points to win.
+
+HOW TO PLAY
+- Move your paddle with W (up) and S (down), or the Up/Down arrow keys.
+- The ball bounces off the top and bottom walls and off paddles.
+- Score a point when the ball passes your opponent's paddle.
+
+DIFFICULTY
+- Click Easy, Medium, or Hard before the game starts.
+- Easy: AI reacts slowly and makes mistakes.
+- Medium: AI tracks the ball with moderate speed.
+- Hard: AI is fast and precise, but not perfect.
+
+First to 10 points wins!

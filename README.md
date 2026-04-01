@@ -1,6 +1,6 @@
 # Python Arcade
 
-A collection of classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles and AI-opponent board games, all playable from a single launcher.
+A collection of classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, and retro arcade classics, all playable from a single launcher.
 
 ## Games
 
@@ -22,6 +22,11 @@ A collection of classic games built with the [Python Arcade](https://api.arcade.
 | Checkers | Board game | Minimax + alpha-beta |
 | Wordle | Word puzzle | - |
 | Sudoku | Number puzzle | - |
+| Pong | Arcade | Difficulty-scaled |
+| Tetris | Arcade | - |
+| Space Invaders | Arcade | - |
+| Frogger | Arcade | - |
+| Flappy Bird | Arcade | - |
 
 ## Getting Started
 
@@ -46,6 +51,10 @@ pages/               UI screens (home menu, game selection, rules)
 games/               Game views (one file per game)
 ai/                  AI logic (pure Python, no UI dependencies)
 rules/               Game rules text files
+assets/              Generated PNG icons and sprites
+  icons/             Game selection icons (120x120)
+  ui/                Shared UI icons
+generate_assets.py   Regenerate all assets (requires Pillow)
 ```
 
 ## Adding a New Game
@@ -53,6 +62,7 @@ rules/               Game rules text files
 1. Create `games/your_game.py` with a `YourGameView(arcade.View)` class that accepts a `menu_view` parameter
 2. If AI-based, create `ai/your_game_ai.py` with pure game logic
 3. Create `rules/your_game.txt` with game instructions
-4. Register it in `games/__init__.py` by adding to `GAME_LIST` as `(name, ViewClass, "rules_file.txt")`
+4. Add an icon: create a function in `generate_assets.py` and run it, or add a 120x120 PNG to `assets/icons/`
+5. Register it in `games/__init__.py` by adding to `GAME_LIST` as `(name, ViewClass, "rules.txt", "icon.png")`
 
 The game selection screen auto-populates from the registry. Selecting a game shows its rules first, with a Play button to launch. Each game also has a "?" button to re-read rules mid-game.

@@ -1,3 +1,4 @@
+import os
 import arcade
 from pages.components import Button
 from games import GAME_LIST
@@ -5,13 +6,14 @@ from games import GAME_LIST
 WIDTH = 800
 HEIGHT = 600
 TOP_BAR_HEIGHT = 100
+ICONS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "icons")
 
 
 class GamesView(arcade.View):
     def __init__(self):
         super().__init__()
         self.view_mode = "list"
-        self.scroll_y = 0  # scroll offset (positive = scrolled down)
+        self.scroll_y = 0
 
         self.back_button = Button(
             80, HEIGHT - 40, 120, 50, "Back", color=arcade.color.DARK_SLATE_BLUE
@@ -24,6 +26,13 @@ class GamesView(arcade.View):
             "View: List",
             color=arcade.color.DARK_SLATE_BLUE,
         )
+
+        # Pre-load icon textures
+        self.icon_textures = {}
+        for name, _, _, icon_file in GAME_LIST:
+            path = os.path.join(ICONS_DIR, icon_file)
+            if os.path.exists(path):
+                self.icon_textures[name] = arcade.load_texture(path)
 
         self.game_buttons = []
         self.game_entries = []  # (view_class, rules_file, display_name)
@@ -41,7 +50,7 @@ class GamesView(arcade.View):
             total_height = len(GAME_LIST) * btn_h + (len(GAME_LIST) - 1) * spacing
             available = HEIGHT - TOP_BAR_HEIGHT
             start_y = available / 2 + total_height / 2 - btn_h / 2
-            for i, (name, view_cls, rules_file) in enumerate(GAME_LIST):
+            for i, (name, view_cls, rules_file, _icon) in enumerate(GAME_LIST):
                 cy = start_y - i * (btn_h + spacing)
                 btn = Button(
                     WIDTH / 2, cy, btn_w, btn_h, name,
@@ -51,21 +60,23 @@ class GamesView(arcade.View):
                 self.game_entries.append((view_cls, rules_file, name))
         else:
             icon_size = 120
-            spacing = 20
+            label_height = 22
+            cell_height = icon_size + label_height
+            spacing = 16
             cols = 4
             rows = (len(GAME_LIST) + cols - 1) // cols
             total_w = cols * icon_size + (cols - 1) * spacing
-            total_h = rows * icon_size + (rows - 1) * spacing
+            total_h = rows * cell_height + (rows - 1) * spacing
             available = HEIGHT - TOP_BAR_HEIGHT
             start_x = WIDTH / 2 - total_w / 2 + icon_size / 2
-            start_y = available / 2 + total_h / 2 - icon_size / 2
-            for i, (name, view_cls, rules_file) in enumerate(GAME_LIST):
+            start_y = available / 2 + total_h / 2 - cell_height / 2
+            for i, (name, view_cls, rules_file, _icon) in enumerate(GAME_LIST):
                 col = i % cols
                 row = i // cols
                 cx = start_x + col * (icon_size + spacing)
-                cy = start_y - row * (icon_size + spacing)
+                cy = start_y - row * (cell_height + spacing) + label_height / 2
                 btn = Button(
-                    cx, cy, icon_size, icon_size, name,
+                    cx, cy, icon_size, cell_height, name,
                     color=arcade.color.DARK_SLATE_BLUE,
                 )
                 self.game_buttons.append(btn)
@@ -85,26 +96,51 @@ class GamesView(arcade.View):
     def on_draw(self):
         self.clear()
 
-        # Draw scrollable game buttons
-        for btn in self.game_buttons:
-            # Offset by scroll, skip if above top bar or below screen
+        for idx, btn in enumerate(self.game_buttons):
             draw_y = btn.center_y + self.scroll_y
             if draw_y + btn.height / 2 < 0 or draw_y - btn.height / 2 > HEIGHT - TOP_BAR_HEIGHT:
                 continue
-            # Temporarily shift for drawing
-            orig_y = btn.center_y
-            btn.center_y = draw_y
-            btn.draw()
-            btn.center_y = orig_y
 
-        # Draw top bar background over scrolled content
-        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT - TOP_BAR_HEIGHT / 2, WIDTH, TOP_BAR_HEIGHT), arcade.color.AMAZON, )
+            name = self.game_entries[idx][2]
+
+            if self.view_mode == "icons" and name in self.icon_textures:
+                # Draw icon card: background + texture + label
+                arcade.draw_rect_filled(
+                    arcade.XYWH(btn.center_x, draw_y, btn.width, btn.height),
+                    arcade.color.DARK_SLATE_BLUE,
+                )
+                arcade.draw_rect_outline(
+                    arcade.XYWH(btn.center_x, draw_y, btn.width, btn.height),
+                    arcade.color.WHITE,
+                )
+                tex = self.icon_textures[name]
+                icon_y = draw_y + 11
+                arcade.draw_texture_rect(
+                    tex,
+                    arcade.XYWH(btn.center_x, icon_y, btn.width - 8, btn.width - 8),
+                )
+                label_y = draw_y - btn.height / 2 + 12
+                arcade.draw_text(
+                    name, btn.center_x, label_y,
+                    arcade.color.WHITE, font_size=11,
+                    anchor_x="center", anchor_y="center",
+                )
+            else:
+                # List mode: regular button
+                orig_y = btn.center_y
+                btn.center_y = draw_y
+                btn.draw()
+                btn.center_y = orig_y
+
+        # Top bar
+        arcade.draw_rect_filled(
+            arcade.XYWH(WIDTH / 2, HEIGHT - TOP_BAR_HEIGHT / 2, WIDTH, TOP_BAR_HEIGHT),
+            arcade.color.AMAZON,
+        )
         arcade.draw_text(
             "Select a Game",
-            WIDTH / 2,
-            HEIGHT - 70,
-            arcade.color.WHITE,
-            font_size=36,
+            WIDTH / 2, HEIGHT - 70,
+            arcade.color.WHITE, font_size=36,
             anchor_x="center",
         )
         self.back_button.draw()
@@ -122,12 +158,10 @@ class GamesView(arcade.View):
             self._build_game_list()
             return
 
-        # Don't register clicks in the top bar area
         if y > HEIGHT - TOP_BAR_HEIGHT:
             return
 
         for i, btn in enumerate(self.game_buttons):
-            # Adjust hit test for scroll offset
             shifted_y = btn.center_y + self.scroll_y
             if (
                 x >= btn.center_x - btn.width / 2

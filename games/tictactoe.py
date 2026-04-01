@@ -145,7 +145,6 @@ class TicTacToeView(arcade.View):
     # ------------------------------------------------------------------
     def on_draw(self):
         self.clear()
-        self.window.set_viewport(0, WIDTH, 0, HEIGHT)
 
         # Background
         arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), BG_COLOR)

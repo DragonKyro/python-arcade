@@ -1,0 +1,22 @@
+SPACE INVADERS
+
+Defend Earth by destroying waves of alien invaders.
+
+CONTROLS
+- Left/Right arrow: move your ship.
+- Space: fire a laser.
+
+GAMEPLAY
+- Aliens march sideways and drop down when they reach the edge.
+- Destroy all aliens to advance to the next wave.
+- Aliens speed up as fewer remain.
+- Aliens occasionally fire back — dodge their shots!
+- Shields provide temporary cover but degrade when hit.
+
+SCORING
+- Different alien rows are worth different points.
+- Bonus UFO occasionally flies across the top for extra points.
+
+GAME OVER
+- You lose if an alien reaches your ship's row or you lose all lives.
+- You start with 3 lives.

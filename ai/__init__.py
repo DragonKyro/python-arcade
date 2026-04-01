@@ -8,3 +8,4 @@ from ai.mancala_ai import MancalaAI
 from ai.backgammon_ai import BackgammonAI
 from ai.nim_ai import NimAI
 from ai.checkers_ai import CheckersAI
+from ai.pong_ai import PongAI
