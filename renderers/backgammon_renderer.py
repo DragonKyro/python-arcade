@@ -5,25 +5,52 @@ All arcade.draw_* calls for Backgammon are centralized here.
 
 import arcade
 
-from games.backgammon import (
-    WIDTH, HEIGHT,
-    BOARD_LEFT, BOARD_RIGHT, BOARD_TOP, BOARD_BOTTOM,
-    BOARD_WIDTH, BOARD_HEIGHT,
-    BAR_WIDTH, BAR_LEFT, BAR_RIGHT,
-    POINT_WIDTH, HALF_HEIGHT,
-    CHECKER_RADIUS, CHECKER_STACK_OFFSET,
-    BOARD_COLOR, DARK_POINT_COLOR, LIGHT_POINT_COLOR, BAR_COLOR,
-    PLAYER_COLOR, PLAYER_OUTLINE, AI_COLOR, AI_OUTLINE,
-    HIGHLIGHT_COLOR, VALID_DEST_COLOR,
-    STATE_PLAYER_ROLL, STATE_GAME_OVER,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Board layout
+BOARD_LEFT = 50
+BOARD_RIGHT = 750
+BOARD_TOP = 540
+BOARD_BOTTOM = 80
+BOARD_WIDTH = BOARD_RIGHT - BOARD_LEFT
+BOARD_HEIGHT = BOARD_TOP - BOARD_BOTTOM
+BAR_WIDTH = 40
+BAR_LEFT = (BOARD_LEFT + BOARD_RIGHT) // 2 - BAR_WIDTH // 2
+BAR_RIGHT = BAR_LEFT + BAR_WIDTH
+
+# Point (triangle) dimensions
+POINT_WIDTH = (BOARD_WIDTH - BAR_WIDTH) // 12
+HALF_HEIGHT = (BOARD_HEIGHT) // 2 - 10
+
+# Checker
+CHECKER_RADIUS = POINT_WIDTH // 2 - 2
+CHECKER_STACK_OFFSET = CHECKER_RADIUS * 1.8
+
+# Colors
+BG_COLOR = (40, 60, 40)
+BOARD_COLOR = (34, 100, 34)
+DARK_POINT_COLOR = (139, 69, 19)
+LIGHT_POINT_COLOR = (210, 180, 140)
+BAR_COLOR = (80, 50, 20)
+PLAYER_COLOR = (240, 240, 230)  # White
+PLAYER_OUTLINE = (200, 200, 190)
+AI_COLOR = (100, 60, 30)  # Brown
+AI_OUTLINE = (70, 40, 20)
+HIGHLIGHT_COLOR = (255, 255, 0, 120)
+VALID_DEST_COLOR = (0, 255, 0, 100)
+
+# Game states (needed by renderer for conditional drawing)
+STATE_PLAYER_ROLL = "player_roll"
+STATE_GAME_OVER = "game_over"
 
 
 def draw(game):
     """Render the entire Backgammon game state."""
     _draw_board_bg()
     _draw_points(game)
-    _draw_bar_area()
+    _draw_bar_area(game)
     _draw_checkers(game)
     _draw_bar_checkers(game)
     _draw_off_area(game)
@@ -103,33 +130,20 @@ def _draw_checkers(game):
         # Show count if more than 5
         if num > 5:
             cx, cy = game._checker_xy(i, display_count - 1)
-            arcade.draw_text(
-                str(num), cx, cy, arcade.color.BLACK,
-                font_size=11, anchor_x="center", anchor_y="center", bold=True,
-            )
+            txt = game.txt_checker_counts[i]
+            txt.text = str(num)
+            txt.x = cx
+            txt.y = cy
+            txt.draw()
 
     # Draw point numbers along edges for reference
     for i in range(24):
-        x, base_y, tip_y, is_top = game._point_tip_xy(i)
-        label = str(i + 1)
-        if is_top:
-            ly = BOARD_TOP + 10
-        else:
-            ly = BOARD_BOTTOM - 14
-        arcade.draw_text(
-            label, x, ly, (180, 180, 180),
-            font_size=9, anchor_x="center", anchor_y="center",
-        )
+        game.txt_point_labels[i].draw()
 
 
-def _draw_bar_area():
+def _draw_bar_area(game):
     """Draw the bar label."""
-    bar_cx = (BAR_LEFT + BAR_RIGHT) / 2
-    mid_y = (BOARD_BOTTOM + BOARD_TOP) / 2
-    arcade.draw_text(
-        "BAR", bar_cx, mid_y, (200, 200, 200),
-        font_size=10, anchor_x="center", anchor_y="center", bold=True,
-    )
+    game.txt_bar_label.draw()
 
 
 def _draw_bar_checkers(game):
@@ -158,15 +172,10 @@ def _draw_off_area(game):
     """Draw bearing off tray on the right side."""
     off_x = BOARD_RIGHT + 20
     # Player off (bottom)
-    arcade.draw_text(
-        "OFF", off_x, BOARD_BOTTOM + HALF_HEIGHT // 2, (200, 200, 200),
-        font_size=9, anchor_x="center", anchor_y="center",
-    )
+    game.txt_off_player_label.draw()
     if game.off[0] > 0:
-        arcade.draw_text(
-            str(game.off[0]), off_x, BOARD_BOTTOM + HALF_HEIGHT // 2 - 20, PLAYER_COLOR,
-            font_size=16, anchor_x="center", anchor_y="center", bold=True,
-        )
+        game.txt_off_player_count.text = str(game.off[0])
+        game.txt_off_player_count.draw()
         # Draw small stack
         for s in range(min(game.off[0], 5)):
             y = BOARD_BOTTOM + 10 + s * 12
@@ -174,15 +183,10 @@ def _draw_off_area(game):
             arcade.draw_rect_outline(arcade.XYWH(off_x, y, 20, 10), PLAYER_OUTLINE, 1)
 
     # AI off (top)
-    arcade.draw_text(
-        "OFF", off_x, BOARD_TOP - HALF_HEIGHT // 2, (200, 200, 200),
-        font_size=9, anchor_x="center", anchor_y="center",
-    )
+    game.txt_off_ai_label.draw()
     if game.off[1] > 0:
-        arcade.draw_text(
-            str(game.off[1]), off_x, BOARD_TOP - HALF_HEIGHT // 2 + 20, AI_COLOR,
-            font_size=16, anchor_x="center", anchor_y="center", bold=True,
-        )
+        game.txt_off_ai_count.text = str(game.off[1])
+        game.txt_off_ai_count.draw()
         for s in range(min(game.off[1], 5)):
             y = BOARD_TOP - 10 - s * 12
             arcade.draw_rect_filled(arcade.XYWH(off_x, y, 20, 10), AI_COLOR)
@@ -233,73 +237,55 @@ def _draw_dice_display(game):
 
         arcade.draw_rect_filled(arcade.XYWH(dx, dy, 36, 36), bg)
         arcade.draw_rect_outline(arcade.XYWH(dx, dy, 36, 36), (50, 50, 50), 2)
-        arcade.draw_text(
-            str(die_val), dx, dy, fg,
-            font_size=18, anchor_x="center", anchor_y="center", bold=True,
-        )
+
+        txt = game.txt_dice[idx]
+        txt.text = str(die_val)
+        txt.x = dx
+        txt.y = dy
+        txt.color = fg
+        txt.draw()
 
 
 def _draw_ui(game):
     """Draw buttons and labels."""
     # Title
-    arcade.draw_text(
-        "Backgammon", WIDTH / 2, HEIGHT - 20,
-        arcade.color.WHITE, font_size=22,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
+    game.txt_title.draw()
 
     # Back button
-    _draw_button(55, HEIGHT - 20, 90, 30, "Back", (60, 60, 100))
+    _draw_button(55, HEIGHT - 20, 90, 30, game.txt_btn_back, (60, 60, 100))
 
     # New Game button
-    _draw_button(WIDTH - 65, HEIGHT - 20, 110, 30, "New Game", (30, 100, 30))
+    _draw_button(WIDTH - 65, HEIGHT - 20, 110, 30, game.txt_btn_new_game, (30, 100, 30))
     # Help button
-    _draw_button(WIDTH - 135, HEIGHT - 20, 40, 30, "?", arcade.color.DARK_SLATE_BLUE)
+    _draw_button(WIDTH - 135, HEIGHT - 20, 40, 30, game.txt_btn_help, arcade.color.DARK_SLATE_BLUE)
 
     # Roll Dice button
     if game.state == STATE_PLAYER_ROLL:
-        _draw_button(WIDTH / 2, HEIGHT - 50, 120, 32, "Roll Dice", (150, 50, 50))
+        _draw_button(WIDTH / 2, HEIGHT - 50, 120, 32, game.txt_btn_roll_dice, (150, 50, 50))
 
     # Player / AI labels
-    arcade.draw_text(
-        "You (White)", BOARD_LEFT, BOARD_BOTTOM - 35,
-        PLAYER_COLOR, font_size=12, anchor_x="left", anchor_y="center",
-    )
-    arcade.draw_text(
-        "AI (Brown)", BOARD_LEFT, BOARD_TOP + 25,
-        AI_COLOR, font_size=12, anchor_x="left", anchor_y="center",
-    )
+    game.txt_label_player.draw()
+    game.txt_label_ai.draw()
 
     # Bar counts
-    bar_cx = (BAR_LEFT + BAR_RIGHT) / 2
     if game.bar[0] > 0:
-        arcade.draw_text(
-            f"W:{game.bar[0]}", bar_cx, BOARD_BOTTOM + 10, PLAYER_COLOR,
-            font_size=10, anchor_x="center", anchor_y="center",
-        )
+        game.txt_bar_player.text = f"W:{game.bar[0]}"
+        game.txt_bar_player.draw()
     if game.bar[1] > 0:
-        arcade.draw_text(
-            f"B:{game.bar[1]}", bar_cx, BOARD_TOP - 10, AI_COLOR,
-            font_size=10, anchor_x="center", anchor_y="center",
-        )
+        game.txt_bar_ai.text = f"B:{game.bar[1]}"
+        game.txt_bar_ai.draw()
 
 
 def _draw_message(game):
     """Draw status message at the bottom."""
-    arcade.draw_text(
-        game.message, WIDTH / 2, 25,
-        arcade.color.WHITE, font_size=13,
-        anchor_x="center", anchor_y="center",
-    )
+    game.txt_message.text = game.message
+    game.txt_message.draw()
 
 
-def _draw_button(cx, cy, w, h, text, color):
+def _draw_button(cx, cy, w, h, txt_obj, color):
     arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
     arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE, 1)
-    arcade.draw_text(
-        text, cx, cy, arcade.color.WHITE,
-        font_size=13, anchor_x="center", anchor_y="center",
-    )
+    txt_obj.draw()
 
 
 def _draw_game_over(game):
@@ -311,13 +297,9 @@ def _draw_game_over(game):
     else:
         msg = "AI Wins!"
         color = arcade.color.LIGHT_CORAL
-    arcade.draw_text(
-        msg, WIDTH / 2, HEIGHT / 2 + 15,
-        color, font_size=26, anchor_x="center", anchor_y="center", bold=True,
-    )
-    arcade.draw_text(
-        "Click 'New Game' to play again.",
-        WIDTH / 2, HEIGHT / 2 - 25,
-        arcade.color.LIGHT_GRAY, font_size=14,
-        anchor_x="center", anchor_y="center",
-    )
+
+    game.txt_game_over_msg.text = msg
+    game.txt_game_over_msg.color = color
+    game.txt_game_over_msg.draw()
+
+    game.txt_game_over_hint.draw()

@@ -7,7 +7,6 @@ AI = Brown checkers, moves points 1->24 (board indices 0->23)
 
 import arcade
 import random
-import time
 
 from pages.rules import RulesView
 from ai.backgammon_ai import (
@@ -15,42 +14,15 @@ from ai.backgammon_ai import (
     _single_die_moves, _apply_single_move, _all_in_home,
     PLAYER, AI,
 )
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Board layout
-BOARD_LEFT = 50
-BOARD_RIGHT = 750
-BOARD_TOP = 540
-BOARD_BOTTOM = 80
-BOARD_WIDTH = BOARD_RIGHT - BOARD_LEFT
-BOARD_HEIGHT = BOARD_TOP - BOARD_BOTTOM
-BAR_WIDTH = 40
-BAR_LEFT = (BOARD_LEFT + BOARD_RIGHT) // 2 - BAR_WIDTH // 2
-BAR_RIGHT = BAR_LEFT + BAR_WIDTH
-
-# Point (triangle) dimensions
-POINT_WIDTH = (BOARD_WIDTH - BAR_WIDTH) // 12
-HALF_HEIGHT = (BOARD_HEIGHT) // 2 - 10
-
-# Checker
-CHECKER_RADIUS = POINT_WIDTH // 2 - 2
-CHECKER_STACK_OFFSET = CHECKER_RADIUS * 1.8
-
-# Colors
-BG_COLOR = (40, 60, 40)
-BOARD_COLOR = (34, 100, 34)
-DARK_POINT_COLOR = (139, 69, 19)
-LIGHT_POINT_COLOR = (210, 180, 140)
-BAR_COLOR = (80, 50, 20)
-PLAYER_COLOR = (240, 240, 230)  # White
-PLAYER_OUTLINE = (200, 200, 190)
-AI_COLOR = (100, 60, 30)  # Brown
-AI_OUTLINE = (70, 40, 20)
-HIGHLIGHT_COLOR = (255, 255, 0, 120)
-VALID_DEST_COLOR = (0, 255, 0, 100)
+from renderers.backgammon_renderer import (
+    WIDTH, HEIGHT,
+    BOARD_LEFT, BOARD_RIGHT, BOARD_TOP, BOARD_BOTTOM,
+    BAR_LEFT, BAR_RIGHT,
+    POINT_WIDTH, HALF_HEIGHT,
+    CHECKER_RADIUS, CHECKER_STACK_OFFSET,
+    BG_COLOR,
+    PLAYER_COLOR, AI_COLOR,
+)
 
 # Game states
 STATE_PLAYER_ROLL = "player_roll"
@@ -64,7 +36,163 @@ class BackgammonView(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.ai = BackgammonAI()
+        self._create_texts()
         self.reset_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        bar_cx = (BAR_LEFT + BAR_RIGHT) / 2
+        off_x = BOARD_RIGHT + 20
+
+        # Title (static)
+        self.txt_title = arcade.Text(
+            "Backgammon", WIDTH / 2, HEIGHT - 20,
+            arcade.color.WHITE, font_size=22,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Button labels (static)
+        self.txt_btn_back = arcade.Text(
+            "Back", 55, HEIGHT - 20, arcade.color.WHITE,
+            font_size=13, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_new_game = arcade.Text(
+            "New Game", WIDTH - 65, HEIGHT - 20, arcade.color.WHITE,
+            font_size=13, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_help = arcade.Text(
+            "?", WIDTH - 135, HEIGHT - 20, arcade.color.WHITE,
+            font_size=13, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_roll_dice = arcade.Text(
+            "Roll Dice", WIDTH / 2, HEIGHT - 50, arcade.color.WHITE,
+            font_size=13, anchor_x="center", anchor_y="center",
+        )
+
+        # Player/AI side labels (static)
+        self.txt_label_player = arcade.Text(
+            "You (White)", BOARD_LEFT, BOARD_BOTTOM - 35,
+            PLAYER_COLOR, font_size=12, anchor_x="left", anchor_y="center",
+        )
+        self.txt_label_ai = arcade.Text(
+            "AI (Brown)", BOARD_LEFT, BOARD_TOP + 25,
+            AI_COLOR, font_size=12, anchor_x="left", anchor_y="center",
+        )
+
+        # Bar label (static)
+        mid_y = (BOARD_BOTTOM + BOARD_TOP) / 2
+        self.txt_bar_label = arcade.Text(
+            "BAR", bar_cx, mid_y, (200, 200, 200),
+            font_size=10, anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Bar counts (dynamic)
+        self.txt_bar_player = arcade.Text(
+            "", bar_cx, BOARD_BOTTOM + 10, PLAYER_COLOR,
+            font_size=10, anchor_x="center", anchor_y="center",
+        )
+        self.txt_bar_ai = arcade.Text(
+            "", bar_cx, BOARD_TOP - 10, AI_COLOR,
+            font_size=10, anchor_x="center", anchor_y="center",
+        )
+
+        # Off area labels (static)
+        self.txt_off_player_label = arcade.Text(
+            "OFF", off_x, BOARD_BOTTOM + HALF_HEIGHT // 2, (200, 200, 200),
+            font_size=9, anchor_x="center", anchor_y="center",
+        )
+        self.txt_off_ai_label = arcade.Text(
+            "OFF", off_x, BOARD_TOP - HALF_HEIGHT // 2, (200, 200, 200),
+            font_size=9, anchor_x="center", anchor_y="center",
+        )
+
+        # Off counts (dynamic)
+        self.txt_off_player_count = arcade.Text(
+            "", off_x, BOARD_BOTTOM + HALF_HEIGHT // 2 - 20, PLAYER_COLOR,
+            font_size=16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_off_ai_count = arcade.Text(
+            "", off_x, BOARD_TOP - HALF_HEIGHT // 2 + 20, AI_COLOR,
+            font_size=16, anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Point number labels (static)
+        self.txt_point_labels = []
+        for i in range(24):
+            x, base_y, tip_y, is_top = self._point_tip_xy_static(i)
+            if is_top:
+                ly = BOARD_TOP + 10
+            else:
+                ly = BOARD_BOTTOM - 14
+            self.txt_point_labels.append(
+                arcade.Text(str(i + 1), x, ly, (180, 180, 180),
+                            font_size=9, anchor_x="center", anchor_y="center")
+            )
+
+        # Checker count labels for stacks > 5 (dynamic, reusable pool)
+        # We'll create 24 of them (one per point max)
+        self.txt_checker_counts = []
+        for _ in range(24):
+            self.txt_checker_counts.append(
+                arcade.Text("", 0, 0, arcade.color.BLACK,
+                            font_size=11, anchor_x="center", anchor_y="center", bold=True)
+            )
+
+        # Dice value labels (dynamic, up to 4 dice)
+        self.txt_dice = []
+        for _ in range(4):
+            self.txt_dice.append(
+                arcade.Text("", 0, 0, arcade.color.BLACK,
+                            font_size=18, anchor_x="center", anchor_y="center", bold=True)
+            )
+
+        # Status message (dynamic)
+        self.txt_message = arcade.Text(
+            "", WIDTH / 2, 25,
+            arcade.color.WHITE, font_size=13,
+            anchor_x="center", anchor_y="center",
+        )
+
+        # Game over texts (dynamic)
+        self.txt_game_over_msg = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 + 15,
+            arcade.color.WHITE, font_size=26,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' to play again.",
+            WIDTH / 2, HEIGHT / 2 - 25,
+            arcade.color.LIGHT_GRAY, font_size=14,
+            anchor_x="center", anchor_y="center",
+        )
+
+    def _point_tip_xy_static(self, point_index):
+        """Static version of _point_tip_xy for use before reset_game."""
+        # Duplicate logic from _point_tip_xy for Text creation in __init__
+        if point_index < 6:
+            col = 5 - point_index
+            x = BAR_RIGHT + col * POINT_WIDTH + POINT_WIDTH // 2
+            y = BOARD_BOTTOM
+            tip_y = BOARD_BOTTOM + HALF_HEIGHT
+            return x, y, tip_y, False
+        elif point_index < 12:
+            col = 11 - point_index
+            x = BOARD_LEFT + col * POINT_WIDTH + POINT_WIDTH // 2
+            y = BOARD_BOTTOM
+            tip_y = BOARD_BOTTOM + HALF_HEIGHT
+            return x, y, tip_y, False
+        elif point_index < 18:
+            col = point_index - 12
+            x = BOARD_LEFT + col * POINT_WIDTH + POINT_WIDTH // 2
+            y = BOARD_TOP
+            tip_y = BOARD_TOP - HALF_HEIGHT
+            return x, y, tip_y, True
+        else:
+            col = point_index - 18
+            x = BAR_RIGHT + col * POINT_WIDTH + POINT_WIDTH // 2
+            y = BOARD_TOP
+            tip_y = BOARD_TOP - HALF_HEIGHT
+            return x, y, tip_y, True
 
     def reset_game(self):
         self.board, self.bar, self.off = initial_board()
@@ -433,10 +561,15 @@ if __name__ == "__main__":
     window = arcade.Window(WIDTH, HEIGHT, "Backgammon")
 
     class DummyMenu(arcade.View):
+        def __init__(self):
+            super().__init__()
+            self.txt_placeholder = arcade.Text(
+                "Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
+                arcade.color.WHITE, 20, anchor_x="center")
+
         def on_draw(self):
             self.clear()
-            arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
-                             arcade.color.WHITE, 20, anchor_x="center")
+            self.txt_placeholder.draw()
 
     menu = DummyMenu()
     game = BackgammonView(menu)

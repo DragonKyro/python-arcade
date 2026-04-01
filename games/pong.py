@@ -79,15 +79,15 @@ class _Button:
         color = self.hover_color if hover else self.color
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), WHITE, 2)
-        arcade.draw_text(
-            self.label,
-            self.cx,
-            self.cy,
-            self.text_color,
-            font_size=self.font_size,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        if not hasattr(self, '_txt_label'):
+            self._txt_label = arcade.Text(
+                self.label, self.cx, self.cy, self.text_color,
+                font_size=self.font_size, anchor_x="center", anchor_y="center",
+            )
+        self._txt_label.text = self.label
+        self._txt_label.x = self.cx
+        self._txt_label.y = self.cy
+        self._txt_label.draw()
 
 
 class PongView(arcade.View):
@@ -120,7 +120,41 @@ class PongView(arcade.View):
         self.move_up = False
         self.move_down = False
 
+        # Pre-created Text objects for renderer
+        self._create_texts()
+
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        self.txt_player_score = arcade.Text(
+            "", WIDTH / 4, PLAY_HEIGHT - 50, WHITE,
+            font_size=36, anchor_x="center", anchor_y="center",
+        )
+        self.txt_ai_score = arcade.Text(
+            "", 3 * WIDTH / 4, PLAY_HEIGHT - 50, WHITE,
+            font_size=36, anchor_x="center", anchor_y="center",
+        )
+        self.txt_title = arcade.Text(
+            "PONG", WIDTH / 2, HEIGHT / 2 + 100, WHITE,
+            font_size=48, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_select_difficulty = arcade.Text(
+            "Select Difficulty", WIDTH / 2, HEIGHT / 2 + 50, GRAY,
+            font_size=20, anchor_x="center", anchor_y="center",
+        )
+        self.txt_serve = arcade.Text(
+            "Get Ready...", WIDTH / 2, PLAY_HEIGHT / 2, GRAY,
+            font_size=24, anchor_x="center", anchor_y="center",
+        )
+        self.txt_winner = arcade.Text(
+            "", WIDTH / 2, PLAY_HEIGHT / 2 + 40, WHITE,
+            font_size=42, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_final_score = arcade.Text(
+            "", WIDTH / 2, PLAY_HEIGHT / 2, GRAY,
+            font_size=24, anchor_x="center", anchor_y="center",
+        )
 
     def _init_game(self):
         """Reset all game state (but not difficulty selection)."""

@@ -5,13 +5,40 @@ All arcade.draw_* calls for Snake live here.
 
 import arcade
 
-from games.snake import (
-    WIDTH, HEIGHT, TOP_BAR_HEIGHT, CELL_SIZE,
-    GRID_COLS, GRID_ROWS, GRID_ORIGIN_X, GRID_ORIGIN_Y,
-    GRID_LINE_COLOR, FOOD_COLOR, SNAKE_HEAD_COLOR, SNAKE_BODY_COLOR,
-    LINE_COLOR, BG_COLOR, OVERLAY_COLOR, SCORE_COLOR, STATUS_TEXT_COLOR,
-    _cell_to_screen,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Layout
+TOP_BAR_HEIGHT = 50
+CELL_SIZE = 25
+
+# Grid dimensions (play area below top bar)
+GRID_COLS = WIDTH // CELL_SIZE
+GRID_ROWS = (HEIGHT - TOP_BAR_HEIGHT) // CELL_SIZE
+GRID_ORIGIN_X = (WIDTH - GRID_COLS * CELL_SIZE) // 2
+GRID_ORIGIN_Y = (HEIGHT - TOP_BAR_HEIGHT - GRID_ROWS * CELL_SIZE) // 2
+
+# Colors (Catppuccin-ish palette to match other games)
+BG_COLOR = (30, 30, 46)
+GRID_LINE_COLOR = (45, 45, 65)
+SNAKE_HEAD_COLOR = (64, 160, 64)
+SNAKE_BODY_COLOR = (116, 199, 116)
+FOOD_COLOR = (243, 139, 168)
+LINE_COLOR = (205, 214, 244)
+BUTTON_COLOR = (69, 71, 90)
+BUTTON_HOVER_COLOR = (88, 91, 112)
+BUTTON_TEXT_COLOR = (205, 214, 244)
+OVERLAY_COLOR = (30, 30, 46, 200)
+STATUS_TEXT_COLOR = (205, 214, 244)
+SCORE_COLOR = (249, 226, 175)
+
+
+def _cell_to_screen(col, row):
+    """Convert grid (col, row) to screen center (x, y)."""
+    x = GRID_ORIGIN_X + col * CELL_SIZE + CELL_SIZE // 2
+    y = GRID_ORIGIN_Y + row * CELL_SIZE + CELL_SIZE // 2
+    return x, y
 
 
 def draw(game):
@@ -77,24 +104,10 @@ def _draw_top_bar(game):
     )
     arcade.draw_line(0, HEIGHT - TOP_BAR_HEIGHT, WIDTH, HEIGHT - TOP_BAR_HEIGHT, LINE_COLOR, 2)
 
-    arcade.draw_text(
-        f"Score: {game.score}",
-        WIDTH // 2 - 80,
-        HEIGHT - 33,
-        SCORE_COLOR,
-        font_size=16,
-        anchor_x="center",
-        anchor_y="center",
-    )
-    arcade.draw_text(
-        f"High: {game.high_score}",
-        WIDTH // 2 + 80,
-        HEIGHT - 33,
-        STATUS_TEXT_COLOR,
-        font_size=16,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_score.text = f"Score: {game.score}"
+    game.txt_score.draw()
+    game.txt_high_score.text = f"High: {game.high_score}"
+    game.txt_high_score.draw()
 
 
 def _draw_buttons(game):
@@ -113,31 +126,7 @@ def _draw_game_over_overlay(game):
         arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT),
         OVERLAY_COLOR,
     )
-    arcade.draw_text(
-        "GAME OVER",
-        WIDTH // 2,
-        HEIGHT // 2 + 50,
-        (243, 139, 168),
-        font_size=36,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
-    arcade.draw_text(
-        f"Score: {game.score}",
-        WIDTH // 2,
-        HEIGHT // 2,
-        SCORE_COLOR,
-        font_size=22,
-        anchor_x="center",
-        anchor_y="center",
-    )
-    arcade.draw_text(
-        "Click 'New Game' or press ENTER to play again",
-        WIDTH // 2,
-        HEIGHT // 2 - 45,
-        STATUS_TEXT_COLOR,
-        font_size=14,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_game_over.draw()
+    game.txt_game_over_score.text = f"Score: {game.score}"
+    game.txt_game_over_score.draw()
+    game.txt_game_over_hint.draw()

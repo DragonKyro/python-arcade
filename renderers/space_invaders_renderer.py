@@ -73,10 +73,10 @@ def draw(game):
     # UFO score display
     if game.ufo_score_display:
         ux, uy = game.ufo_score_display
-        arcade.draw_text(
-            f"{game.ufo.points}", ux, uy, (255, 255, 100),
-            font_size=14, anchor_x="center", anchor_y="center", bold=True,
-        )
+        game.txt_ufo_score.text = f"{game.ufo.points}"
+        game.txt_ufo_score.x = ux
+        game.txt_ufo_score.y = uy
+        game.txt_ufo_score.draw()
 
     # --- Top bar ---
     _draw_top_bar(game)
@@ -126,20 +126,14 @@ def _draw_top_bar(game):
     arcade.draw_line(0, HEIGHT - TOP_BAR_HEIGHT, WIDTH, HEIGHT - TOP_BAR_HEIGHT, LINE_COLOR, 1)
 
     # Score
-    arcade.draw_text(
-        f"SCORE: {game.score}", 140, HEIGHT - 18, SCORE_COLOR,
-        font_size=14, anchor_x="left", anchor_y="center",
-    )
-    arcade.draw_text(
-        f"HI: {game.high_score}", 140, HEIGHT - 38, (180, 180, 180),
-        font_size=11, anchor_x="left", anchor_y="center",
-    )
+    game.txt_score.text = f"SCORE: {game.score}"
+    game.txt_score.draw()
+    game.txt_high_score.text = f"HI: {game.high_score}"
+    game.txt_high_score.draw()
 
     # Wave number
-    arcade.draw_text(
-        f"WAVE {game.wave}", WIDTH - 80, HEIGHT - 18, (200, 200, 255),
-        font_size=14, anchor_x="center", anchor_y="center",
-    )
+    game.txt_wave.text = f"WAVE {game.wave}"
+    game.txt_wave.draw()
 
     # Buttons
     hover_back = game.btn_back.contains(game.mouse_x, game.mouse_y)
@@ -157,10 +151,7 @@ def _draw_bottom_bar(game):
     arcade.draw_line(0, BOTTOM_BAR_HEIGHT, WIDTH, BOTTOM_BAR_HEIGHT, LINE_COLOR, 1)
 
     # Lives as ship icons
-    arcade.draw_text(
-        "LIVES:", 10, BOTTOM_BAR_HEIGHT // 2, SCORE_COLOR,
-        font_size=12, anchor_x="left", anchor_y="center",
-    )
+    game.txt_lives_label.draw()
     for i in range(game.lives):
         lx = 80 + i * 35
         ly = BOTTOM_BAR_HEIGHT // 2
@@ -173,20 +164,7 @@ def _draw_game_over(game):
     arcade.draw_rect_filled(
         arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), OVERLAY_COLOR
     )
-    arcade.draw_text(
-        "GAME OVER", WIDTH // 2, HEIGHT // 2 + 50,
-        (255, 80, 80), font_size=36,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
-    arcade.draw_text(
-        f"Final Score: {game.score}  |  Wave: {game.wave}",
-        WIDTH // 2, HEIGHT // 2,
-        SCORE_COLOR, font_size=18,
-        anchor_x="center", anchor_y="center",
-    )
-    arcade.draw_text(
-        "Press ENTER to play again",
-        WIDTH // 2, HEIGHT // 2 - 45,
-        (180, 180, 180), font_size=14,
-        anchor_x="center", anchor_y="center",
-    )
+    game.txt_game_over.draw()
+    game.txt_final_score.text = f"Final Score: {game.score}  |  Wave: {game.wave}"
+    game.txt_final_score.draw()
+    game.txt_restart_hint.draw()

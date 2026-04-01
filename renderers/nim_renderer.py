@@ -5,14 +5,34 @@ All arcade.draw_* calls for Nim are centralized here.
 
 import arcade
 
-from games.nim import (
-    WIDTH, HEIGHT,
-    STONE_RADIUS, STONE_SPACING, ROW_SPACING, BOARD_TOP,
-    STONE_COLOR, STONE_OUTLINE, SELECTED_COLOR, SELECTED_OUTLINE,
-    REMOVED_COLOR, OVERLAY_BG,
-    BUTTON_W, BUTTON_H, TAKE_BUTTON_W, TAKE_BUTTON_H,
-    STATE_PLAYER_TURN, STATE_AI_THINKING, STATE_GAME_OVER,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Drawing constants
+STONE_RADIUS = 22
+STONE_SPACING = 56
+ROW_SPACING = 70
+BOARD_TOP = HEIGHT - 140
+
+# Colors
+STONE_COLOR = (100, 160, 220)
+STONE_OUTLINE = (60, 100, 160)
+SELECTED_COLOR = (255, 90, 90)
+SELECTED_OUTLINE = (180, 40, 40)
+REMOVED_COLOR = (50, 50, 60)
+OVERLAY_BG = (0, 0, 0, 170)
+
+# Button dimensions
+BUTTON_W = 100
+BUTTON_H = 36
+TAKE_BUTTON_W = 120
+TAKE_BUTTON_H = 40
+
+# Game states (needed by renderer for conditional drawing)
+STATE_PLAYER_TURN = "player_turn"
+STATE_AI_THINKING = "ai_thinking"
+STATE_GAME_OVER = "game_over"
 
 
 def draw(game):
@@ -34,10 +54,7 @@ def _draw_buttons(game):
     arcade.draw_rect_outline(
         arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.WHITE, 2
     )
-    arcade.draw_text(
-        "Back", bx, by, arcade.color.WHITE, 14,
-        anchor_x="center", anchor_y="center",
-    )
+    game.txt_btn_back.draw()
 
     # New Game button (top-right)
     nx, ny = WIDTH - 70, HEIGHT - 30
@@ -47,19 +64,13 @@ def _draw_buttons(game):
     arcade.draw_rect_outline(
         arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.WHITE, 2
     )
-    arcade.draw_text(
-        "New Game", nx, ny, arcade.color.WHITE, 14,
-        anchor_x="center", anchor_y="center",
-    )
+    game.txt_btn_new_game.draw()
 
     # Help button
     game.help_button.draw()
 
     # Title
-    arcade.draw_text(
-        "Nim", WIDTH // 2, HEIGHT - 30,
-        arcade.color.WHITE, 22, anchor_x="center", anchor_y="center", bold=True,
-    )
+    game.txt_title.draw()
 
 
 def _draw_turn_indicator(game):
@@ -74,10 +85,9 @@ def _draw_turn_indicator(game):
         color = arcade.color.WHITE
 
     if msg:
-        arcade.draw_text(
-            msg, WIDTH // 2, HEIGHT - 70,
-            color, 16, anchor_x="center", anchor_y="center",
-        )
+        game.txt_turn.text = msg
+        game.txt_turn.color = color
+        game.txt_turn.draw()
 
 
 def _draw_board(game):
@@ -103,11 +113,11 @@ def _draw_board(game):
         # Row label
         label_x = (WIDTH - (game.max_rows[r] - 1) * STONE_SPACING) / 2 - 40
         label_y = BOARD_TOP - r * ROW_SPACING
-        arcade.draw_text(
-            f"{game.rows[r]}", label_x, label_y,
-            arcade.color.LIGHT_GRAY, 14,
-            anchor_x="center", anchor_y="center",
-        )
+        txt = game.txt_row_labels[r]
+        txt.text = f"{game.rows[r]}"
+        txt.x = label_x
+        txt.y = label_y
+        txt.draw()
 
 
 def _draw_take_button(game):
@@ -121,10 +131,8 @@ def _draw_take_button(game):
     arcade.draw_rect_outline(
         arcade.XYWH(tx, ty, TAKE_BUTTON_W, TAKE_BUTTON_H), arcade.color.WHITE, 2
     )
-    arcade.draw_text(
-        f"Take {count}", tx, ty, arcade.color.WHITE, 16,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
+    game.txt_take_btn.text = f"Take {count}"
+    game.txt_take_btn.draw()
 
 
 def _draw_overlay(game):
@@ -138,18 +146,9 @@ def _draw_overlay(game):
         msg = "AI Wins!"
         color = arcade.color.RED
 
-    arcade.draw_text(
-        msg, WIDTH // 2, HEIGHT // 2 + 30,
-        color, 48, anchor_x="center", anchor_y="center", bold=True,
-    )
-    arcade.draw_text(
-        "The player who takes the last stone loses!",
-        WIDTH // 2, HEIGHT // 2 - 20,
-        arcade.color.LIGHT_GRAY, 14,
-        anchor_x="center", anchor_y="center",
-    )
-    arcade.draw_text(
-        "Click 'New Game' to play again",
-        WIDTH // 2, HEIGHT // 2 - 50,
-        arcade.color.WHITE, 18, anchor_x="center", anchor_y="center",
-    )
+    game.txt_game_over_msg.text = msg
+    game.txt_game_over_msg.color = color
+    game.txt_game_over_msg.draw()
+
+    game.txt_game_over_rule.draw()
+    game.txt_game_over_hint.draw()

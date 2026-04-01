@@ -6,6 +6,12 @@ import arcade
 from pages.components import Button
 from pages.rules import RulesView
 from renderers import connect4_renderer
+from renderers.connect4_renderer import (
+    WIDTH, HEIGHT,
+    CELL_SIZE, BOARD_MARGIN_X, BOARD_MARGIN_Y,
+    BUTTON_W, BUTTON_H,
+    STATE_PLAYER_TURN, STATE_AI_THINKING, STATE_GAME_OVER,
+)
 from ai.connect4_ai import (
     Connect4AI,
     check_winner,
@@ -19,33 +25,6 @@ from ai.connect4_ai import (
     AI_PIECE,
 )
 
-WIDTH = 800
-HEIGHT = 600
-
-# Board drawing constants
-CELL_SIZE = 70
-BOARD_MARGIN_X = (WIDTH - COLS * CELL_SIZE) // 2
-BOARD_MARGIN_Y = 40
-CIRCLE_RADIUS = 28
-
-# Colors
-BOARD_COLOR = (0, 70, 180)
-EMPTY_COLOR = (20, 20, 40)
-PLAYER_COLOR = arcade.color.RED
-AI_COLOR = arcade.color.YELLOW
-HIGHLIGHT_COLOR = (255, 255, 255, 60)
-WIN_HIGHLIGHT_COLOR = (255, 255, 255, 180)
-OVERLAY_BG = (0, 0, 0, 170)
-
-# Button dimensions
-BUTTON_W = 100
-BUTTON_H = 36
-
-# Game states
-STATE_PLAYER_TURN = "player_turn"
-STATE_AI_THINKING = "ai_thinking"
-STATE_GAME_OVER = "game_over"
-
 
 class Connect4View(arcade.View):
     """Arcade View for the Connect Four game."""
@@ -55,6 +34,7 @@ class Connect4View(arcade.View):
         self.menu_view = menu_view
         self.ai = Connect4AI()
         self.help_button = Button(WIDTH - 145, HEIGHT - 30, 40, 36, "?", color=arcade.color.DARK_SLATE_BLUE)
+        connect4_renderer.create_text_objects(self)
         self.board = None
         self.state = None
         self.winner = None

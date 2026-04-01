@@ -5,15 +5,39 @@ All arcade.draw_* calls for Checkers live here.
 
 import arcade
 
-from games.checkers import (
-    WIDTH, HEIGHT,
-    BOARD_SIZE, CELL_SIZE, BOARD_PIXEL, BOARD_LEFT, BOARD_BOTTOM, PIECE_RADIUS,
-    LIGHT_SQUARE, DARK_SQUARE, PLAYER_COLOR, AI_PIECE_COLOR,
-    SELECT_HIGHLIGHT, VALID_DEST_COLOR, KING_MARKER_COLOR, OVERLAY_BG,
-    BUTTON_W, BUTTON_H,
-    STATE_PLAYER_TURN, STATE_PLAYER_MULTI_JUMP, STATE_AI_THINKING, STATE_GAME_OVER,
-)
 from ai.checkers_ai import EMPTY, RED, BLACK, RED_KING, BLACK_KING, count_pieces
+
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Board drawing constants
+BOARD_SIZE = 8
+CELL_SIZE = 60
+BOARD_PIXEL = BOARD_SIZE * CELL_SIZE  # 480
+BOARD_LEFT = (WIDTH - BOARD_PIXEL) // 2
+BOARD_BOTTOM = 30
+PIECE_RADIUS = CELL_SIZE * 0.38
+
+# Colors
+LIGHT_SQUARE = (240, 217, 181)
+DARK_SQUARE = (181, 136, 99)
+PLAYER_COLOR = (200, 30, 30)        # Red pieces
+AI_PIECE_COLOR = (30, 30, 30)       # Black pieces
+SELECT_HIGHLIGHT = (255, 255, 0, 100)
+VALID_DEST_COLOR = (0, 200, 0, 130)
+KING_MARKER_COLOR = (255, 215, 0)   # Gold for king text
+OVERLAY_BG = (0, 0, 0, 170)
+
+# Button dimensions
+BUTTON_W = 100
+BUTTON_H = 36
+
+# Game states (needed by renderer for conditional drawing)
+STATE_PLAYER_TURN = "player_turn"
+STATE_PLAYER_MULTI_JUMP = "player_multi_jump"
+STATE_AI_THINKING = "ai_thinking"
+STATE_GAME_OVER = "game_over"
 
 
 def draw(game):
@@ -33,27 +57,21 @@ def _draw_buttons(game):
     bx, by = 60, HEIGHT - 30
     arcade.draw_rect_filled(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.DARK_GRAY)
     arcade.draw_rect_outline(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.WHITE, 2)
-    arcade.draw_text("Back", bx, by, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
+    game.txt_back.draw()
 
     # New Game button (top-right)
     nx, ny = WIDTH - 70, HEIGHT - 30
     arcade.draw_rect_filled(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.DARK_GREEN)
     arcade.draw_rect_outline(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.WHITE, 2)
-    arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
+    game.txt_new_game.draw()
 
     # Help button
     game.help_button.draw()
 
     # Title
-    arcade.draw_text(
-        "Checkers",
-        WIDTH // 2, HEIGHT - 30,
-        arcade.color.WHITE, 22, anchor_x="center", anchor_y="center",
-        bold=True,
-    )
+    game.txt_title.draw()
 
     # Turn indicator
-    board_top = BOARD_BOTTOM + BOARD_PIXEL
     if game.state == STATE_PLAYER_TURN:
         msg = "Your turn (Red)"
         color = PLAYER_COLOR
@@ -68,10 +86,9 @@ def _draw_buttons(game):
         color = arcade.color.WHITE
 
     if msg:
-        arcade.draw_text(
-            msg, WIDTH // 2, board_top + 18,
-            color, 16, anchor_x="center", anchor_y="center", bold=True,
-        )
+        game.txt_turn.text = msg
+        game.txt_turn.color = color
+        game.txt_turn.draw()
 
 
 def _draw_board(game):
@@ -113,13 +130,9 @@ def _draw_pieces(game):
 
             # King marker
             if piece in (RED_KING, BLACK_KING):
-                text_color = KING_MARKER_COLOR
-                arcade.draw_text(
-                    "K", cx, cy,
-                    text_color, 16,
-                    anchor_x="center", anchor_y="center",
-                    bold=True,
-                )
+                game.txt_king.x = cx
+                game.txt_king.y = cy
+                game.txt_king.draw()
 
 
 def _draw_highlights(game):
@@ -146,17 +159,13 @@ def _draw_piece_counts(game):
     red_count, black_count = count_pieces(game.board)
     # Left side - player (red) count
     arcade.draw_circle_filled(25, HEIGHT // 2 + 20, 10, PLAYER_COLOR)
-    arcade.draw_text(
-        f" {red_count}", 38, HEIGHT // 2 + 20,
-        arcade.color.WHITE, 14, anchor_x="left", anchor_y="center",
-    )
+    game.txt_red_count.text = f" {red_count}"
+    game.txt_red_count.draw()
     # Left side - AI (black) count
     arcade.draw_circle_filled(25, HEIGHT // 2 - 10, 10, AI_PIECE_COLOR)
     arcade.draw_circle_outline(25, HEIGHT // 2 - 10, 10, (80, 80, 80), 1)
-    arcade.draw_text(
-        f" {black_count}", 38, HEIGHT // 2 - 10,
-        arcade.color.WHITE, 14, anchor_x="left", anchor_y="center",
-    )
+    game.txt_black_count.text = f" {black_count}"
+    game.txt_black_count.draw()
 
 
 def _draw_overlay(game):
@@ -175,12 +184,7 @@ def _draw_overlay(game):
         msg = "It's a Draw!"
         color = arcade.color.WHITE
 
-    arcade.draw_text(
-        msg, WIDTH // 2, HEIGHT // 2 + 30,
-        color, 48, anchor_x="center", anchor_y="center", bold=True,
-    )
-    arcade.draw_text(
-        "Click 'New Game' to play again",
-        WIDTH // 2, HEIGHT // 2 - 30,
-        arcade.color.WHITE, 18, anchor_x="center", anchor_y="center",
-    )
+    game.txt_game_over.text = msg
+    game.txt_game_over.color = color
+    game.txt_game_over.draw()
+    game.txt_game_over_hint.draw()

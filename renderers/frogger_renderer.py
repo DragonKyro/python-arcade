@@ -180,16 +180,8 @@ def _draw_top_bar(game):
     game.btn_new.draw(game.btn_new.contains(game.mouse_x, game.mouse_y))
 
     # Score in center
-    arcade.draw_text(
-        f"Score: {game.score}",
-        WIDTH / 2,
-        HEIGHT - 25,
-        SCORE_COLOR,
-        font_size=16,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
+    game.txt_score.text = f"Score: {game.score}"
+    game.txt_score.draw()
 
 
 def _draw_bottom_bar(game):
@@ -202,7 +194,7 @@ def _draw_bottom_bar(game):
     arcade.draw_line(0, BOTTOM_BAR_HEIGHT, WIDTH, BOTTOM_BAR_HEIGHT, LINE_COLOR, 1)
 
     # Lives (small frog icons)
-    arcade.draw_text("Lives:", 10, 20, LINE_COLOR, font_size=12, anchor_x="left", anchor_y="center")
+    game.txt_lives_label.draw()
     for i in range(game.lives):
         lx = 70 + i * 25
         arcade.draw_circle_filled(lx, 20, 8, FROG_COLOR)
@@ -210,15 +202,8 @@ def _draw_bottom_bar(game):
         arcade.draw_circle_filled(lx + 2, 24, 2, FROG_EYE_COLOR)
 
     # Level
-    arcade.draw_text(
-        f"Level: {game.level}",
-        200,
-        20,
-        LINE_COLOR,
-        font_size=12,
-        anchor_x="left",
-        anchor_y="center",
-    )
+    game.txt_level.text = f"Level: {game.level}"
+    game.txt_level.draw()
 
     # Timer bar
     timer_x = 320
@@ -243,18 +228,11 @@ def _draw_bottom_bar(game):
         arcade.XYWH(timer_x + timer_w / 2, timer_y, timer_w, timer_h),
         LINE_COLOR, 1,
     )
-    arcade.draw_text("TIME", timer_x - 35, 20, LINE_COLOR, font_size=10, anchor_x="left", anchor_y="center")
+    game.txt_time_label.draw()
 
     # High score
-    arcade.draw_text(
-        f"Hi: {game.high_score}",
-        WIDTH - 10,
-        20,
-        SCORE_COLOR,
-        font_size=12,
-        anchor_x="right",
-        anchor_y="center",
-    )
+    game.txt_high_score.text = f"Hi: {game.high_score}"
+    game.txt_high_score.draw()
 
 
 def _draw_game_over(game):
@@ -263,31 +241,7 @@ def _draw_game_over(game):
         arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT),
         OVERLAY_COLOR,
     )
-    arcade.draw_text(
-        "GAME OVER",
-        WIDTH / 2,
-        HEIGHT / 2 + 40,
-        (220, 50, 50),
-        font_size=36,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
-    arcade.draw_text(
-        f"Final Score: {game.score}",
-        WIDTH / 2,
-        HEIGHT / 2 - 10,
-        SCORE_COLOR,
-        font_size=20,
-        anchor_x="center",
-        anchor_y="center",
-    )
-    arcade.draw_text(
-        "Press SPACE or click New Game to restart",
-        WIDTH / 2,
-        HEIGHT / 2 - 50,
-        LINE_COLOR,
-        font_size=14,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_game_over.draw()
+    game.txt_final_score.text = f"Final Score: {game.score}"
+    game.txt_final_score.draw()
+    game.txt_restart_hint.draw()

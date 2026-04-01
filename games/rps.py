@@ -7,25 +7,9 @@ from ai.rps_ai import RPSAI, COUNTERS
 from pages.components import Button
 from pages.rules import RulesView
 from renderers import rps_renderer
-
-WIDTH = 800
-HEIGHT = 600
-
-# Colours
-BG_COLOR = arcade.color.DARK_SLATE_GRAY
-BTN_COLOR = arcade.color.DARK_CYAN
-BTN_HOVER = arcade.color.CYAN
-TEXT_COLOR = arcade.color.WHITE
-WIN_COLOR = arcade.color.GREEN
-LOSE_COLOR = arcade.color.RED
-DRAW_COLOR = arcade.color.YELLOW
-
-# Layout constants
-BTN_Y = 100
-BTN_W = 160
-BTN_H = 120
-BTN_SPACING = 200
-BTN_CENTERS = [WIDTH // 2 - BTN_SPACING, WIDTH // 2, WIDTH // 2 + BTN_SPACING]
+from renderers.rps_renderer import (
+    WIDTH, HEIGHT, BTN_Y, BTN_W, BTN_H, BTN_CENTERS,
+)
 
 REVEAL_DELAY = 0.3  # seconds
 
@@ -48,6 +32,7 @@ class RPSView(arcade.View):
         self.menu_view = menu_view
         self.ai = RPSAI()
         self.help_button = Button(WIDTH - 155, HEIGHT - 30, 40, 36, "?", color=arcade.color.DARK_SLATE_BLUE)
+        rps_renderer.create_text_objects(self)
         self._reset()
 
     # ------------------------------------------------------------------ state

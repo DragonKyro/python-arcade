@@ -5,29 +5,54 @@ All arcade.draw_* calls for Battleship are centralized here.
 
 import arcade
 
-from games.battleship import (
-    WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE, GRID_PIXEL,
-    PLAYER_GRID_LEFT, AI_GRID_LEFT, GRID_TOP,
-    SHIP_SIZES, SHIP_NAMES,
-    COLOR_WATER, COLOR_SHIP, COLOR_HIT, COLOR_MISS_DOT,
-    COLOR_GRID_LINE, COLOR_PREVIEW_VALID, COLOR_PREVIEW_INVALID,
-    COLOR_SUNK, BTN_W, BTN_H,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Grid / cell constants
+GRID_SIZE = 10
+CELL_SIZE = 28
+GRID_PIXEL = GRID_SIZE * CELL_SIZE  # 280
+
+# Layout positions
+PLAYER_GRID_LEFT = 30
+AI_GRID_LEFT = WIDTH - GRID_PIXEL - 30
+GRID_TOP = HEIGHT - 80
+
+# Ship sizes for a standard game
+SHIP_SIZES = [5, 4, 3, 3, 2]
+SHIP_NAMES = ["Carrier (5)", "Battleship (4)", "Cruiser (3)", "Submarine (3)", "Destroyer (2)"]
+
+# Colors
+COLOR_WATER = (173, 216, 230)
+COLOR_SHIP = (128, 128, 128)
+COLOR_HIT = (220, 50, 50)
+COLOR_MISS_DOT = (255, 255, 255)
+COLOR_GRID_LINE = (60, 60, 80)
+COLOR_PREVIEW_VALID = (100, 200, 100, 120)
+COLOR_PREVIEW_INVALID = (200, 100, 100, 120)
+COLOR_SUNK = (180, 40, 40)
+
+# Button geometry
+BTN_W = 90
+BTN_H = 30
+
+AI_SHOT_DELAY = 0.5  # seconds
 
 
 def draw(game):
     """Render the entire Battleship game state."""
     _draw_background()
-    _draw_buttons()
+    _draw_buttons(game)
 
     if game.phase == "placement":
-        _draw_grid(game, PLAYER_GRID_LEFT, game.player_board, show_ships=True)
+        _draw_grid(game, PLAYER_GRID_LEFT, game.player_board, show_ships=True, use_player_labels=True)
         _draw_placement_preview(game)
         _draw_ship_list(game)
     else:
-        _draw_grid(game, PLAYER_GRID_LEFT, game.player_board, show_ships=True)
+        _draw_grid(game, PLAYER_GRID_LEFT, game.player_board, show_ships=True, use_player_labels=True)
         _draw_ai_grid(game)
-        _draw_labels()
+        _draw_labels(game)
 
     _draw_message(game)
 
@@ -36,27 +61,27 @@ def _draw_background():
     arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), (30, 30, 50))
 
 
-def _draw_buttons():
+def _draw_buttons(game):
     # Back button
     bx, by = 55, HEIGHT - 22
     arcade.draw_rect_filled(arcade.XYWH(bx, by, BTN_W, BTN_H), (80, 80, 100))
     arcade.draw_rect_outline(arcade.XYWH(bx, by, BTN_W, BTN_H), arcade.color.WHITE)
-    arcade.draw_text("Back", bx, by, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+    game.txt_btn_back.draw()
 
     # New Game button
     nx, ny = WIDTH - 55, HEIGHT - 22
     arcade.draw_rect_filled(arcade.XYWH(nx, ny, BTN_W, BTN_H), (80, 80, 100))
     arcade.draw_rect_outline(arcade.XYWH(nx, ny, BTN_W, BTN_H), arcade.color.WHITE)
-    arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+    game.txt_btn_new_game.draw()
 
     # Help button
     hx, hy = WIDTH - 140, HEIGHT - 22
     arcade.draw_rect_filled(arcade.XYWH(hx, hy, 40, 30), arcade.color.DARK_SLATE_BLUE)
     arcade.draw_rect_outline(arcade.XYWH(hx, hy, 40, 30), arcade.color.WHITE)
-    arcade.draw_text("?", hx, hy, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+    game.txt_btn_help.draw()
 
 
-def _draw_grid(game, left, board, show_ships=False):
+def _draw_grid(game, left, board, show_ships=False, use_player_labels=False):
     """Draw a 10x10 grid from a 2D board array."""
     for row in range(GRID_SIZE):
         for col in range(GRID_SIZE):
@@ -87,13 +112,10 @@ def _draw_grid(game, left, board, show_ships=False):
                 arcade.draw_line(x - hs, y + hs, x + hs, y - hs, (255, 255, 255), 2)
 
     # Column / row labels
-    for i in range(GRID_SIZE):
-        lx = left + i * CELL_SIZE + CELL_SIZE // 2
-        ly_top = GRID_TOP + 10
-        arcade.draw_text(str(i), lx, ly_top, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
-        lx_side = left - 12
-        ly_side = GRID_TOP - i * CELL_SIZE - CELL_SIZE // 2
-        arcade.draw_text(chr(65 + i), lx_side, ly_side, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
+    if use_player_labels:
+        for i in range(GRID_SIZE):
+            game.txt_player_col_labels[i].draw()
+            game.txt_player_row_labels[i].draw()
 
 
 def _draw_ai_grid(game):
@@ -129,10 +151,8 @@ def _draw_ai_grid(game):
 
     # Labels
     for i in range(GRID_SIZE):
-        lx = left + i * CELL_SIZE + CELL_SIZE // 2
-        arcade.draw_text(str(i), lx, GRID_TOP + 10, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
-        ly_side = GRID_TOP - i * CELL_SIZE - CELL_SIZE // 2
-        arcade.draw_text(chr(65 + i), left - 12, ly_side, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
+        game.txt_ai_col_labels[i].draw()
+        game.txt_ai_row_labels[i].draw()
 
 
 def _draw_placement_preview(game):
@@ -164,27 +184,26 @@ def _draw_placement_preview(game):
 
 def _draw_ship_list(game):
     """Draw the list of ships during placement phase."""
-    sx = PLAYER_GRID_LEFT + GRID_PIXEL + 40
-    sy = GRID_TOP - 10
-    arcade.draw_text("Ships:", sx, sy, arcade.color.WHITE, 14, bold=True)
+    game.txt_ship_list_header.draw()
     for i, name in enumerate(SHIP_NAMES):
         color = (100, 200, 100) if i < game.placement_index else (200, 200, 200)
         prefix = "[x] " if i < game.placement_index else "[ ] "
         if i == game.placement_index:
             prefix = ">>> "
             color = (255, 255, 100)
-        arcade.draw_text(prefix + name, sx, sy - 25 - i * 22, color, 12)
+        txt = game.txt_ship_list_items[i]
+        txt.text = prefix + name
+        txt.color = color
+        txt.draw()
 
 
-def _draw_labels():
+def _draw_labels(game):
     """Draw grid titles during battle phase."""
-    px = PLAYER_GRID_LEFT + GRID_PIXEL // 2
-    ax = AI_GRID_LEFT + GRID_PIXEL // 2
-    label_y = GRID_TOP + 26
-    arcade.draw_text("Your Board", px, label_y, arcade.color.WHITE, 14, anchor_x="center", bold=True)
-    arcade.draw_text("Enemy Board", ax, label_y, arcade.color.WHITE, 14, anchor_x="center", bold=True)
+    game.txt_label_your_board.draw()
+    game.txt_label_enemy_board.draw()
 
 
 def _draw_message(game):
     """Draw status message at the bottom."""
-    arcade.draw_text(game.message, WIDTH // 2, 30, arcade.color.YELLOW, 15, anchor_x="center", anchor_y="center")
+    game.txt_message.text = game.message
+    game.txt_message.draw()

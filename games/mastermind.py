@@ -2,49 +2,74 @@ import arcade
 import random
 from pages.rules import RulesView
 from renderers import mastermind_renderer
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Game constants
-NUM_SLOTS = 4
-MAX_ATTEMPTS = 10
-NUM_COLORS = 6
-
-# The 6 code colors
-CODE_COLORS = [
-    arcade.color.RED,
-    arcade.color.BLUE,
-    arcade.color.GREEN,
-    arcade.color.YELLOW,
-    arcade.color.ORANGE,
-    arcade.color.PURPLE,
-]
-
-# Layout constants
-BOARD_LEFT = 200
-BOARD_TOP = 540
-ROW_HEIGHT = 40
-SLOT_RADIUS = 14
-SLOT_SPACING = 50
-FEEDBACK_OFFSET_X = 240
-FEEDBACK_PEG_RADIUS = 6
-FEEDBACK_PEG_SPACING = 16
-
-PALETTE_Y = 40
-PALETTE_SPACING = 60
-PALETTE_RADIUS = 20
-
-EMPTY_COLOR = (80, 80, 80)
-HIGHLIGHT_COLOR = arcade.color.WHITE
+from renderers.mastermind_renderer import (
+    WIDTH, HEIGHT, NUM_SLOTS, MAX_ATTEMPTS, NUM_COLORS,
+    BOARD_LEFT, ROW_HEIGHT, SLOT_RADIUS, SLOT_SPACING,
+    PALETTE_Y, PALETTE_SPACING, PALETTE_RADIUS,
+)
 
 
 class MastermindView(arcade.View):
     def __init__(self, menu_view):
         super().__init__()
         self.menu_view = menu_view
+        self._create_texts()
         self.reset_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        self.txt_title = arcade.Text(
+            "Mastermind", WIDTH / 2, HEIGHT - 30, arcade.color.WHITE,
+            font_size=28, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_back = arcade.Text(
+            "Back", 60, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_new_game = arcade.Text(
+            "New Game", WIDTH - 70, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_help = arcade.Text(
+            "?", WIDTH - 140, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_submit = arcade.Text(
+            "Submit", WIDTH - 70, 0, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        # Row number labels (1..10)
+        self.txt_row_numbers = []
+        for row in range(MAX_ATTEMPTS):
+            base_y = 90
+            y = base_y + row * ROW_HEIGHT
+            t = arcade.Text(
+                str(row + 1), BOARD_LEFT - 40, y,
+                arcade.color.LIGHT_GRAY, font_size=12,
+                anchor_x="center", anchor_y="center",
+            )
+            self.txt_row_numbers.append(t)
+        self.txt_secret_label = arcade.Text(
+            "Secret:", BOARD_LEFT - 40, 0,
+            arcade.color.LIGHT_CORAL, font_size=12,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_select_color = arcade.Text(
+            "Select a color:", WIDTH / 2, PALETTE_Y + 35,
+            arcade.color.LIGHT_GRAY, font_size=12,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over_msg = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 + 15,
+            arcade.color.LIGHT_GREEN, font_size=20,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' to play again.",
+            WIDTH / 2, HEIGHT / 2 - 25,
+            arcade.color.LIGHT_GRAY, font_size=14,
+            anchor_x="center", anchor_y="center",
+        )
 
     def reset_game(self):
         """Initialize or reset all game state."""
@@ -166,10 +191,16 @@ if __name__ == "__main__":
     arcade.set_background_color((40, 40, 60))
 
     class DummyMenu(arcade.View):
+        def __init__(self):
+            super().__init__()
+            self.txt_menu = arcade.Text(
+                "Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
+                arcade.color.WHITE, font_size=20, anchor_x="center",
+            )
+
         def on_draw(self):
             self.clear()
-            arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
-                             arcade.color.WHITE, 20, anchor_x="center")
+            self.txt_menu.draw()
 
     menu = DummyMenu()
     game = MastermindView(menu)

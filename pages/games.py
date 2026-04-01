@@ -6,6 +6,11 @@ from games import GAME_LIST
 WIDTH = 800
 HEIGHT = 600
 TOP_BAR_HEIGHT = 100
+CONTENT_TOP = HEIGHT - TOP_BAR_HEIGHT
+CONTENT_BOTTOM = 10
+SCROLLBAR_WIDTH = 8
+SCROLLBAR_X = WIDTH - 12
+SCROLLBAR_COLOR = (255, 255, 255, 120)
 ICONS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "icons")
 
 
@@ -19,12 +24,8 @@ class GamesView(arcade.View):
             80, HEIGHT - 40, 120, 50, "Back", color=arcade.color.DARK_SLATE_BLUE
         )
         self.toggle_button = Button(
-            WIDTH - 120,
-            HEIGHT - 40,
-            200,
-            50,
-            "View: List",
-            color=arcade.color.DARK_SLATE_BLUE,
+            WIDTH - 120, HEIGHT - 40, 200, 50,
+            "View: List", color=arcade.color.DARK_SLATE_BLUE,
         )
 
         # Pre-load icon textures
@@ -35,21 +36,29 @@ class GamesView(arcade.View):
                 self.icon_textures[name] = arcade.load_texture(path)
 
         self.game_buttons = []
-        self.game_entries = []  # (view_class, rules_file, display_name)
+        self.game_entries = []
         self._build_game_list()
+
+        self.txt_header = arcade.Text(
+            "Select a Game", WIDTH / 2, HEIGHT - 70,
+            arcade.color.WHITE, font_size=36, anchor_x="center",
+        )
+        self.txt_icon_label = arcade.Text(
+            "", 0, 0, arcade.color.WHITE,
+            font_size=11, anchor_x="center", anchor_y="center",
+        )
 
     def _build_game_list(self):
         self.game_buttons.clear()
         self.game_entries.clear()
         self.scroll_y = 0
 
+        # Position items starting just below the top bar
         if self.view_mode == "list":
             btn_w = 400
             btn_h = 42
             spacing = 10
-            total_height = len(GAME_LIST) * btn_h + (len(GAME_LIST) - 1) * spacing
-            available = HEIGHT - TOP_BAR_HEIGHT
-            start_y = available / 2 + total_height / 2 - btn_h / 2
+            start_y = CONTENT_TOP - spacing - btn_h / 2
             for i, (name, view_cls, rules_file, _icon) in enumerate(GAME_LIST):
                 cy = start_y - i * (btn_h + spacing)
                 btn = Button(
@@ -64,17 +73,14 @@ class GamesView(arcade.View):
             cell_height = icon_size + label_height
             spacing = 16
             cols = 4
-            rows = (len(GAME_LIST) + cols - 1) // cols
             total_w = cols * icon_size + (cols - 1) * spacing
-            total_h = rows * cell_height + (rows - 1) * spacing
-            available = HEIGHT - TOP_BAR_HEIGHT
             start_x = WIDTH / 2 - total_w / 2 + icon_size / 2
-            start_y = available / 2 + total_h / 2 - cell_height / 2
+            start_y = CONTENT_TOP - spacing - cell_height / 2
             for i, (name, view_cls, rules_file, _icon) in enumerate(GAME_LIST):
                 col = i % cols
                 row = i // cols
                 cx = start_x + col * (icon_size + spacing)
-                cy = start_y - row * (cell_height + spacing) + label_height / 2
+                cy = start_y - row * (cell_height + spacing)
                 btn = Button(
                     cx, cy, icon_size, cell_height, name,
                     color=arcade.color.DARK_SLATE_BLUE,
@@ -86,9 +92,16 @@ class GamesView(arcade.View):
         if not self.game_buttons:
             return 0
         lowest = min(b.center_y - b.height / 2 for b in self.game_buttons)
-        if lowest < 10:
-            return abs(lowest) + 10
+        if lowest < CONTENT_BOTTOM:
+            return abs(lowest - CONTENT_BOTTOM)
         return 0
+
+    def _content_height(self):
+        if not self.game_buttons:
+            return 0
+        highest = max(b.center_y + b.height / 2 for b in self.game_buttons)
+        lowest = min(b.center_y - b.height / 2 for b in self.game_buttons)
+        return highest - lowest
 
     def on_show(self):
         arcade.set_background_color(arcade.color.AMAZON)
@@ -96,15 +109,15 @@ class GamesView(arcade.View):
     def on_draw(self):
         self.clear()
 
+        # Draw scrollable game buttons
         for idx, btn in enumerate(self.game_buttons):
             draw_y = btn.center_y + self.scroll_y
-            if draw_y + btn.height / 2 < 0 or draw_y - btn.height / 2 > HEIGHT - TOP_BAR_HEIGHT:
+            if draw_y + btn.height / 2 < CONTENT_BOTTOM or draw_y - btn.height / 2 > CONTENT_TOP:
                 continue
 
             name = self.game_entries[idx][2]
 
             if self.view_mode == "icons" and name in self.icon_textures:
-                # Draw icon card: background + texture + label
                 arcade.draw_rect_filled(
                     arcade.XYWH(btn.center_x, draw_y, btn.width, btn.height),
                     arcade.color.DARK_SLATE_BLUE,
@@ -120,29 +133,35 @@ class GamesView(arcade.View):
                     arcade.XYWH(btn.center_x, icon_y, btn.width - 8, btn.width - 8),
                 )
                 label_y = draw_y - btn.height / 2 + 12
-                arcade.draw_text(
-                    name, btn.center_x, label_y,
-                    arcade.color.WHITE, font_size=11,
-                    anchor_x="center", anchor_y="center",
-                )
+                self.txt_icon_label.text = name
+                self.txt_icon_label.x = btn.center_x
+                self.txt_icon_label.y = label_y
+                self.txt_icon_label.draw()
             else:
-                # List mode: regular button
                 orig_y = btn.center_y
                 btn.center_y = draw_y
                 btn.draw()
                 btn.center_y = orig_y
 
-        # Top bar
+        # Scrollbar
+        max_s = self._max_scroll()
+        if max_s > 0:
+            visible_height = CONTENT_TOP - CONTENT_BOTTOM
+            total = self._content_height()
+            bar_height = max(30, visible_height * (visible_height / (total + visible_height)))
+            track_height = visible_height - bar_height
+            bar_y = CONTENT_TOP - bar_height / 2 - (self.scroll_y / max_s) * track_height
+            arcade.draw_rect_filled(
+                arcade.XYWH(SCROLLBAR_X, bar_y, SCROLLBAR_WIDTH, bar_height),
+                SCROLLBAR_COLOR,
+            )
+
+        # Top bar (covers scrolled content)
         arcade.draw_rect_filled(
             arcade.XYWH(WIDTH / 2, HEIGHT - TOP_BAR_HEIGHT / 2, WIDTH, TOP_BAR_HEIGHT),
             arcade.color.AMAZON,
         )
-        arcade.draw_text(
-            "Select a Game",
-            WIDTH / 2, HEIGHT - 70,
-            arcade.color.WHITE, font_size=36,
-            anchor_x="center",
-        )
+        self.txt_header.draw()
         self.back_button.draw()
         self.toggle_button.draw()
 
@@ -158,7 +177,7 @@ class GamesView(arcade.View):
             self._build_game_list()
             return
 
-        if y > HEIGHT - TOP_BAR_HEIGHT:
+        if y > CONTENT_TOP:
             return
 
         for i, btn in enumerate(self.game_buttons):
@@ -176,7 +195,7 @@ class GamesView(arcade.View):
                 return
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        self.scroll_y += scroll_y * 30
+        self.scroll_y -= scroll_y * 30
         max_s = self._max_scroll()
         if self.scroll_y < 0:
             self.scroll_y = 0

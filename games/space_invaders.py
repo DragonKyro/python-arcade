@@ -5,7 +5,6 @@ Classic Space Invaders with aliens, shields, UFO bonus, and wave progression.
 
 import arcade
 import random
-import math
 from pages.rules import RulesView
 from renderers import space_invaders_renderer
 
@@ -95,10 +94,15 @@ class _Button:
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
-        arcade.draw_text(
-            self.label, self.cx, self.cy, BUTTON_TEXT_COLOR,
-            font_size=14, anchor_x="center", anchor_y="center",
-        )
+        if not hasattr(self, '_txt_label'):
+            self._txt_label = arcade.Text(
+                self.label, self.cx, self.cy, BUTTON_TEXT_COLOR,
+                font_size=14, anchor_x="center", anchor_y="center",
+            )
+        self._txt_label.text = self.label
+        self._txt_label.x = self.cx
+        self._txt_label.y = self.cy
+        self._txt_label.draw()
 
 
 class Alien:
@@ -290,7 +294,45 @@ class SpaceInvadersView(arcade.View):
         self.left_pressed = False
         self.right_pressed = False
 
+        self._create_texts()
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        self.txt_score = arcade.Text(
+            "", 140, HEIGHT - 18, SCORE_COLOR,
+            font_size=14, anchor_x="left", anchor_y="center",
+        )
+        self.txt_high_score = arcade.Text(
+            "", 140, HEIGHT - 38, (180, 180, 180),
+            font_size=11, anchor_x="left", anchor_y="center",
+        )
+        self.txt_wave = arcade.Text(
+            "", WIDTH - 80, HEIGHT - 18, (200, 200, 255),
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_lives_label = arcade.Text(
+            "LIVES:", 10, BOTTOM_BAR_HEIGHT // 2, SCORE_COLOR,
+            font_size=12, anchor_x="left", anchor_y="center",
+        )
+        self.txt_ufo_score = arcade.Text(
+            "", 0, 0, (255, 255, 100),
+            font_size=14, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over = arcade.Text(
+            "GAME OVER", WIDTH // 2, HEIGHT // 2 + 50,
+            (255, 80, 80), font_size=36,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_final_score = arcade.Text(
+            "", WIDTH // 2, HEIGHT // 2, SCORE_COLOR,
+            font_size=18, anchor_x="center", anchor_y="center",
+        )
+        self.txt_restart_hint = arcade.Text(
+            "Press ENTER to play again", WIDTH // 2, HEIGHT // 2 - 45,
+            (180, 180, 180), font_size=14,
+            anchor_x="center", anchor_y="center",
+        )
 
     def _init_game(self):
         """Initialize or reset all game state."""

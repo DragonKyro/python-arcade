@@ -4,6 +4,9 @@ from pages.components import Button
 
 WIDTH = 800
 HEIGHT = 600
+TEXT_TOP = HEIGHT - 90
+TEXT_BOTTOM = 80
+LINE_HEIGHT = 22
 
 
 class RulesView(arcade.View):
@@ -31,26 +34,38 @@ class RulesView(arcade.View):
         self.back_button = Button(
             80, HEIGHT - 40, 120, 50, "Back", color=arcade.color.DARK_SLATE_BLUE
         )
-
         if self.existing_game_view:
-            # Opened from in-game "?" — show Resume button
             self.play_button = Button(
                 WIDTH / 2, 40, 200, 50, "Resume", color=arcade.color.DARK_GREEN
             )
         else:
-            # Opened from game selection — show Play button
             self.play_button = Button(
                 WIDTH / 2, 40, 200, 50, "Play", color=arcade.color.DARK_GREEN
             )
 
         # Scroll state
         self.scroll_y = 0
-        self._compute_text_height()
 
-    def _compute_text_height(self):
-        lines = self.rules_text.split("\n")
-        self.text_line_height = 22
-        self.total_text_height = len(lines) * self.text_line_height
+        # Pre-created Text objects
+        self.txt_title = arcade.Text(
+            self.game_name, WIDTH / 2, HEIGHT - 45,
+            arcade.color.WHITE, font_size=30, anchor_x="center",
+        )
+
+        # Create one Text object per line (avoids flicker from reuse)
+        self.lines = self.rules_text.split("\n")
+        self.line_texts = []
+        for line in self.lines:
+            is_header = line.isupper() and line.strip()
+            txt = arcade.Text(
+                line, 60, 0,
+                arcade.color.YELLOW if is_header else arcade.color.WHITE,
+                font_size=16 if is_header else 13,
+                bold=is_header,
+            )
+            self.line_texts.append(txt)
+
+        self.total_text_height = len(self.lines) * LINE_HEIGHT
 
     def on_show(self):
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
@@ -58,47 +73,23 @@ class RulesView(arcade.View):
     def on_draw(self):
         self.clear()
 
-        # Rules text area (between top bar and bottom button)
-        text_top = HEIGHT - 90
-        text_bottom = 80
-        text_area_height = text_top - text_bottom
-
-        # Draw rules text
-        lines = self.rules_text.split("\n")
-        x = 60
-        start_y = text_top + self.scroll_y
-
-        for i, line in enumerate(lines):
-            y = start_y - i * self.text_line_height
-            if y > text_top + 10:
+        # Draw rules lines
+        start_y = TEXT_TOP + self.scroll_y
+        for i, txt in enumerate(self.line_texts):
+            y = start_y - i * LINE_HEIGHT
+            if y > TEXT_TOP + 10:
                 continue
-            if y < text_bottom - 10:
+            if y < TEXT_BOTTOM - 10:
                 break
+            txt.y = y
+            txt.draw()
 
-            if line.isupper() and line.strip():
-                # Section headers
-                arcade.draw_text(
-                    line, x, y, arcade.color.YELLOW,
-                    font_size=16, bold=True,
-                )
-            else:
-                arcade.draw_text(
-                    line, x, y, arcade.color.WHITE,
-                    font_size=13,
-                )
-
-        # Top bar background
+        # Top bar background (covers scrolled text)
         arcade.draw_rect_filled(
             arcade.XYWH(WIDTH / 2, HEIGHT - 35, WIDTH, 70),
             arcade.color.DARK_SLATE_GRAY,
         )
-        arcade.draw_text(
-            self.game_name,
-            WIDTH / 2, HEIGHT - 45,
-            arcade.color.WHITE,
-            font_size=30,
-            anchor_x="center",
-        )
+        self.txt_title.draw()
         self.back_button.draw()
 
         # Bottom bar background
@@ -112,7 +103,6 @@ class RulesView(arcade.View):
         if self.back_button.hit_test(x, y):
             self.window.show_view(self.menu_view)
             return
-
         if self.play_button.hit_test(x, y):
             if self.existing_game_view:
                 self.window.show_view(self.existing_game_view)

@@ -22,19 +22,17 @@ class HomeView(arcade.View):
             cy = start_y - i * (btn_h + spacing)
             self.buttons.append(Button(cx, cy, btn_w, btn_h, label))
 
+        self.txt_title = arcade.Text(
+            "Python Arcade", WIDTH / 2, HEIGHT - 80,
+            arcade.color.WHITE, font_size=48, anchor_x="center",
+        )
+
     def on_show(self):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
         self.clear()
-        arcade.draw_text(
-            "Python Arcade",
-            WIDTH / 2,
-            HEIGHT - 80,
-            arcade.color.WHITE,
-            font_size=48,
-            anchor_x="center",
-        )
+        self.txt_title.draw()
         for btn in self.buttons:
             btn.draw()
 

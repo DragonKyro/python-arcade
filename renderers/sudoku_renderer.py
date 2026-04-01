@@ -5,14 +5,34 @@ All arcade.draw_* calls for Sudoku live here.
 
 import arcade
 
-from games.sudoku import (
-    WIDTH, HEIGHT,
-    GRID_SIZE, CELL_SIZE, GRID_PX, GRID_ORIGIN_X, GRID_ORIGIN_Y,
-    TOP_BAR_HEIGHT,
-    BG_COLOR, GRID_BG, CELL_HIGHLIGHT, SELECTED_COLOR, CONFLICT_COLOR,
-    GIVEN_TEXT_COLOR, PLAYER_TEXT_COLOR, CONFLICT_TEXT_COLOR,
-    THIN_LINE_COLOR, THICK_LINE_COLOR, WIN_OVERLAY,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Grid constants
+GRID_SIZE = 9
+CELL_SIZE = 50
+GRID_PX = GRID_SIZE * CELL_SIZE  # 450
+
+# Center the grid
+GRID_ORIGIN_X = (WIDTH - GRID_PX) // 2
+GRID_ORIGIN_Y = (HEIGHT - 50 - GRID_PX) // 2  # offset for top bar
+
+# Top bar
+TOP_BAR_HEIGHT = 50
+
+# Colors
+BG_COLOR = (40, 44, 52)
+GRID_BG = (255, 255, 255)
+CELL_HIGHLIGHT = (200, 220, 255)
+SELECTED_COLOR = (100, 149, 237)
+CONFLICT_COLOR = (255, 180, 180)
+GIVEN_TEXT_COLOR = (20, 20, 20)
+PLAYER_TEXT_COLOR = (50, 100, 220)
+CONFLICT_TEXT_COLOR = (220, 40, 40)
+THIN_LINE_COLOR = (160, 160, 160)
+THICK_LINE_COLOR = (20, 20, 20)
+WIN_OVERLAY = (0, 0, 0, 160)
 
 
 def draw(game):
@@ -42,32 +62,29 @@ def _draw_top_bar(game):
     bx, by, bw, bh = 55, bar_y, 90, 35
     arcade.draw_rect_filled(arcade.XYWH(bx, by, bw, bh), arcade.color.DARK_SLATE_BLUE)
     arcade.draw_rect_outline(arcade.XYWH(bx, by, bw, bh), arcade.color.WHITE)
-    arcade.draw_text("Back", bx, by, arcade.color.WHITE,
-                     font_size=14, anchor_x="center", anchor_y="center")
+    game.txt_back.draw()
 
     # Timer
     mins = int(game.elapsed_time) // 60
     secs = int(game.elapsed_time) % 60
-    arcade.draw_text(f"{mins:02d}:{secs:02d}", WIDTH / 2, bar_y, arcade.color.WHITE,
-                     font_size=16, anchor_x="center", anchor_y="center", bold=True)
+    game.txt_timer.text = f"{mins:02d}:{secs:02d}"
+    game.txt_timer.draw()
 
     # Difficulty label
-    arcade.draw_text(game.difficulty, WIDTH / 2, bar_y - 15, arcade.color.LIGHT_GRAY,
-                     font_size=10, anchor_x="center", anchor_y="center")
+    game.txt_difficulty_label.text = game.difficulty
+    game.txt_difficulty_label.draw()
 
     # New Game button
     nx, ny, nw, nh = WIDTH - 65, bar_y, 110, 35
     arcade.draw_rect_filled(arcade.XYWH(nx, ny, nw, nh), arcade.color.DARK_GREEN)
     arcade.draw_rect_outline(arcade.XYWH(nx, ny, nw, nh), arcade.color.WHITE)
-    arcade.draw_text("New Game", nx, ny, arcade.color.WHITE,
-                     font_size=14, anchor_x="center", anchor_y="center")
+    game.txt_new_game.draw()
 
     # Help button
     hx, hy, hw, hh = WIDTH - 135, bar_y, 40, 40
     arcade.draw_rect_filled(arcade.XYWH(hx, hy, hw, hh), arcade.color.DARK_SLATE_BLUE)
     arcade.draw_rect_outline(arcade.XYWH(hx, hy, hw, hh), arcade.color.WHITE)
-    arcade.draw_text("?", hx, hy, arcade.color.WHITE,
-                     font_size=16, anchor_x="center", anchor_y="center", bold=True)
+    game.txt_help.draw()
 
 
 def _draw_difficulty_buttons(game):
@@ -78,8 +95,7 @@ def _draw_difficulty_buttons(game):
         color = arcade.color.DARK_GREEN if diff == game.difficulty else (80, 80, 80)
         arcade.draw_rect_filled(arcade.XYWH(dx + 30, diff_y, 58, 22), color)
         arcade.draw_rect_outline(arcade.XYWH(dx + 30, diff_y, 58, 22), arcade.color.WHITE)
-        arcade.draw_text(diff, dx + 30, diff_y, arcade.color.WHITE,
-                         font_size=10, anchor_x="center", anchor_y="center")
+        game.txt_diff_buttons[i].draw()
 
 
 def _draw_grid_background():
@@ -127,21 +143,21 @@ def _draw_numbers(game):
     for r in range(9):
         for c in range(9):
             val = game.board[r][c]
+            txt = game.txt_cells[(r, c)]
             if val == 0:
+                txt.text = ""
                 continue
-            cx, cy = game._cell_center(r, c)
             if game.conflicts[r][c]:
                 color = CONFLICT_TEXT_COLOR
             elif game.given[r][c]:
                 color = GIVEN_TEXT_COLOR
             else:
                 color = PLAYER_TEXT_COLOR
-            arcade.draw_text(
-                str(val), cx, cy, color,
-                font_size=20 if game.given[r][c] else 18,
-                anchor_x="center", anchor_y="center",
-                bold=game.given[r][c]
-            )
+            txt.text = str(val)
+            txt.color = color
+            txt.font_size = 20 if game.given[r][c] else 18
+            txt.bold = game.given[r][c]
+            txt.draw()
 
 
 def _draw_grid_lines():
@@ -167,20 +183,7 @@ def _draw_win_overlay(game):
         arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT),
         WIN_OVERLAY
     )
-    arcade.draw_text(
-        "Congratulations!", WIDTH / 2, HEIGHT / 2 + 30,
-        arcade.color.GOLD, font_size=36,
-        anchor_x="center", anchor_y="center", bold=True
-    )
-    arcade.draw_text(
-        f"Completed in {mins:02d}:{secs:02d}",
-        WIDTH / 2, HEIGHT / 2 - 20,
-        arcade.color.WHITE, font_size=20,
-        anchor_x="center", anchor_y="center"
-    )
-    arcade.draw_text(
-        "Click New Game to play again",
-        WIDTH / 2, HEIGHT / 2 - 60,
-        arcade.color.LIGHT_GRAY, font_size=14,
-        anchor_x="center", anchor_y="center"
-    )
+    game.txt_win_title.draw()
+    game.txt_win_time.text = f"Completed in {mins:02d}:{secs:02d}"
+    game.txt_win_time.draw()
+    game.txt_win_hint.draw()

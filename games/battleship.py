@@ -4,44 +4,17 @@ Two-phase game: placement then battle against an AI opponent.
 """
 
 import arcade
-import random
 
 from ai.battleship_ai import BattleshipAI
 from pages.rules import RulesView
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Grid / cell constants
-GRID_SIZE = 10
-CELL_SIZE = 28
-GRID_PIXEL = GRID_SIZE * CELL_SIZE  # 280
-
-# Layout positions
-PLAYER_GRID_LEFT = 30
-AI_GRID_LEFT = WIDTH - GRID_PIXEL - 30
-GRID_TOP = HEIGHT - 80
-
-# Ship sizes for a standard game
-SHIP_SIZES = [5, 4, 3, 3, 2]
-SHIP_NAMES = ["Carrier (5)", "Battleship (4)", "Cruiser (3)", "Submarine (3)", "Destroyer (2)"]
-
-# Colors
-COLOR_WATER = (173, 216, 230)
-COLOR_SHIP = (128, 128, 128)
-COLOR_HIT = (220, 50, 50)
-COLOR_MISS_DOT = (255, 255, 255)
-COLOR_GRID_LINE = (60, 60, 80)
-COLOR_PREVIEW_VALID = (100, 200, 100, 120)
-COLOR_PREVIEW_INVALID = (200, 100, 100, 120)
-COLOR_SUNK = (180, 40, 40)
-
-# Button geometry
-BTN_W = 90
-BTN_H = 30
-
-AI_SHOT_DELAY = 0.5  # seconds
+from renderers.battleship_renderer import (
+    WIDTH, HEIGHT,
+    GRID_SIZE, CELL_SIZE, GRID_PIXEL,
+    PLAYER_GRID_LEFT, AI_GRID_LEFT, GRID_TOP,
+    SHIP_SIZES, SHIP_NAMES,
+    BTN_W, BTN_H,
+    AI_SHOT_DELAY,
+)
 
 
 class BattleshipView(arcade.View):
@@ -50,11 +23,67 @@ class BattleshipView(arcade.View):
     def __init__(self, menu_view):
         super().__init__()
         self.menu_view = menu_view
+        self._create_texts()
         self.new_game()
 
     # ------------------------------------------------------------------ #
     #  Game state reset
     # ------------------------------------------------------------------ #
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        # Button labels (static)
+        self.txt_btn_back = arcade.Text("Back", 55, HEIGHT - 22, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+        self.txt_btn_new_game = arcade.Text("New Game", WIDTH - 55, HEIGHT - 22, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+        self.txt_btn_help = arcade.Text("?", WIDTH - 140, HEIGHT - 22, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
+
+        # Grid column/row labels (static) -- player grid
+        self.txt_player_col_labels = []
+        self.txt_player_row_labels = []
+        for i in range(GRID_SIZE):
+            lx = PLAYER_GRID_LEFT + i * CELL_SIZE + CELL_SIZE // 2
+            ly_top = GRID_TOP + 10
+            self.txt_player_col_labels.append(
+                arcade.Text(str(i), lx, ly_top, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
+            )
+            lx_side = PLAYER_GRID_LEFT - 12
+            ly_side = GRID_TOP - i * CELL_SIZE - CELL_SIZE // 2
+            self.txt_player_row_labels.append(
+                arcade.Text(chr(65 + i), lx_side, ly_side, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
+            )
+
+        # Grid column/row labels (static) -- AI grid
+        self.txt_ai_col_labels = []
+        self.txt_ai_row_labels = []
+        for i in range(GRID_SIZE):
+            lx = AI_GRID_LEFT + i * CELL_SIZE + CELL_SIZE // 2
+            self.txt_ai_col_labels.append(
+                arcade.Text(str(i), lx, GRID_TOP + 10, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
+            )
+            ly_side = GRID_TOP - i * CELL_SIZE - CELL_SIZE // 2
+            self.txt_ai_row_labels.append(
+                arcade.Text(chr(65 + i), AI_GRID_LEFT - 12, ly_side, arcade.color.WHITE, 10, anchor_x="center", anchor_y="center")
+            )
+
+        # Ship list header and items (placement phase)
+        sx = PLAYER_GRID_LEFT + GRID_PIXEL + 40
+        sy = GRID_TOP - 10
+        self.txt_ship_list_header = arcade.Text("Ships:", sx, sy, arcade.color.WHITE, 14, bold=True)
+        self.txt_ship_list_items = []
+        for i, name in enumerate(SHIP_NAMES):
+            self.txt_ship_list_items.append(
+                arcade.Text("", sx, sy - 25 - i * 22, (200, 200, 200), 12)
+            )
+
+        # Battle phase labels (static)
+        px = PLAYER_GRID_LEFT + GRID_PIXEL // 2
+        ax = AI_GRID_LEFT + GRID_PIXEL // 2
+        label_y = GRID_TOP + 26
+        self.txt_label_your_board = arcade.Text("Your Board", px, label_y, arcade.color.WHITE, 14, anchor_x="center", bold=True)
+        self.txt_label_enemy_board = arcade.Text("Enemy Board", ax, label_y, arcade.color.WHITE, 14, anchor_x="center", bold=True)
+
+        # Status message (dynamic)
+        self.txt_message = arcade.Text("", WIDTH // 2, 30, arcade.color.YELLOW, 15, anchor_x="center", anchor_y="center")
 
     def new_game(self):
         """Initialize / reset all game state."""

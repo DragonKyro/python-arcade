@@ -3,58 +3,19 @@ Dots and Boxes game view for Python Arcade 2.6.x.
 """
 
 import arcade
-import copy
 
 from ai.dots_boxes_ai import DotsBoxesAI
 from pages.components import Button
 from pages.rules import RulesView
 from renderers import dots_boxes_renderer
-
-# Window / layout constants
-WIDTH = 800
-HEIGHT = 600
-
-GRID_ROWS = 5
-GRID_COLS = 5
-DOT_COUNT_X = GRID_COLS + 1  # 6
-DOT_COUNT_Y = GRID_ROWS + 1  # 6
-
-DOT_SPACING = 80
-DOT_RADIUS = 6
-
-# Compute top-left of the grid so it is centred
-GRID_W = (DOT_COUNT_X - 1) * DOT_SPACING
-GRID_H = (DOT_COUNT_Y - 1) * DOT_SPACING
-ORIGIN_X = (WIDTH - GRID_W) / 2
-ORIGIN_Y = (HEIGHT - GRID_H) / 2 - 10  # nudge down a bit for score room
-
-# Colours
-COLOR_BG = arcade.color.WHITE
-COLOR_DOT = arcade.color.BLACK
-COLOR_PLAYER_LINE = arcade.color.BLUE
-COLOR_AI_LINE = arcade.color.RED
-COLOR_PLAYER_FILL = (173, 216, 230, 120)  # light blue
-COLOR_AI_FILL = (255, 182, 182, 120)      # light red
-COLOR_UNDRAWN = (220, 220, 220)
-COLOR_TEXT = arcade.color.BLACK
-
-LINE_WIDTH = 4
-HIT_TOLERANCE = 20  # pixels from a line segment centre to register a click
-
-# Button geometry
-BTN_W = 100
-BTN_H = 32
-BTN_BACK_X = 60
-BTN_BACK_Y = HEIGHT - 25
-BTN_NEW_X = WIDTH - 60
-BTN_NEW_Y = HEIGHT - 25
-
-
-def _dot_pos(row, col):
-    """Return (x, y) screen position for the dot at grid (row, col). Row 0 is top."""
-    x = ORIGIN_X + col * DOT_SPACING
-    y = ORIGIN_Y + (GRID_ROWS - row) * DOT_SPACING  # flip so row 0 is top visually
-    return x, y
+from renderers.dots_boxes_renderer import (
+    WIDTH, HEIGHT,
+    GRID_ROWS, GRID_COLS,
+    DOT_SPACING,
+    HIT_TOLERANCE,
+    BTN_W, BTN_H, BTN_BACK_X, BTN_BACK_Y, BTN_NEW_X, BTN_NEW_Y,
+    _dot_pos,
+)
 
 
 class DotsBoxesView(arcade.View):
@@ -65,6 +26,7 @@ class DotsBoxesView(arcade.View):
         self.menu_view = menu_view
         self.ai = DotsBoxesAI()
         self.help_button = Button(WIDTH - 135, HEIGHT - 25, 40, 32, "?", color=arcade.color.DARK_SLATE_BLUE)
+        dots_boxes_renderer.create_text_objects(self)
         self._init_game()
 
     # ------------------------------------------------------------------ #

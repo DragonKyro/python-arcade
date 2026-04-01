@@ -13,7 +13,6 @@ Red starts at bottom (rows 5-7), Black starts at top (rows 0-2).
 """
 
 import math
-import copy
 
 EMPTY = 0
 RED = 1

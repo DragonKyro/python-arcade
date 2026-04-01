@@ -1,5 +1,3 @@
-import copy
-
 
 class MancalaAI:
     """Mancala (Kalah variant) AI using minimax with alpha-beta pruning."""

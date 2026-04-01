@@ -131,15 +131,15 @@ class _Button:
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
-        arcade.draw_text(
-            self.label,
-            self.cx,
-            self.cy,
-            BUTTON_TEXT_COLOR,
-            font_size=14,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        if not hasattr(self, '_txt_label'):
+            self._txt_label = arcade.Text(
+                self.label, self.cx, self.cy, BUTTON_TEXT_COLOR,
+                font_size=14, anchor_x="center", anchor_y="center",
+            )
+        self._txt_label.text = self.label
+        self._txt_label.x = self.cx
+        self._txt_label.y = self.cy
+        self._txt_label.draw()
 
 
 def _cell_to_screen(col, row):
@@ -161,7 +161,87 @@ class TetrisView(arcade.View):
         self.btn_new = _Button(WIDTH - 80, HEIGHT - 25, 110, 34, "New Game")
         self.btn_help = _Button(WIDTH - 150, HEIGHT - 25, 40, 40, "?")
 
+        self._create_texts()
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        top_y = BOARD_ORIGIN_Y + BOARD_PIXEL_H
+        x = PANEL_X
+
+        self.txt_title = arcade.Text(
+            "TETRIS", x, top_y + 10, SCORE_COLOR,
+            font_size=22, bold=True, anchor_x="left", anchor_y="bottom",
+        )
+        self.txt_next_label = arcade.Text(
+            "NEXT", x, top_y - 20, STATUS_TEXT_COLOR,
+            font_size=14, anchor_x="left", anchor_y="top",
+        )
+
+        preview_y = top_y - 20 - 25
+        stats_y = preview_y - 110
+        self.txt_score_label = arcade.Text(
+            "SCORE", x, stats_y, STATUS_TEXT_COLOR,
+            font_size=13, anchor_x="left", anchor_y="top",
+        )
+        self.txt_score_value = arcade.Text(
+            "", x, stats_y - 20, SCORE_COLOR,
+            font_size=18, bold=True, anchor_x="left", anchor_y="top",
+        )
+
+        stats_y -= 60
+        self.txt_level_label = arcade.Text(
+            "LEVEL", x, stats_y, STATUS_TEXT_COLOR,
+            font_size=13, anchor_x="left", anchor_y="top",
+        )
+        self.txt_level_value = arcade.Text(
+            "", x, stats_y - 20, SCORE_COLOR,
+            font_size=18, bold=True, anchor_x="left", anchor_y="top",
+        )
+
+        stats_y -= 60
+        self.txt_lines_label = arcade.Text(
+            "LINES", x, stats_y, STATUS_TEXT_COLOR,
+            font_size=13, anchor_x="left", anchor_y="top",
+        )
+        self.txt_lines_value = arcade.Text(
+            "", x, stats_y - 20, SCORE_COLOR,
+            font_size=18, bold=True, anchor_x="left", anchor_y="top",
+        )
+
+        # Controls hint
+        stats_y -= 80
+        controls = [
+            "CONTROLS",
+            "<< >>  Move",
+            "^    Rotate",
+            "v    Soft Drop",
+            "Space Hard Drop",
+        ]
+        self.txt_controls = []
+        for i, line in enumerate(controls):
+            fs = 11 if i > 0 else 12
+            c = STATUS_TEXT_COLOR if i > 0 else SCORE_COLOR
+            t = arcade.Text(
+                line, x, stats_y - i * 18, c,
+                font_size=fs, anchor_x="left", anchor_y="top",
+            )
+            self.txt_controls.append(t)
+
+        # Game over texts
+        self.txt_game_over = arcade.Text(
+            "GAME OVER", WIDTH / 2, HEIGHT / 2 + 30, (243, 139, 168),
+            font_size=36, bold=True, anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 - 15, SCORE_COLOR,
+            font_size=20, anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Press ENTER or click New Game to play again",
+            WIDTH / 2, HEIGHT / 2 - 50, STATUS_TEXT_COLOR,
+            font_size=13, anchor_x="center", anchor_y="center",
+        )
 
     # ------------------------------------------------------------------
     # Game state

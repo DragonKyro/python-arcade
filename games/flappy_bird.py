@@ -79,15 +79,15 @@ class _Button:
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
-        arcade.draw_text(
-            self.label,
-            self.cx,
-            self.cy,
-            LINE_COLOR,
-            font_size=14,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        if not hasattr(self, '_txt_label'):
+            self._txt_label = arcade.Text(
+                self.label, self.cx, self.cy, LINE_COLOR,
+                font_size=14, anchor_x="center", anchor_y="center",
+            )
+        self._txt_label.text = self.label
+        self._txt_label.x = self.cx
+        self._txt_label.y = self.cy
+        self._txt_label.draw()
 
 
 class FlappyBirdView(arcade.View):
@@ -104,6 +104,8 @@ class FlappyBirdView(arcade.View):
         # High score (session)
         self.high_score = 0
 
+        self._create_texts()
+
         # Clouds (decorative, persist across resets)
         self.clouds = []
         for _ in range(5):
@@ -115,6 +117,50 @@ class FlappyBirdView(arcade.View):
             self.clouds.append([cx, cy, cw, ch, speed])
 
         self._reset()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        self.txt_start = arcade.Text(
+            "Press Space to Start", WIDTH / 2, HEIGHT / 2 + 80,
+            (255, 255, 255), font_size=22,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_start_shadow = arcade.Text(
+            "Press Space to Start", WIDTH / 2 + 2, HEIGHT / 2 + 78,
+            (0, 0, 0, 100), font_size=22,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_score_shadow = arcade.Text(
+            "", WIDTH / 2 + 2, HEIGHT - 80 - 2,
+            (0, 0, 0, 120), font_size=48,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT - 80,
+            (255, 255, 255), font_size=48,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over = arcade.Text(
+            "Game Over", WIDTH / 2, HEIGHT / 2 + 60,
+            (255, 80, 80), font_size=40,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 + 10,
+            (255, 255, 255), font_size=24,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_best_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 - 25,
+            (249, 226, 175), font_size=20,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_restart_hint = arcade.Text(
+            "Tap or press Space to play again",
+            WIDTH / 2, HEIGHT / 2 - 70,
+            (200, 200, 200), font_size=16,
+            anchor_x="center", anchor_y="center",
+        )
 
     def _reset(self):
         """Reset game state for a new round."""

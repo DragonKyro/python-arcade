@@ -43,7 +43,7 @@ def draw(game):
     _draw_top_bar(game)
 
     if game.state == "serve":
-        _draw_serve_message()
+        _draw_serve_message(game)
     elif game.state == "gameover":
         _draw_gameover(game)
 
@@ -96,62 +96,23 @@ def _draw_ball(game):
 
 def _draw_scores(game):
     """Draw scores at top of play area."""
-    arcade.draw_text(
-        str(game.player_score),
-        WIDTH / 4,
-        PLAY_HEIGHT - 50,
-        WHITE,
-        font_size=36,
-        anchor_x="center",
-        anchor_y="center",
-    )
-    arcade.draw_text(
-        str(game.ai_score),
-        3 * WIDTH / 4,
-        PLAY_HEIGHT - 50,
-        WHITE,
-        font_size=36,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_player_score.text = str(game.player_score)
+    game.txt_player_score.draw()
+    game.txt_ai_score.text = str(game.ai_score)
+    game.txt_ai_score.draw()
 
 
 def _draw_difficulty_select(game):
     """Draw difficulty selection screen."""
-    arcade.draw_text(
-        "PONG",
-        WIDTH / 2,
-        HEIGHT / 2 + 100,
-        WHITE,
-        font_size=48,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
-    arcade.draw_text(
-        "Select Difficulty",
-        WIDTH / 2,
-        HEIGHT / 2 + 50,
-        GRAY,
-        font_size=20,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_title.draw()
+    game.txt_select_difficulty.draw()
     for btn in game.difficulty_buttons:
         btn.draw(btn.contains(game.mouse_x, game.mouse_y))
 
 
-def _draw_serve_message():
+def _draw_serve_message(game):
     """Draw a brief 'Get Ready' message during serve delay."""
-    arcade.draw_text(
-        "Get Ready...",
-        WIDTH / 2,
-        PLAY_HEIGHT / 2,
-        GRAY,
-        font_size=24,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_serve.draw()
 
 
 def _draw_gameover(game):
@@ -160,25 +121,10 @@ def _draw_gameover(game):
         arcade.XYWH(WIDTH / 2, PLAY_HEIGHT / 2, WIDTH, PLAY_HEIGHT),
         OVERLAY_COLOR,
     )
-    arcade.draw_text(
-        game.winner_text,
-        WIDTH / 2,
-        PLAY_HEIGHT / 2 + 40,
-        WHITE,
-        font_size=42,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
-    arcade.draw_text(
-        f"{game.player_score} - {game.ai_score}",
-        WIDTH / 2,
-        PLAY_HEIGHT / 2 + 0,
-        GRAY,
-        font_size=24,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_winner.text = game.winner_text
+    game.txt_winner.draw()
+    game.txt_final_score.text = f"{game.player_score} - {game.ai_score}"
+    game.txt_final_score.draw()
     game.btn_play_again.draw(
         game.btn_play_again.contains(game.mouse_x, game.mouse_y)
     )

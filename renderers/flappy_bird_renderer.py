@@ -75,25 +75,8 @@ def draw(game):
 
     # UI overlay for states
     if game.state == WAITING:
-        arcade.draw_text(
-            "Press Space to Start",
-            WIDTH / 2, HEIGHT / 2 + 80,
-            (255, 255, 255),
-            font_size=22,
-            anchor_x="center",
-            anchor_y="center",
-            bold=True,
-        )
-        # Shadow
-        arcade.draw_text(
-            "Press Space to Start",
-            WIDTH / 2 + 2, HEIGHT / 2 + 78,
-            (0, 0, 0, 100),
-            font_size=22,
-            anchor_x="center",
-            anchor_y="center",
-            bold=True,
-        )
+        game.txt_start_shadow.draw()
+        game.txt_start.draw()
 
     if game.state == GAME_OVER:
         _draw_game_over(game)
@@ -222,25 +205,11 @@ def _draw_score(game):
     """Draw the current score centered near the top."""
     score_text = str(game.score)
     # Shadow
-    arcade.draw_text(
-        score_text,
-        WIDTH / 2 + 2, HEIGHT - 80 - 2,
-        (0, 0, 0, 120),
-        font_size=48,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
+    game.txt_score_shadow.text = score_text
+    game.txt_score_shadow.draw()
     # Main
-    arcade.draw_text(
-        score_text,
-        WIDTH / 2, HEIGHT - 80,
-        (255, 255, 255),
-        font_size=48,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
+    game.txt_score.text = score_text
+    game.txt_score.draw()
 
 
 def _draw_game_over(game):
@@ -252,43 +221,16 @@ def _draw_game_over(game):
     )
 
     # Game Over text
-    arcade.draw_text(
-        "Game Over",
-        WIDTH / 2, HEIGHT / 2 + 60,
-        (255, 80, 80),
-        font_size=40,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
+    game.txt_game_over.draw()
 
     # Score
-    arcade.draw_text(
-        f"Score: {game.score}",
-        WIDTH / 2, HEIGHT / 2 + 10,
-        (255, 255, 255),
-        font_size=24,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_game_over_score.text = f"Score: {game.score}"
+    game.txt_game_over_score.draw()
 
     # High score
-    arcade.draw_text(
-        f"Best: {game.high_score}",
-        WIDTH / 2, HEIGHT / 2 - 25,
-        (249, 226, 175),
-        font_size=20,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_best_score.text = f"Best: {game.high_score}"
+    game.txt_best_score.draw()
 
     # Restart prompt
     if game.game_over_timer >= RESTART_DELAY:
-        arcade.draw_text(
-            "Tap or press Space to play again",
-            WIDTH / 2, HEIGHT / 2 - 70,
-            (200, 200, 200),
-            font_size=16,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        game.txt_restart_hint.draw()

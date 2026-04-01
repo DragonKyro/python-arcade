@@ -3,38 +3,17 @@ import random
 import time
 from pages.rules import RulesView
 from renderers import wordle_renderer
+from renderers.wordle_renderer import (
+    WIDTH, HEIGHT,
+    MAX_GUESSES, WORD_LENGTH,
+    GREEN, YELLOW, DARK_GRAY,
+    CELL_SIZE, CELL_GAP, GRID_TOP,
+    KB_ROWS, KB_KEY_W, KB_KEY_H, KB_KEY_GAP, KB_Y_START,
+    KEY_TEXT,
+)
 
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Game constants
-MAX_GUESSES = 6
-WORD_LENGTH = 5
-
-# Colors
-GREEN = (106, 170, 100)       # #6AAA64
-YELLOW = (201, 180, 88)       # #C9B458
-DARK_GRAY = (120, 124, 126)   # #787C7E
-EMPTY_CELL = (18, 18, 19)
-CELL_BORDER = (58, 58, 60)
-CELL_ACTIVE_BORDER = (135, 138, 140)
+# Colors used only in game logic
 BG_COLOR = (18, 18, 19)
-KEY_BG = (129, 131, 132)
-KEY_TEXT = arcade.color.WHITE
-
-# Layout
-CELL_SIZE = 60
-CELL_GAP = 6
-GRID_TOP = HEIGHT - 80
-GRID_LEFT = WIDTH / 2 - (WORD_LENGTH * (CELL_SIZE + CELL_GAP) - CELL_GAP) / 2
-
-# Keyboard layout
-KB_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"]
-KB_KEY_W = 44
-KB_KEY_H = 54
-KB_KEY_GAP = 6
-KB_Y_START = 110
 
 # Word list (200+ common 5-letter words)
 WORDS = [
@@ -137,7 +116,46 @@ class WordleView(arcade.View):
     def __init__(self, menu_view):
         super().__init__()
         self.menu_view = menu_view
+        self._create_texts()
         self.reset_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for rendering."""
+        self.txt_title = arcade.Text(
+            "Wordle", WIDTH / 2, HEIGHT - 30, arcade.color.WHITE,
+            font_size=28, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_btn_back = arcade.Text(
+            "Back", 60, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_new_game = arcade.Text(
+            "New Game", WIDTH - 70, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_help = arcade.Text(
+            "?", WIDTH - 145, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_message = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 + 40, (0, 0, 0),
+            font_size=16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        # Grid cell letter texts (6 rows x 5 cols)
+        self.txt_grid = {}
+        for row in range(MAX_GUESSES):
+            for col in range(WORD_LENGTH):
+                x = WIDTH / 2 + (col - WORD_LENGTH / 2 + 0.5) * (CELL_SIZE + CELL_GAP)
+                y = GRID_TOP - row * (CELL_SIZE + CELL_GAP)
+                self.txt_grid[(row, col)] = arcade.Text(
+                    "", x, y, arcade.color.WHITE,
+                    font_size=28, anchor_x="center", anchor_y="center", bold=True,
+                )
+        # Keyboard key texts (reusable single object)
+        self.txt_key = arcade.Text(
+            "", 0, 0, KEY_TEXT,
+            font_size=14, anchor_x="center", anchor_y="center", bold=True,
+        )
 
     def reset_game(self):
         """Initialize or reset all game state."""

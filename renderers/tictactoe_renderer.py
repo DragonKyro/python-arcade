@@ -1,12 +1,36 @@
 """Renderer for Tic-Tac-Toe — all drawing code lives here."""
 
 import arcade
-from games.tictactoe import (
-    WIDTH, HEIGHT, CELL_SIZE, GRID_SIZE, GRID_LEFT, GRID_TOP,
-    BG_COLOR, LINE_COLOR, X_COLOR, O_COLOR, HIGHLIGHT_COLOR,
-    MESSAGE_COLOR, OVERLAY_COLOR,
-    _grid_to_screen,
-)
+
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Grid layout
+CELL_SIZE = 140
+GRID_SIZE = CELL_SIZE * 3  # 420
+GRID_LEFT = (WIDTH - GRID_SIZE) // 2
+GRID_TOP = (HEIGHT - GRID_SIZE) // 2 + 30  # shift up slightly for status text
+GRID_BOTTOM = GRID_TOP + GRID_SIZE  # in screen coords, y goes up
+
+# Colors
+BG_COLOR = (30, 30, 46)
+LINE_COLOR = (205, 214, 244)
+X_COLOR = (243, 139, 168)
+O_COLOR = (137, 180, 250)
+HIGHLIGHT_COLOR = (249, 226, 175)
+BUTTON_COLOR = (69, 71, 90)
+BUTTON_HOVER_COLOR = (88, 91, 112)
+BUTTON_TEXT_COLOR = (205, 214, 244)
+OVERLAY_COLOR = (30, 30, 46, 200)
+MESSAGE_COLOR = (166, 227, 161)
+
+
+def _grid_to_screen(row: int, col: int):
+    """Convert grid (row, col) to screen center (x, y). Row 0 is top."""
+    x = GRID_LEFT + col * CELL_SIZE + CELL_SIZE // 2
+    y = HEIGHT - (GRID_TOP + row * CELL_SIZE + CELL_SIZE // 2)
+    return x, y
 
 
 def draw(game):
@@ -15,16 +39,7 @@ def draw(game):
     arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), BG_COLOR)
 
     # Title
-    arcade.draw_text(
-        "Tic-Tac-Toe",
-        WIDTH // 2,
-        HEIGHT - 30,
-        LINE_COLOR,
-        font_size=20,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
+    game.txt_title.draw()
 
     # Buttons (these use the _Button component's draw method)
     game.btn_back.draw(hover=game.btn_back.contains(game.mouse_x, game.mouse_y))
@@ -39,15 +54,8 @@ def draw(game):
             status = "Your turn (X)"
     else:
         status = ""
-    arcade.draw_text(
-        status,
-        WIDTH // 2,
-        HEIGHT - 65,
-        LINE_COLOR,
-        font_size=15,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_status.text = status
+    game.txt_status.draw()
 
     # Draw grid lines
     _draw_grid()
@@ -121,16 +129,8 @@ def _draw_overlay(game):
     else:
         msg = "It's a draw!"
 
-    arcade.draw_text(
-        msg,
-        WIDTH // 2,
-        HEIGHT // 2 + 20,
-        MESSAGE_COLOR,
-        font_size=36,
-        anchor_x="center",
-        anchor_y="center",
-        bold=True,
-    )
+    game.txt_overlay_msg.text = msg
+    game.txt_overlay_msg.draw()
 
     game.btn_play_again.draw(
         hover=game.btn_play_again.contains(game.mouse_x, game.mouse_y)

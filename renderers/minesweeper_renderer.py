@@ -1,11 +1,52 @@
 """Renderer for Minesweeper — all drawing code lives here."""
 
 import arcade
-from games.minesweeper import (
-    WIDTH, HEIGHT, COLS, ROWS, MINE_COUNT, TOP_BAR_HEIGHT,
-    CELL_SIZE, GRID_ORIGIN_X, GRID_ORIGIN_Y,
-    NUMBER_COLORS, UNREVEALED, FLAGGED, REVEALED, LOST, WON,
-)
+
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Grid constants
+COLS = 16
+ROWS = 12
+MINE_COUNT = 30
+
+# Layout constants
+TOP_BAR_HEIGHT = 50
+GRID_PADDING = 10
+
+# Calculate cell size to fit the grid nicely in the available space
+AVAILABLE_WIDTH = WIDTH - 2 * GRID_PADDING
+AVAILABLE_HEIGHT = HEIGHT - TOP_BAR_HEIGHT - 2 * GRID_PADDING
+CELL_SIZE = min(AVAILABLE_WIDTH // COLS, AVAILABLE_HEIGHT // ROWS, 35)
+
+# Grid origin (bottom-left corner of the grid), centered horizontally
+GRID_WIDTH = COLS * CELL_SIZE
+GRID_HEIGHT = ROWS * CELL_SIZE
+GRID_ORIGIN_X = (WIDTH - GRID_WIDTH) // 2
+GRID_ORIGIN_Y = (HEIGHT - TOP_BAR_HEIGHT - GRID_HEIGHT) // 2
+
+# Number colors: index 1-8
+NUMBER_COLORS = {
+    1: arcade.color.BLUE,
+    2: arcade.color.GREEN,
+    3: arcade.color.RED,
+    4: arcade.color.DARK_BLUE,
+    5: arcade.color.DARK_RED,
+    6: arcade.color.TEAL,
+    7: arcade.color.BLACK,
+    8: arcade.color.GRAY,
+}
+
+# Cell states
+UNREVEALED = 0
+REVEALED = 1
+FLAGGED = 2
+
+# Game states
+PLAYING = 0
+WON = 1
+LOST = 2
 
 
 def draw(game):
@@ -21,34 +62,29 @@ def draw(game):
     back_bx, back_by, back_bw, back_bh = 55, bar_y, 90, 35
     arcade.draw_rect_filled(arcade.XYWH(back_bx, back_by, back_bw, back_bh), arcade.color.DARK_SLATE_BLUE)
     arcade.draw_rect_outline(arcade.XYWH(back_bx, back_by, back_bw, back_bh), arcade.color.WHITE)
-    arcade.draw_text("Back", back_bx, back_by, arcade.color.WHITE,
-                     font_size=14, anchor_x="center", anchor_y="center")
+    game.txt_back.draw()
 
     # Mine counter
     mine_display = MINE_COUNT - game.flags_placed
-    arcade.draw_text(f"Mines: {mine_display}", 200, bar_y,
-                     arcade.color.YELLOW, font_size=16,
-                     anchor_x="center", anchor_y="center")
+    game.txt_mines.text = f"Mines: {mine_display}"
+    game.txt_mines.draw()
 
     # Timer
     seconds = int(game.elapsed_time)
-    arcade.draw_text(f"Time: {seconds}", 500, bar_y,
-                     arcade.color.YELLOW, font_size=16,
-                     anchor_x="center", anchor_y="center")
+    game.txt_timer.text = f"Time: {seconds}"
+    game.txt_timer.draw()
 
     # New Game button
     new_bx, new_by, new_bw, new_bh = WIDTH - 65, bar_y, 110, 35
     arcade.draw_rect_filled(arcade.XYWH(new_bx, new_by, new_bw, new_bh), arcade.color.DARK_GREEN)
     arcade.draw_rect_outline(arcade.XYWH(new_bx, new_by, new_bw, new_bh), arcade.color.WHITE)
-    arcade.draw_text("New Game", new_bx, new_by, arcade.color.WHITE,
-                     font_size=14, anchor_x="center", anchor_y="center")
+    game.txt_new_game.draw()
 
     # Help button
     help_bx, help_by, help_bw, help_bh = WIDTH - 135, bar_y, 40, 35
     arcade.draw_rect_filled(arcade.XYWH(help_bx, help_by, help_bw, help_bh), arcade.color.DARK_SLATE_BLUE)
     arcade.draw_rect_outline(arcade.XYWH(help_bx, help_by, help_bw, help_bh), arcade.color.WHITE)
-    arcade.draw_text("?", help_bx, help_by, arcade.color.WHITE,
-                     font_size=14, anchor_x="center", anchor_y="center")
+    game.txt_help.draw()
 
     # --- Grid ---
     for row in range(ROWS):
@@ -106,23 +142,16 @@ def draw(game):
                 elif game.adjacent[row][col] > 0:
                     num = game.adjacent[row][col]
                     color = NUMBER_COLORS.get(num, arcade.color.BLACK)
-                    arcade.draw_text(str(num), cx, cy, color,
-                                     font_size=int(CELL_SIZE * 0.5),
-                                     anchor_x="center", anchor_y="center",
-                                     bold=True)
+                    txt_obj = game.txt_cell_numbers[(row, col)]
+                    txt_obj.text = str(num)
+                    txt_obj.color = color
+                    txt_obj.draw()
 
     # --- Game over / win overlay ---
     if game.game_state == LOST:
-        arcade.draw_text("GAME OVER", WIDTH / 2, HEIGHT / 2 + 10,
-                         arcade.color.RED, font_size=40,
-                         anchor_x="center", anchor_y="center", bold=True)
-        arcade.draw_text("Click 'New Game' to try again", WIDTH / 2, HEIGHT / 2 - 30,
-                         arcade.color.WHITE, font_size=16,
-                         anchor_x="center", anchor_y="center")
+        game.txt_game_over.draw()
+        game.txt_game_over_hint.draw()
     elif game.game_state == WON:
-        arcade.draw_text("YOU WIN!", WIDTH / 2, HEIGHT / 2 + 10,
-                         arcade.color.YELLOW, font_size=40,
-                         anchor_x="center", anchor_y="center", bold=True)
-        arcade.draw_text(f"Time: {int(game.elapsed_time)} seconds", WIDTH / 2,
-                         HEIGHT / 2 - 30, arcade.color.WHITE, font_size=16,
-                         anchor_x="center", anchor_y="center")
+        game.txt_you_win.draw()
+        game.txt_win_time.text = f"Time: {int(game.elapsed_time)} seconds"
+        game.txt_win_time.draw()

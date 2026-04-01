@@ -1,43 +1,15 @@
 import arcade
-import copy
 from ai.mancala_ai import MancalaAI, sow
 from pages.rules import RulesView
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Board layout constants
-BOARD_CX = WIDTH / 2
-BOARD_CY = HEIGHT / 2
-BOARD_W = 700
-BOARD_H = 260
-BOARD_CORNER = 60
-
-STORE_W = 70
-STORE_H = 180
-PIT_RADIUS = 36
-PIT_SPACING = 85
-PITS_START_X = BOARD_CX - 2.5 * PIT_SPACING
-
-PLAYER_ROW_Y = BOARD_CY - 55
-AI_ROW_Y = BOARD_CY + 55
-STORE_Y = BOARD_CY
-
-LEFT_STORE_X = BOARD_CX - BOARD_W / 2 + STORE_W / 2 + 15
-RIGHT_STORE_X = BOARD_CX + BOARD_W / 2 - STORE_W / 2 - 15
-
-STONE_RADIUS = 5
-STONE_COLOR = (180, 140, 100)
-
-BOARD_COLOR = (101, 67, 33)
-BOARD_OUTLINE_COLOR = (60, 40, 20)
-PIT_COLOR = (70, 45, 20)
-PIT_HIGHLIGHT_COLOR = (140, 200, 140)
-STORE_COLOR = (80, 50, 25)
-
-PLAYER_SIDE = 0
-AI_SIDE = 1
+from renderers.mancala_renderer import (
+    WIDTH, HEIGHT,
+    PIT_RADIUS, PIT_SPACING, PITS_START_X,
+    PLAYER_ROW_Y,
+    PLAYER_SIDE, AI_SIDE,
+    LEFT_STORE_X, RIGHT_STORE_X,
+    STORE_H, STORE_Y,
+    BOARD_CY,
+)
 
 # Timing
 AI_DELAY = 0.5
@@ -49,7 +21,115 @@ class MancalaView(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.ai = MancalaAI()
+        self._create_texts()
         self.reset_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        # Title (static)
+        self.txt_title = arcade.Text(
+            "Mancala", WIDTH / 2, HEIGHT - 30,
+            arcade.color.WHITE, font_size=28,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Button labels (static) -- drawn inside _draw_button, so we create them
+        self.txt_btn_back = arcade.Text(
+            "Back", 60, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_new_game = arcade.Text(
+            "New Game", WIDTH - 70, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_help = arcade.Text(
+            "?", WIDTH - 140, HEIGHT - 30, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+
+        # Stone count labels under each pit (dynamic per pit)
+        self.txt_pit_counts = []
+        for i in range(6):
+            px = PITS_START_X + i * PIT_SPACING
+            # Player pit count
+            self.txt_pit_counts.append(
+                arcade.Text("", px, PLAYER_ROW_Y - PIT_RADIUS - 12,
+                            arcade.color.WHITE, font_size=12,
+                            anchor_x="center", anchor_y="center", bold=True)
+            )
+        self.txt_ai_pit_counts = []
+        for i in range(6):
+            px = PITS_START_X + i * PIT_SPACING
+            ai_display_index = 5 - i
+            self.txt_ai_pit_counts.append(
+                arcade.Text("", px, BOARD_CY + 55 - PIT_RADIUS - 12,
+                            arcade.color.WHITE, font_size=12,
+                            anchor_x="center", anchor_y="center", bold=True)
+            )
+
+        # Store count labels (dynamic)
+        self.txt_ai_store_count = arcade.Text(
+            "", LEFT_STORE_X, STORE_Y,
+            arcade.color.WHITE, font_size=24,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_ai_store_label = arcade.Text(
+            "AI", LEFT_STORE_X, STORE_Y + STORE_H / 2 + 12,
+            arcade.color.LIGHT_GRAY, font_size=11,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_player_store_count = arcade.Text(
+            "", RIGHT_STORE_X, STORE_Y,
+            arcade.color.WHITE, font_size=24,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_player_store_label = arcade.Text(
+            "You", RIGHT_STORE_X, STORE_Y - STORE_H / 2 - 12,
+            arcade.color.LIGHT_GRAY, font_size=11,
+            anchor_x="center", anchor_y="center",
+        )
+
+        # Turn indicator (dynamic)
+        self.txt_turn = arcade.Text(
+            "", WIDTH / 2, 40,
+            arcade.color.WHITE, font_size=14,
+            anchor_x="center", anchor_y="center",
+        )
+
+        # Pit index labels for player (static)
+        self.txt_pit_index_labels = []
+        for i in range(6):
+            px = PITS_START_X + i * PIT_SPACING
+            self.txt_pit_index_labels.append(
+                arcade.Text(str(i + 1), px, PLAYER_ROW_Y - PIT_RADIUS - 26,
+                            arcade.color.LIGHT_GRAY, font_size=10,
+                            anchor_x="center", anchor_y="center")
+            )
+
+        # Extra turn text (dynamic)
+        self.txt_extra_turn = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2,
+            arcade.color.YELLOW, font_size=22,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Game over texts (dynamic)
+        self.txt_game_over_msg = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 + 25,
+            arcade.color.WHITE, font_size=26,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 - 10,
+            arcade.color.WHITE, font_size=16,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' to play again.",
+            WIDTH / 2, HEIGHT / 2 - 40,
+            arcade.color.LIGHT_GRAY, font_size=13,
+            anchor_x="center", anchor_y="center",
+        )
 
     def reset_game(self):
         """Initialize or reset all game state."""
@@ -211,10 +291,15 @@ if __name__ == "__main__":
     arcade.set_background_color((40, 60, 40))
 
     class DummyMenu(arcade.View):
+        def __init__(self):
+            super().__init__()
+            self.txt_placeholder = arcade.Text(
+                "Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
+                arcade.color.WHITE, 20, anchor_x="center")
+
         def on_draw(self):
             self.clear()
-            arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
-                             arcade.color.WHITE, 20, anchor_x="center")
+            self.txt_placeholder.draw()
 
     menu = DummyMenu()
     game = MancalaView(menu)

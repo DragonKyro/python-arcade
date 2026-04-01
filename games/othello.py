@@ -3,33 +3,11 @@ from ai.othello_ai import OthelloAI, get_valid_moves, apply_move, check_game_ove
 from pages.components import Button
 from pages.rules import RulesView
 from renderers import othello_renderer
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Board constants
-BOARD_SIZE = 8
-CELL_SIZE = 55
-BOARD_PIXEL = BOARD_SIZE * CELL_SIZE  # 440
-BOARD_LEFT = (WIDTH - BOARD_PIXEL) / 2
-BOARD_BOTTOM = (HEIGHT - BOARD_PIXEL) / 2
-
-# Piece drawing
-PIECE_RADIUS = CELL_SIZE * 0.4
-HINT_RADIUS = 5
-
-# Colors
-BOARD_GREEN = (0, 128, 0)
-BOARD_LINE = (0, 0, 0)
-BLACK_PIECE = (20, 20, 20)
-WHITE_PIECE = (240, 240, 240)
-HINT_COLOR = (0, 0, 0, 100)
-
-# Game values
-EMPTY = 0
-BLACK = 1
-WHITE = 2
+from renderers.othello_renderer import (
+    WIDTH, HEIGHT,
+    BOARD_SIZE, CELL_SIZE, BOARD_LEFT, BOARD_BOTTOM,
+    EMPTY, BLACK, WHITE,
+)
 
 AI_DELAY = 0.5
 
@@ -40,6 +18,7 @@ class OthelloView(arcade.View):
         self.menu_view = menu_view
         self.ai = OthelloAI(depth=4)
         self.help_button = Button(WIDTH - 145, HEIGHT - 30, 40, 36, "?", color=arcade.color.DARK_SLATE_BLUE)
+        othello_renderer.create_text_objects(self)
         self.reset_game()
 
     def reset_game(self):
@@ -184,10 +163,16 @@ if __name__ == "__main__":
     arcade.set_background_color((40, 40, 60))
 
     class DummyMenu(arcade.View):
+        def __init__(self):
+            super().__init__()
+            self.txt_menu = arcade.Text(
+                "Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
+                arcade.color.WHITE, 20, anchor_x="center",
+            )
+
         def on_draw(self):
             self.clear()
-            arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
-                             arcade.color.WHITE, 20, anchor_x="center")
+            self.txt_menu.draw()
 
     menu = DummyMenu()
     game = OthelloView(menu)

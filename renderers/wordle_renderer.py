@@ -6,44 +6,53 @@ All arcade.draw_* calls for Wordle live here.
 import arcade
 import time
 
-from games.wordle import (
-    WIDTH, HEIGHT,
-    MAX_GUESSES, WORD_LENGTH,
-    GREEN, YELLOW, DARK_GRAY, EMPTY_CELL, CELL_BORDER, CELL_ACTIVE_BORDER,
-    CELL_SIZE, CELL_GAP, GRID_TOP,
-    KB_ROWS, KB_KEY_W, KB_KEY_H, KB_KEY_GAP, KB_Y_START,
-    KEY_BG, KEY_TEXT,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Game constants
+MAX_GUESSES = 6
+WORD_LENGTH = 5
+
+# Colors
+GREEN = (106, 170, 100)       # #6AAA64
+YELLOW = (201, 180, 88)       # #C9B458
+DARK_GRAY = (120, 124, 126)   # #787C7E
+EMPTY_CELL = (18, 18, 19)
+CELL_BORDER = (58, 58, 60)
+CELL_ACTIVE_BORDER = (135, 138, 140)
+KEY_BG = (129, 131, 132)
+KEY_TEXT = arcade.color.WHITE
+
+# Layout
+CELL_SIZE = 60
+CELL_GAP = 6
+GRID_TOP = HEIGHT - 80
+
+# Keyboard layout
+KB_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"]
+KB_KEY_W = 44
+KB_KEY_H = 54
+KB_KEY_GAP = 6
+KB_Y_START = 110
 
 
 def draw(game):
     """Render the entire Wordle game state."""
-    _draw_title()
-    _draw_button(60, HEIGHT - 30, 90, 36, "Back", (50, 50, 70))
-    _draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", (30, 100, 50))
-    _draw_button(WIDTH - 145, HEIGHT - 30, 40, 40, "?", (50, 50, 70))
+    game.txt_title.draw()
+    _draw_button(game, 60, HEIGHT - 30, 90, 36, "Back", (50, 50, 70), game.txt_btn_back)
+    _draw_button(game, WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", (30, 100, 50), game.txt_btn_new_game)
+    _draw_button(game, WIDTH - 145, HEIGHT - 30, 40, 40, "?", (50, 50, 70), game.txt_btn_help)
     _draw_grid(game)
     _draw_keyboard(game)
     _draw_message(game)
 
 
-def _draw_title():
-    """Draw the game title."""
-    arcade.draw_text(
-        "Wordle", WIDTH / 2, HEIGHT - 30,
-        arcade.color.WHITE, font_size=28,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
-
-
-def _draw_button(cx, cy, w, h, text, color):
-    """Draw a generic button."""
+def _draw_button(game, cx, cy, w, h, text, color, txt_obj):
+    """Draw a generic button using a pre-created Text object."""
     arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
     arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE)
-    arcade.draw_text(
-        text, cx, cy, arcade.color.WHITE,
-        font_size=14, anchor_x="center", anchor_y="center",
-    )
+    txt_obj.draw()
 
 
 def _cell_xy(row, col):
@@ -73,11 +82,9 @@ def _draw_grid(game):
                 arcade.draw_rect_outline(
                     arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), color, 2,
                 )
-                arcade.draw_text(
-                    letter, x, y, arcade.color.WHITE,
-                    font_size=28, anchor_x="center", anchor_y="center",
-                    bold=True,
-                )
+                txt = game.txt_grid[(row, col)]
+                txt.text = letter
+                txt.draw()
             elif row == len(game.guesses) and not game.game_over:
                 # Current input row
                 letter = game.current_input[col] if col < len(game.current_input) else ""
@@ -89,11 +96,9 @@ def _draw_grid(game):
                     arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), border, 2,
                 )
                 if letter:
-                    arcade.draw_text(
-                        letter, x, y, arcade.color.WHITE,
-                        font_size=28, anchor_x="center",
-                        anchor_y="center", bold=True,
-                    )
+                    txt = game.txt_grid[(row, col)]
+                    txt.text = letter
+                    txt.draw()
             else:
                 # Empty future row
                 arcade.draw_rect_filled(
@@ -120,10 +125,11 @@ def _draw_keyboard(game):
             arcade.draw_rect_filled(
                 arcade.XYWH(ex, y, enter_w, KB_KEY_H), KEY_BG,
             )
-            arcade.draw_text(
-                "ENT", ex, y, KEY_TEXT,
-                font_size=11, anchor_x="center", anchor_y="center", bold=True,
-            )
+            game.txt_key.text = "ENT"
+            game.txt_key.x = ex
+            game.txt_key.y = y
+            game.txt_key.font_size = 11
+            game.txt_key.draw()
             start_x += enter_w + KB_KEY_GAP
 
         for i, letter in enumerate(row_letters):
@@ -132,11 +138,11 @@ def _draw_keyboard(game):
             arcade.draw_rect_filled(
                 arcade.XYWH(x, y, KB_KEY_W, KB_KEY_H), color,
             )
-            arcade.draw_text(
-                letter, x, y, KEY_TEXT,
-                font_size=14, anchor_x="center", anchor_y="center",
-                bold=True,
-            )
+            game.txt_key.text = letter
+            game.txt_key.x = x
+            game.txt_key.y = y
+            game.txt_key.font_size = 14
+            game.txt_key.draw()
 
         if r == 2:
             # Draw BACK key
@@ -145,10 +151,11 @@ def _draw_keyboard(game):
             arcade.draw_rect_filled(
                 arcade.XYWH(bx, y, back_w, KB_KEY_H), KEY_BG,
             )
-            arcade.draw_text(
-                "DEL", bx, y, KEY_TEXT,
-                font_size=11, anchor_x="center", anchor_y="center", bold=True,
-            )
+            game.txt_key.text = "DEL"
+            game.txt_key.x = bx
+            game.txt_key.y = y
+            game.txt_key.font_size = 11
+            game.txt_key.draw()
 
 
 def _draw_message(game):
@@ -160,10 +167,7 @@ def _draw_message(game):
                 arcade.XYWH(WIDTH / 2, HEIGHT / 2 + 40, 300, 50),
                 (255, 255, 255),
             )
-            arcade.draw_text(
-                game.message, WIDTH / 2, HEIGHT / 2 + 40,
-                (0, 0, 0), font_size=16,
-                anchor_x="center", anchor_y="center", bold=True,
-            )
+            game.txt_message.text = game.message
+            game.txt_message.draw()
         else:
             game.message = ""

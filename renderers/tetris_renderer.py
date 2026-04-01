@@ -214,21 +214,13 @@ def _draw_side_panel(game):
     top_y = BOARD_ORIGIN_Y + BOARD_PIXEL_H
 
     # Title
-    arcade.draw_text(
-        "TETRIS",
-        x, top_y + 10,
-        SCORE_COLOR,
-        font_size=22,
-        bold=True,
-        anchor_x="left",
-        anchor_y="bottom",
-    )
+    game.txt_title.draw()
 
     # Next piece label
-    y = top_y - 20
-    arcade.draw_text("NEXT", x, y, STATUS_TEXT_COLOR, font_size=14, anchor_x="left", anchor_y="top")
+    game.txt_next_label.draw()
 
     # Draw next piece preview
+    y = top_y - 20
     preview_y = y - 25
     shape = TETROMINOES[game.next_piece_type][0]
     color = PIECE_COLORS[game.next_piece_type]
@@ -247,43 +239,21 @@ def _draw_side_panel(game):
         )
 
     # Stats
-    stats_y = preview_y - 110
-    arcade.draw_text("SCORE", x, stats_y, STATUS_TEXT_COLOR, font_size=13, anchor_x="left", anchor_y="top")
-    arcade.draw_text(
-        str(game.score), x, stats_y - 20, SCORE_COLOR,
-        font_size=18, bold=True, anchor_x="left", anchor_y="top",
-    )
+    game.txt_score_label.draw()
+    game.txt_score_value.text = str(game.score)
+    game.txt_score_value.draw()
 
-    stats_y -= 60
-    arcade.draw_text("LEVEL", x, stats_y, STATUS_TEXT_COLOR, font_size=13, anchor_x="left", anchor_y="top")
-    arcade.draw_text(
-        str(game.level), x, stats_y - 20, SCORE_COLOR,
-        font_size=18, bold=True, anchor_x="left", anchor_y="top",
-    )
+    game.txt_level_label.draw()
+    game.txt_level_value.text = str(game.level)
+    game.txt_level_value.draw()
 
-    stats_y -= 60
-    arcade.draw_text("LINES", x, stats_y, STATUS_TEXT_COLOR, font_size=13, anchor_x="left", anchor_y="top")
-    arcade.draw_text(
-        str(game.lines_cleared), x, stats_y - 20, SCORE_COLOR,
-        font_size=18, bold=True, anchor_x="left", anchor_y="top",
-    )
+    game.txt_lines_label.draw()
+    game.txt_lines_value.text = str(game.lines_cleared)
+    game.txt_lines_value.draw()
 
     # Controls hint
-    stats_y -= 80
-    controls = [
-        "CONTROLS",
-        "<< >>  Move",
-        "^    Rotate",
-        "v    Soft Drop",
-        "Space Hard Drop",
-    ]
-    for i, line in enumerate(controls):
-        fs = 11 if i > 0 else 12
-        c = STATUS_TEXT_COLOR if i > 0 else SCORE_COLOR
-        arcade.draw_text(
-            line, x, stats_y - i * 18, c,
-            font_size=fs, anchor_x="left", anchor_y="top",
-        )
+    for t in game.txt_controls:
+        t.draw()
 
 
 def _draw_top_bar(game):
@@ -305,28 +275,7 @@ def _draw_game_over(game):
         OVERLAY_COLOR,
     )
 
-    arcade.draw_text(
-        "GAME OVER",
-        WIDTH / 2, HEIGHT / 2 + 30,
-        (243, 139, 168),
-        font_size=36,
-        bold=True,
-        anchor_x="center",
-        anchor_y="center",
-    )
-    arcade.draw_text(
-        f"Score: {game.score}",
-        WIDTH / 2, HEIGHT / 2 - 15,
-        SCORE_COLOR,
-        font_size=20,
-        anchor_x="center",
-        anchor_y="center",
-    )
-    arcade.draw_text(
-        "Press ENTER or click New Game to play again",
-        WIDTH / 2, HEIGHT / 2 - 50,
-        STATUS_TEXT_COLOR,
-        font_size=13,
-        anchor_x="center",
-        anchor_y="center",
-    )
+    game.txt_game_over.draw()
+    game.txt_game_over_score.text = f"Score: {game.score}"
+    game.txt_game_over_score.draw()
+    game.txt_game_over_hint.draw()

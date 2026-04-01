@@ -7,37 +7,12 @@ import arcade
 from ai.tictactoe_ai import TicTacToeAI, check_winner, get_winning_line
 from pages.rules import RulesView
 from renderers import tictactoe_renderer
-
-WIDTH = 800
-HEIGHT = 600
-
-# Grid layout
-CELL_SIZE = 140
-GRID_SIZE = CELL_SIZE * 3  # 420
-GRID_LEFT = (WIDTH - GRID_SIZE) // 2
-GRID_TOP = (HEIGHT - GRID_SIZE) // 2 + 30  # shift up slightly for status text
-GRID_BOTTOM = GRID_TOP + GRID_SIZE  # in screen coords, y goes up
-
-# Colors
-BG_COLOR = (30, 30, 46)
-LINE_COLOR = (205, 214, 244)
-X_COLOR = (243, 139, 168)
-O_COLOR = (137, 180, 250)
-HIGHLIGHT_COLOR = (249, 226, 175)
-BUTTON_COLOR = (69, 71, 90)
-BUTTON_HOVER_COLOR = (88, 91, 112)
-BUTTON_TEXT_COLOR = (205, 214, 244)
-OVERLAY_COLOR = (30, 30, 46, 200)
-MESSAGE_COLOR = (166, 227, 161)
+from renderers.tictactoe_renderer import (
+    WIDTH, HEIGHT, CELL_SIZE, GRID_SIZE, GRID_LEFT, GRID_TOP,
+    BUTTON_COLOR, BUTTON_HOVER_COLOR, BUTTON_TEXT_COLOR, LINE_COLOR,
+)
 
 AI_DELAY = 0.5  # seconds before AI moves
-
-
-def _grid_to_screen(row: int, col: int):
-    """Convert grid (row, col) to screen center (x, y). Row 0 is top."""
-    x = GRID_LEFT + col * CELL_SIZE + CELL_SIZE // 2
-    y = HEIGHT - (GRID_TOP + row * CELL_SIZE + CELL_SIZE // 2)
-    return x, y
 
 
 def _screen_to_grid(sx: float, sy: float):
@@ -63,6 +38,10 @@ class _Button:
         self.w = w
         self.h = h
         self.label = label
+        self._txt = arcade.Text(
+            label, cx, cy, BUTTON_TEXT_COLOR,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
 
     def contains(self, x, y):
         return (abs(x - self.cx) <= self.w / 2) and (abs(y - self.cy) <= self.h / 2)
@@ -71,15 +50,7 @@ class _Button:
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
-        arcade.draw_text(
-            self.label,
-            self.cx,
-            self.cy,
-            BUTTON_TEXT_COLOR,
-            font_size=14,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        self._txt.draw()
 
 
 class TicTacToeView(arcade.View):
@@ -99,11 +70,30 @@ class TicTacToeView(arcade.View):
         self.mouse_x = 0
         self.mouse_y = 0
 
+        # Text objects for the renderer
+        self._create_texts()
+
         # Buttons
         self.btn_back = _Button(70, HEIGHT - 30, 100, 36, "Back")
         self.btn_new = _Button(WIDTH - 80, HEIGHT - 30, 120, 36, "New Game")
         self.btn_help = _Button(WIDTH - 155, HEIGHT - 30, 40, 36, "?")
         self.btn_play_again = _Button(WIDTH // 2, HEIGHT // 2 - 60, 160, 44, "Play Again")
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        from renderers.tictactoe_renderer import LINE_COLOR, MESSAGE_COLOR
+        self.txt_title = arcade.Text(
+            "Tic-Tac-Toe", WIDTH // 2, HEIGHT - 30, LINE_COLOR,
+            font_size=20, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_status = arcade.Text(
+            "", WIDTH // 2, HEIGHT - 65, LINE_COLOR,
+            font_size=15, anchor_x="center", anchor_y="center",
+        )
+        self.txt_overlay_msg = arcade.Text(
+            "", WIDTH // 2, HEIGHT // 2 + 20, MESSAGE_COLOR,
+            font_size=36, anchor_x="center", anchor_y="center", bold=True,
+        )
 
     def _reset(self):
         self.board = [[None] * 3 for _ in range(3)]

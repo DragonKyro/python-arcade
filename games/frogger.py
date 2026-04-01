@@ -104,15 +104,15 @@ class _Button:
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
-        arcade.draw_text(
-            self.label,
-            self.cx,
-            self.cy,
-            BUTTON_TEXT_COLOR,
-            font_size=14,
-            anchor_x="center",
-            anchor_y="center",
-        )
+        if not hasattr(self, '_txt_label'):
+            self._txt_label = arcade.Text(
+                self.label, self.cx, self.cy, BUTTON_TEXT_COLOR,
+                font_size=14, anchor_x="center", anchor_y="center",
+            )
+        self._txt_label.text = self.label
+        self._txt_label.x = self.cx
+        self._txt_label.y = self.cy
+        self._txt_label.draw()
 
 
 class _LaneObject:
@@ -268,7 +268,44 @@ class FroggerView(arcade.View):
         self.btn_new = _Button(WIDTH - 80, HEIGHT - 25, 110, 34, "New Game")
         self.btn_help = _Button(WIDTH - 150, HEIGHT - 25, 40, 40, "?")
 
+        self._create_texts()
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        self.txt_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT - 25, SCORE_COLOR,
+            font_size=16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_lives_label = arcade.Text(
+            "Lives:", 10, 20, LINE_COLOR,
+            font_size=12, anchor_x="left", anchor_y="center",
+        )
+        self.txt_level = arcade.Text(
+            "", 200, 20, LINE_COLOR,
+            font_size=12, anchor_x="left", anchor_y="center",
+        )
+        self.txt_time_label = arcade.Text(
+            "TIME", 320 - 35, 20, LINE_COLOR,
+            font_size=10, anchor_x="left", anchor_y="center",
+        )
+        self.txt_high_score = arcade.Text(
+            "", WIDTH - 10, 20, SCORE_COLOR,
+            font_size=12, anchor_x="right", anchor_y="center",
+        )
+        self.txt_game_over = arcade.Text(
+            "GAME OVER", WIDTH / 2, HEIGHT / 2 + 40, (220, 50, 50),
+            font_size=36, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_final_score = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 - 10, SCORE_COLOR,
+            font_size=20, anchor_x="center", anchor_y="center",
+        )
+        self.txt_restart_hint = arcade.Text(
+            "Press SPACE or click New Game to restart",
+            WIDTH / 2, HEIGHT / 2 - 50, LINE_COLOR,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
 
     def _init_game(self):
         """Initialize or reset all game state."""

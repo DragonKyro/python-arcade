@@ -2,59 +2,76 @@ import arcade
 import random
 from pages.rules import RulesView
 from renderers import minesweeper_renderer
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Grid constants
-COLS = 16
-ROWS = 12
-MINE_COUNT = 30
-
-# Layout constants
-TOP_BAR_HEIGHT = 50
-GRID_PADDING = 10
-
-# Calculate cell size to fit the grid nicely in the available space
-AVAILABLE_WIDTH = WIDTH - 2 * GRID_PADDING
-AVAILABLE_HEIGHT = HEIGHT - TOP_BAR_HEIGHT - 2 * GRID_PADDING
-CELL_SIZE = min(AVAILABLE_WIDTH // COLS, AVAILABLE_HEIGHT // ROWS, 35)
-
-# Grid origin (bottom-left corner of the grid), centered horizontally
-GRID_WIDTH = COLS * CELL_SIZE
-GRID_HEIGHT = ROWS * CELL_SIZE
-GRID_ORIGIN_X = (WIDTH - GRID_WIDTH) // 2
-GRID_ORIGIN_Y = (HEIGHT - TOP_BAR_HEIGHT - GRID_HEIGHT) // 2
-
-# Number colors: index 1-8
-NUMBER_COLORS = {
-    1: arcade.color.BLUE,
-    2: arcade.color.GREEN,
-    3: arcade.color.RED,
-    4: arcade.color.DARK_BLUE,
-    5: arcade.color.DARK_RED,
-    6: arcade.color.TEAL,
-    7: arcade.color.BLACK,
-    8: arcade.color.GRAY,
-}
-
-# Cell states
-UNREVEALED = 0
-REVEALED = 1
-FLAGGED = 2
-
-# Game states
-PLAYING = 0
-WON = 1
-LOST = 2
+from renderers.minesweeper_renderer import (
+    WIDTH, HEIGHT, COLS, ROWS, MINE_COUNT,
+    TOP_BAR_HEIGHT, CELL_SIZE, GRID_ORIGIN_X, GRID_ORIGIN_Y,
+    UNREVEALED, REVEALED, FLAGGED, PLAYING, WON, LOST,
+)
 
 
 class MinesweeperView(arcade.View):
     def __init__(self, menu_view):
         super().__init__()
         self.menu_view = menu_view
+        self._create_texts()
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        bar_y = HEIGHT - TOP_BAR_HEIGHT / 2
+
+        self.txt_back = arcade.Text(
+            "Back", 55, bar_y, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_mines = arcade.Text(
+            "", 200, bar_y, arcade.color.YELLOW,
+            font_size=16, anchor_x="center", anchor_y="center",
+        )
+        self.txt_timer = arcade.Text(
+            "", 500, bar_y, arcade.color.YELLOW,
+            font_size=16, anchor_x="center", anchor_y="center",
+        )
+        self.txt_new_game = arcade.Text(
+            "New Game", WIDTH - 65, bar_y, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_help = arcade.Text(
+            "?", WIDTH - 135, bar_y, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        # Cell number texts - one per grid cell
+        self.txt_cell_numbers = {}
+        for row in range(ROWS):
+            for col in range(COLS):
+                cx = GRID_ORIGIN_X + col * CELL_SIZE + CELL_SIZE / 2
+                cy = GRID_ORIGIN_Y + row * CELL_SIZE + CELL_SIZE / 2
+                t = arcade.Text(
+                    "", cx, cy, arcade.color.BLACK,
+                    font_size=int(CELL_SIZE * 0.5),
+                    anchor_x="center", anchor_y="center", bold=True,
+                )
+                self.txt_cell_numbers[(row, col)] = t
+        self.txt_game_over = arcade.Text(
+            "GAME OVER", WIDTH / 2, HEIGHT / 2 + 10,
+            arcade.color.RED, font_size=40,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' to try again", WIDTH / 2, HEIGHT / 2 - 30,
+            arcade.color.WHITE, font_size=16,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_you_win = arcade.Text(
+            "YOU WIN!", WIDTH / 2, HEIGHT / 2 + 10,
+            arcade.color.YELLOW, font_size=40,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_win_time = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 - 30,
+            arcade.color.WHITE, font_size=16,
+            anchor_x="center", anchor_y="center",
+        )
 
     def _init_game(self):
         """Initialize or reset all game state."""

@@ -3,22 +3,11 @@ import random
 import copy
 from pages.rules import RulesView
 from renderers import sudoku_renderer
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Grid constants
-GRID_SIZE = 9
-CELL_SIZE = 50
-GRID_PX = GRID_SIZE * CELL_SIZE  # 450
-
-# Center the grid
-GRID_ORIGIN_X = (WIDTH - GRID_PX) // 2
-GRID_ORIGIN_Y = (HEIGHT - 50 - GRID_PX) // 2  # offset for top bar
-
-# Top bar
-TOP_BAR_HEIGHT = 50
+from renderers.sudoku_renderer import (
+    WIDTH, HEIGHT,
+    CELL_SIZE, GRID_ORIGIN_X, GRID_ORIGIN_Y,
+    TOP_BAR_HEIGHT,
+)
 
 # Difficulty: number of cells to remove
 DIFFICULTY = {
@@ -26,19 +15,6 @@ DIFFICULTY = {
     "Medium": 45,
     "Hard": 55,
 }
-
-# Colors
-BG_COLOR = (40, 44, 52)
-GRID_BG = (255, 255, 255)
-CELL_HIGHLIGHT = (200, 220, 255)
-SELECTED_COLOR = (100, 149, 237)
-CONFLICT_COLOR = (255, 180, 180)
-GIVEN_TEXT_COLOR = (20, 20, 20)
-PLAYER_TEXT_COLOR = (50, 100, 220)
-CONFLICT_TEXT_COLOR = (220, 40, 40)
-THIN_LINE_COLOR = (160, 160, 160)
-THICK_LINE_COLOR = (20, 20, 20)
-WIN_OVERLAY = (0, 0, 0, 160)
 
 
 # ---------- Puzzle generator ----------
@@ -102,7 +78,68 @@ class SudokuView(arcade.View):
         super().__init__()
         self.menu_view = menu_view
         self.difficulty = "Medium"
+        self._create_texts()
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for rendering."""
+        bar_y = HEIGHT - TOP_BAR_HEIGHT / 2
+        self.txt_back = arcade.Text(
+            "Back", 55, bar_y, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_timer = arcade.Text(
+            "", WIDTH / 2, bar_y, arcade.color.WHITE,
+            font_size=16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_difficulty_label = arcade.Text(
+            "", WIDTH / 2, bar_y - 15, arcade.color.LIGHT_GRAY,
+            font_size=10, anchor_x="center", anchor_y="center",
+        )
+        self.txt_new_game = arcade.Text(
+            "New Game", WIDTH - 65, bar_y, arcade.color.WHITE,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_help = arcade.Text(
+            "?", WIDTH - 135, bar_y, arcade.color.WHITE,
+            font_size=16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        # Difficulty button texts
+        diff_y = HEIGHT - TOP_BAR_HEIGHT - 20
+        self.txt_diff_buttons = []
+        for i, diff in enumerate(["Easy", "Medium", "Hard"]):
+            dx = GRID_ORIGIN_X + i * 65 + 30
+            t = arcade.Text(
+                diff, dx, diff_y, arcade.color.WHITE,
+                font_size=10, anchor_x="center", anchor_y="center",
+            )
+            self.txt_diff_buttons.append(t)
+        # Win overlay texts
+        self.txt_win_title = arcade.Text(
+            "Congratulations!", WIDTH / 2, HEIGHT / 2 + 30,
+            arcade.color.GOLD, font_size=36,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_win_time = arcade.Text(
+            "", WIDTH / 2, HEIGHT / 2 - 20,
+            arcade.color.WHITE, font_size=20,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_win_hint = arcade.Text(
+            "Click New Game to play again",
+            WIDTH / 2, HEIGHT / 2 - 60,
+            arcade.color.LIGHT_GRAY, font_size=14,
+            anchor_x="center", anchor_y="center",
+        )
+        # Grid cell number texts (9x9 = 81 objects)
+        self.txt_cells = {}
+        for r in range(9):
+            for c in range(9):
+                cx, cy = self._cell_center(r, c)
+                self.txt_cells[(r, c)] = arcade.Text(
+                    "", cx, cy, arcade.color.WHITE,
+                    font_size=18, anchor_x="center", anchor_y="center",
+                )
 
     def _init_game(self):
         """Initialize or reset all game state."""

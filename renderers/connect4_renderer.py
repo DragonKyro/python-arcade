@@ -5,15 +5,76 @@ All arcade.draw_* calls for Connect Four live here.
 
 import arcade
 
-from games.connect4 import (
-    WIDTH, HEIGHT,
-    CELL_SIZE, BOARD_MARGIN_X, BOARD_MARGIN_Y, CIRCLE_RADIUS,
-    BOARD_COLOR, EMPTY_COLOR, PLAYER_COLOR, AI_COLOR,
-    HIGHLIGHT_COLOR, WIN_HIGHLIGHT_COLOR, OVERLAY_BG,
-    BUTTON_W, BUTTON_H,
-    STATE_PLAYER_TURN, STATE_AI_THINKING, STATE_GAME_OVER,
-)
-from ai.connect4_ai import ROWS, COLS, EMPTY, PLAYER_PIECE, AI_PIECE
+from ai.connect4_ai import ROWS, COLS, PLAYER_PIECE, AI_PIECE
+
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Board drawing constants
+CELL_SIZE = 70
+BOARD_MARGIN_X = (WIDTH - COLS * CELL_SIZE) // 2
+BOARD_MARGIN_Y = 40
+CIRCLE_RADIUS = 28
+
+# Colors
+BOARD_COLOR = (0, 70, 180)
+EMPTY_COLOR = (20, 20, 40)
+PLAYER_COLOR = arcade.color.RED
+AI_COLOR = arcade.color.YELLOW
+HIGHLIGHT_COLOR = (255, 255, 255, 60)
+WIN_HIGHLIGHT_COLOR = (255, 255, 255, 180)
+OVERLAY_BG = (0, 0, 0, 170)
+
+# Button dimensions
+BUTTON_W = 100
+BUTTON_H = 36
+
+# Game states
+STATE_PLAYER_TURN = "player_turn"
+STATE_AI_THINKING = "ai_thinking"
+STATE_GAME_OVER = "game_over"
+
+
+def create_text_objects(game):
+    """Create all arcade.Text objects on the game instance. Call from __init__."""
+    # Back button label
+    bx, by = 60, HEIGHT - 30
+    game.txt_back = arcade.Text(
+        "Back", bx, by, arcade.color.WHITE, 14,
+        anchor_x="center", anchor_y="center",
+    )
+    # New Game button label
+    nx, ny = WIDTH - 70, HEIGHT - 30
+    game.txt_new_game = arcade.Text(
+        "New Game", nx, ny, arcade.color.WHITE, 14,
+        anchor_x="center", anchor_y="center",
+    )
+    # Title
+    game.txt_title = arcade.Text(
+        "Connect Four", WIDTH // 2, HEIGHT - 30,
+        arcade.color.WHITE, 22, anchor_x="center", anchor_y="center",
+        bold=True,
+    )
+    # Turn indicator (dynamic)
+    board_top = BOARD_MARGIN_Y + ROWS * CELL_SIZE
+    game.txt_turn = arcade.Text(
+        "", WIDTH // 2, board_top + 18,
+        arcade.color.WHITE, 16, anchor_x="center", anchor_y="center",
+        bold=True,
+    )
+    # Overlay: result message (dynamic)
+    game.txt_game_over = arcade.Text(
+        "", WIDTH // 2, HEIGHT // 2 + 30,
+        arcade.color.WHITE, 48, anchor_x="center", anchor_y="center",
+        bold=True,
+    )
+    # Overlay: play again hint
+    game.txt_play_again = arcade.Text(
+        "Click 'New Game' to play again",
+        WIDTH // 2, HEIGHT // 2 - 30,
+        arcade.color.WHITE, 18, anchor_x="center", anchor_y="center",
+    )
 
 
 def draw(game):
@@ -31,24 +92,19 @@ def _draw_buttons(game):
     bx, by = 60, HEIGHT - 30
     arcade.draw_rect_filled(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.DARK_GRAY)
     arcade.draw_rect_outline(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.WHITE, 2)
-    arcade.draw_text("Back", bx, by, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
+    game.txt_back.draw()
 
     # New Game button (top-right)
     nx, ny = WIDTH - 70, HEIGHT - 30
     arcade.draw_rect_filled(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.DARK_GREEN)
     arcade.draw_rect_outline(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.WHITE, 2)
-    arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
+    game.txt_new_game.draw()
 
     # Help button
     game.help_button.draw()
 
     # Title
-    arcade.draw_text(
-        "Connect Four",
-        WIDTH // 2, HEIGHT - 30,
-        arcade.color.WHITE, 22, anchor_x="center", anchor_y="center",
-        bold=True,
-    )
+    game.txt_title.draw()
 
     # Turn indicator
     if game.state == STATE_PLAYER_TURN:
@@ -62,11 +118,9 @@ def _draw_buttons(game):
         color = arcade.color.WHITE
 
     if msg:
-        board_top = BOARD_MARGIN_Y + ROWS * CELL_SIZE
-        arcade.draw_text(
-            msg, WIDTH // 2, board_top + 18,
-            color, 16, anchor_x="center", anchor_y="center", bold=True,
-        )
+        game.txt_turn.text = msg
+        game.txt_turn.color = color
+        game.txt_turn.draw()
 
 
 def _draw_board(game):
@@ -123,12 +177,8 @@ def _draw_overlay(game):
         msg = "It's a Draw!"
         color = arcade.color.WHITE
 
-    arcade.draw_text(
-        msg, WIDTH // 2, HEIGHT // 2 + 30,
-        color, 48, anchor_x="center", anchor_y="center", bold=True,
-    )
-    arcade.draw_text(
-        "Click 'New Game' to play again",
-        WIDTH // 2, HEIGHT // 2 - 30,
-        arcade.color.WHITE, 18, anchor_x="center", anchor_y="center",
-    )
+    game.txt_game_over.text = msg
+    game.txt_game_over.color = color
+    game.txt_game_over.draw()
+
+    game.txt_play_again.draw()

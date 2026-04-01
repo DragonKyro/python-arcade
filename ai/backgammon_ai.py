@@ -15,8 +15,6 @@ Color constants for the color parameter:
   -1 = AI (negative on board)
 """
 
-import copy
-import itertools
 
 
 PLAYER = 1

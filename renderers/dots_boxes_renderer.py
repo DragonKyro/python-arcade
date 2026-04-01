@@ -5,19 +5,75 @@ All arcade.draw_* calls for Dots and Boxes live here.
 
 import arcade
 
-from games.dots_boxes import (
-    WIDTH, HEIGHT,
-    GRID_ROWS, GRID_COLS,
-    DOT_COUNT_X, DOT_COUNT_Y,
-    DOT_SPACING, DOT_RADIUS,
-    COLOR_BG, COLOR_DOT,
-    COLOR_PLAYER_LINE, COLOR_AI_LINE,
-    COLOR_PLAYER_FILL, COLOR_AI_FILL,
-    COLOR_UNDRAWN, COLOR_TEXT,
-    LINE_WIDTH,
-    BTN_W, BTN_H, BTN_BACK_X, BTN_BACK_Y, BTN_NEW_X, BTN_NEW_Y,
-    _dot_pos,
-)
+# Window / layout constants
+WIDTH = 800
+HEIGHT = 600
+
+GRID_ROWS = 5
+GRID_COLS = 5
+DOT_COUNT_X = GRID_COLS + 1  # 6
+DOT_COUNT_Y = GRID_ROWS + 1  # 6
+
+DOT_SPACING = 80
+DOT_RADIUS = 6
+
+# Compute top-left of the grid so it is centred
+GRID_W = (DOT_COUNT_X - 1) * DOT_SPACING
+GRID_H = (DOT_COUNT_Y - 1) * DOT_SPACING
+ORIGIN_X = (WIDTH - GRID_W) / 2
+ORIGIN_Y = (HEIGHT - GRID_H) / 2 - 10  # nudge down a bit for score room
+
+# Colours
+COLOR_BG = arcade.color.WHITE
+COLOR_DOT = arcade.color.BLACK
+COLOR_PLAYER_LINE = arcade.color.BLUE
+COLOR_AI_LINE = arcade.color.RED
+COLOR_PLAYER_FILL = (173, 216, 230, 120)  # light blue
+COLOR_AI_FILL = (255, 182, 182, 120)      # light red
+COLOR_UNDRAWN = (220, 220, 220)
+COLOR_TEXT = arcade.color.BLACK
+
+LINE_WIDTH = 4
+HIT_TOLERANCE = 20  # pixels from a line segment centre to register a click
+
+# Button geometry
+BTN_W = 100
+BTN_H = 32
+BTN_BACK_X = 60
+BTN_BACK_Y = HEIGHT - 25
+BTN_NEW_X = WIDTH - 60
+BTN_NEW_Y = HEIGHT - 25
+
+
+def _dot_pos(row, col):
+    """Return (x, y) screen position for the dot at grid (row, col). Row 0 is top."""
+    x = ORIGIN_X + col * DOT_SPACING
+    y = ORIGIN_Y + (GRID_ROWS - row) * DOT_SPACING  # flip so row 0 is top visually
+    return x, y
+
+
+def create_text_objects(game):
+    """Create all arcade.Text objects on the game instance. Call from __init__."""
+    # Score (dynamic)
+    game.txt_score = arcade.Text(
+        "", WIDTH / 2, HEIGHT - 55, COLOR_TEXT, 16,
+        anchor_x="center",
+    )
+    # Game over / turn indicator (dynamic)
+    game.txt_status = arcade.Text(
+        "", WIDTH / 2, HEIGHT - 80, COLOR_TEXT, 14,
+        anchor_x="center",
+    )
+    # Back button label
+    game.txt_back = arcade.Text(
+        "Back", BTN_BACK_X, BTN_BACK_Y, COLOR_TEXT, 13,
+        anchor_x="center", anchor_y="center",
+    )
+    # New Game button label
+    game.txt_new_game = arcade.Text(
+        "New Game", BTN_NEW_X, BTN_NEW_Y, COLOR_TEXT, 13,
+        anchor_x="center", anchor_y="center",
+    )
 
 
 def draw(game):
@@ -82,10 +138,8 @@ def _draw_dots():
 
 def _draw_ui(game):
     # Score
-    arcade.draw_text(
-        f"Player (Blue): {game.player_score}    AI (Red): {game.ai_score}",
-        WIDTH / 2, HEIGHT - 55, COLOR_TEXT, 16, anchor_x="center"
-    )
+    game.txt_score.text = f"Player (Blue): {game.player_score}    AI (Red): {game.ai_score}"
+    game.txt_score.draw()
 
     # Turn / game-over indicator
     if game.game_over:
@@ -95,24 +149,26 @@ def _draw_ui(game):
             msg = "AI wins!"
         else:
             msg = "It's a tie!"
-        arcade.draw_text(msg, WIDTH / 2, HEIGHT - 80, COLOR_TEXT, 18,
-                         anchor_x="center", bold=True)
+        game.txt_status.text = msg
+        game.txt_status.font_size = 18
+        game.txt_status.bold = True
+        game.txt_status.draw()
     else:
         turn_msg = "Your turn" if game.current_turn == 'player' else "AI thinking..."
-        arcade.draw_text(turn_msg, WIDTH / 2, HEIGHT - 80, COLOR_TEXT, 14,
-                         anchor_x="center")
+        game.txt_status.text = turn_msg
+        game.txt_status.font_size = 14
+        game.txt_status.bold = False
+        game.txt_status.draw()
 
     # Back button
     arcade.draw_rect_filled(arcade.XYWH(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H), arcade.color.LIGHT_GRAY)
     arcade.draw_rect_outline(arcade.XYWH(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
-    arcade.draw_text("Back", BTN_BACK_X, BTN_BACK_Y, COLOR_TEXT, 13,
-                     anchor_x="center", anchor_y="center")
+    game.txt_back.draw()
 
     # New Game button
     arcade.draw_rect_filled(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.LIGHT_GRAY)
     arcade.draw_rect_outline(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
-    arcade.draw_text("New Game", BTN_NEW_X, BTN_NEW_Y, COLOR_TEXT, 13,
-                     anchor_x="center", anchor_y="center")
+    game.txt_new_game.draw()
 
     # Help button
     game.help_button.draw()

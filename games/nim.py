@@ -6,32 +6,14 @@ import arcade
 from pages.components import Button
 from pages.rules import RulesView
 from ai.nim_ai import NimAI
-
-WIDTH = 800
-HEIGHT = 600
+from renderers.nim_renderer import (
+    WIDTH, HEIGHT,
+    STONE_RADIUS, STONE_SPACING, ROW_SPACING, BOARD_TOP,
+    BUTTON_W, BUTTON_H, TAKE_BUTTON_W, TAKE_BUTTON_H,
+)
 
 # Starting rows (classic Nim)
 STARTING_ROWS = [1, 3, 5, 7]
-
-# Drawing constants
-STONE_RADIUS = 22
-STONE_SPACING = 56
-ROW_SPACING = 70
-BOARD_TOP = HEIGHT - 140
-
-# Colors
-STONE_COLOR = (100, 160, 220)
-STONE_OUTLINE = (60, 100, 160)
-SELECTED_COLOR = (255, 90, 90)
-SELECTED_OUTLINE = (180, 40, 40)
-REMOVED_COLOR = (50, 50, 60)
-OVERLAY_BG = (0, 0, 0, 170)
-
-# Button dimensions
-BUTTON_W = 100
-BUTTON_H = 36
-TAKE_BUTTON_W = 120
-TAKE_BUTTON_H = 40
 
 # Game states
 STATE_PLAYER_TURN = "player_turn"
@@ -58,7 +40,65 @@ class NimView(arcade.View):
         self.ai_delay = 0.0
         self.last_ai_move = None  # (row, count) for visual feedback
         self.ai_feedback_timer = 0.0
+        self._create_texts()
         self.new_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for the renderer."""
+        # Button labels (static)
+        self.txt_btn_back = arcade.Text(
+            "Back", 60, HEIGHT - 30, arcade.color.WHITE, 14,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_btn_new_game = arcade.Text(
+            "New Game", WIDTH - 70, HEIGHT - 30, arcade.color.WHITE, 14,
+            anchor_x="center", anchor_y="center",
+        )
+
+        # Title (static)
+        self.txt_title = arcade.Text(
+            "Nim", WIDTH // 2, HEIGHT - 30,
+            arcade.color.WHITE, 22, anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Turn indicator (dynamic)
+        self.txt_turn = arcade.Text(
+            "", WIDTH // 2, HEIGHT - 70,
+            arcade.color.WHITE, 16, anchor_x="center", anchor_y="center",
+        )
+
+        # Row labels (dynamic -- content changes as stones are removed)
+        self.txt_row_labels = []
+        for r in range(len(STARTING_ROWS)):
+            label_y = BOARD_TOP - r * ROW_SPACING
+            # x will be set dynamically since it depends on max_rows
+            self.txt_row_labels.append(
+                arcade.Text("", 0, label_y, arcade.color.LIGHT_GRAY, 14,
+                            anchor_x="center", anchor_y="center")
+            )
+
+        # Take button (dynamic)
+        self.txt_take_btn = arcade.Text(
+            "", WIDTH // 2, 40, arcade.color.WHITE, 16,
+            anchor_x="center", anchor_y="center", bold=True,
+        )
+
+        # Game over texts
+        self.txt_game_over_msg = arcade.Text(
+            "", WIDTH // 2, HEIGHT // 2 + 30,
+            arcade.color.WHITE, 48, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_rule = arcade.Text(
+            "The player who takes the last stone loses!",
+            WIDTH // 2, HEIGHT // 2 - 20,
+            arcade.color.LIGHT_GRAY, 14,
+            anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' to play again",
+            WIDTH // 2, HEIGHT // 2 - 50,
+            arcade.color.WHITE, 18, anchor_x="center", anchor_y="center",
+        )
 
     def new_game(self):
         """Reset the board and start a fresh game."""

@@ -5,13 +5,83 @@ All arcade.draw_* calls for Othello live here.
 
 import arcade
 
-from games.othello import (
-    WIDTH, HEIGHT,
-    BOARD_SIZE, CELL_SIZE, BOARD_PIXEL, BOARD_LEFT, BOARD_BOTTOM,
-    PIECE_RADIUS, HINT_RADIUS,
-    BOARD_GREEN, BOARD_LINE, BLACK_PIECE, WHITE_PIECE, HINT_COLOR,
-    EMPTY, BLACK, WHITE,
-)
+# Window constants
+WIDTH = 800
+HEIGHT = 600
+
+# Board constants
+BOARD_SIZE = 8
+CELL_SIZE = 55
+BOARD_PIXEL = BOARD_SIZE * CELL_SIZE  # 440
+BOARD_LEFT = (WIDTH - BOARD_PIXEL) / 2
+BOARD_BOTTOM = (HEIGHT - BOARD_PIXEL) / 2
+
+# Piece drawing
+PIECE_RADIUS = CELL_SIZE * 0.4
+HINT_RADIUS = 5
+
+# Colors
+BOARD_GREEN = (0, 128, 0)
+BOARD_LINE = (0, 0, 0)
+BLACK_PIECE = (20, 20, 20)
+WHITE_PIECE = (240, 240, 240)
+HINT_COLOR = (0, 0, 0, 100)
+
+# Game values
+EMPTY = 0
+BLACK = 1
+WHITE = 2
+
+
+def create_text_objects(game):
+    """Create all arcade.Text objects on the game instance. Call from __init__."""
+    # Black score (left side)
+    game.txt_score_black = arcade.Text(
+        "", 30, HEIGHT / 2 - 20,
+        arcade.color.WHITE, font_size=18,
+        anchor_x="center", anchor_y="center", bold=True,
+    )
+    # White score (right side)
+    game.txt_score_white = arcade.Text(
+        "", WIDTH - 30, HEIGHT / 2 - 20,
+        arcade.color.WHITE, font_size=18,
+        anchor_x="center", anchor_y="center", bold=True,
+    )
+    # Back button label
+    game.txt_back = arcade.Text(
+        "Back", 60, HEIGHT - 30, arcade.color.WHITE,
+        font_size=14, anchor_x="center", anchor_y="center",
+    )
+    # New Game button label
+    game.txt_new_game = arcade.Text(
+        "New Game", WIDTH - 70, HEIGHT - 30, arcade.color.WHITE,
+        font_size=14, anchor_x="center", anchor_y="center",
+    )
+    # Turn indicator (dynamic)
+    game.txt_turn = arcade.Text(
+        "", WIDTH / 2, HEIGHT - 30,
+        arcade.color.WHITE, font_size=16,
+        anchor_x="center", anchor_y="center",
+    )
+    # Game over: result message
+    game.txt_game_over = arcade.Text(
+        "", WIDTH / 2, HEIGHT / 2 + 25,
+        arcade.color.WHITE, font_size=24,
+        anchor_x="center", anchor_y="center", bold=True,
+    )
+    # Game over: final score
+    game.txt_final_score = arcade.Text(
+        "", WIDTH / 2, HEIGHT / 2 - 5,
+        arcade.color.WHITE, font_size=16,
+        anchor_x="center", anchor_y="center",
+    )
+    # Game over: play again hint
+    game.txt_play_again = arcade.Text(
+        "Click 'New Game' to play again.",
+        WIDTH / 2, HEIGHT / 2 - 35,
+        arcade.color.LIGHT_GRAY, font_size=13,
+        anchor_x="center", anchor_y="center",
+    )
 
 
 def draw(game):
@@ -65,36 +135,25 @@ def _draw_score(game):
     b, w = game._count_pieces()
     # Black score (left side)
     arcade.draw_circle_filled(30, HEIGHT / 2 + 10, 12, BLACK_PIECE)
-    arcade.draw_text(
-        str(b), 30, HEIGHT / 2 - 20,
-        arcade.color.WHITE, font_size=18,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
+    game.txt_score_black.text = str(b)
+    game.txt_score_black.draw()
     # White score (right side)
     arcade.draw_circle_filled(WIDTH - 30, HEIGHT / 2 + 10, 12, WHITE_PIECE)
-    arcade.draw_text(
-        str(w), WIDTH - 30, HEIGHT / 2 - 20,
-        arcade.color.WHITE, font_size=18,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
+    game.txt_score_white.text = str(w)
+    game.txt_score_white.draw()
 
 
 def _draw_buttons(game):
     # Back button
-    _draw_button(60, HEIGHT - 30, 90, 36, "Back", arcade.color.DARK_SLATE_BLUE)
+    arcade.draw_rect_filled(arcade.XYWH(60, HEIGHT - 30, 90, 36), arcade.color.DARK_SLATE_BLUE)
+    arcade.draw_rect_outline(arcade.XYWH(60, HEIGHT - 30, 90, 36), arcade.color.WHITE)
+    game.txt_back.draw()
     # New Game button
-    _draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", arcade.color.DARK_GREEN)
+    arcade.draw_rect_filled(arcade.XYWH(WIDTH - 70, HEIGHT - 30, 110, 36), arcade.color.DARK_GREEN)
+    arcade.draw_rect_outline(arcade.XYWH(WIDTH - 70, HEIGHT - 30, 110, 36), arcade.color.WHITE)
+    game.txt_new_game.draw()
     # Help button
     game.help_button.draw()
-
-
-def _draw_button(cx, cy, w, h, text, color):
-    arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
-    arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE)
-    arcade.draw_text(
-        text, cx, cy, arcade.color.WHITE,
-        font_size=14, anchor_x="center", anchor_y="center",
-    )
 
 
 def _draw_turn_indicator(game):
@@ -104,11 +163,8 @@ def _draw_turn_indicator(game):
         label = "Your turn (Black)"
     else:
         label = "AI thinking..."
-    arcade.draw_text(
-        label, WIDTH / 2, HEIGHT - 30,
-        arcade.color.WHITE, font_size=16,
-        anchor_x="center", anchor_y="center",
-    )
+    game.txt_turn.text = label
+    game.txt_turn.draw()
 
 
 def _draw_game_over(game):
@@ -127,20 +183,11 @@ def _draw_game_over(game):
         msg = "It's a Tie!"
         color = arcade.color.LIGHT_BLUE
 
-    arcade.draw_text(
-        msg, WIDTH / 2, HEIGHT / 2 + 25,
-        color, font_size=24,
-        anchor_x="center", anchor_y="center", bold=True,
-    )
-    arcade.draw_text(
-        f"Final Score:  Black {b}  -  White {w}",
-        WIDTH / 2, HEIGHT / 2 - 5,
-        arcade.color.WHITE, font_size=16,
-        anchor_x="center", anchor_y="center",
-    )
-    arcade.draw_text(
-        "Click 'New Game' to play again.",
-        WIDTH / 2, HEIGHT / 2 - 35,
-        arcade.color.LIGHT_GRAY, font_size=13,
-        anchor_x="center", anchor_y="center",
-    )
+    game.txt_game_over.text = msg
+    game.txt_game_over.color = color
+    game.txt_game_over.draw()
+
+    game.txt_final_score.text = f"Final Score:  Black {b}  -  White {w}"
+    game.txt_final_score.draw()
+
+    game.txt_play_again.draw()

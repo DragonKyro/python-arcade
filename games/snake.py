@@ -7,40 +7,17 @@ import arcade
 import random
 from pages.rules import RulesView
 from renderers import snake_renderer
-
-# Window constants
-WIDTH = 800
-HEIGHT = 600
-
-# Layout
-TOP_BAR_HEIGHT = 50
-CELL_SIZE = 25
-
-# Grid dimensions (play area below top bar)
-GRID_COLS = WIDTH // CELL_SIZE
-GRID_ROWS = (HEIGHT - TOP_BAR_HEIGHT) // CELL_SIZE
-GRID_ORIGIN_X = (WIDTH - GRID_COLS * CELL_SIZE) // 2
-GRID_ORIGIN_Y = (HEIGHT - TOP_BAR_HEIGHT - GRID_ROWS * CELL_SIZE) // 2
+from renderers.snake_renderer import (
+    WIDTH, HEIGHT,
+    GRID_COLS, GRID_ROWS,
+    BG_COLOR, BUTTON_COLOR, BUTTON_HOVER_COLOR, BUTTON_TEXT_COLOR, LINE_COLOR,
+)
 
 # Directions
 UP = (0, 1)
 DOWN = (0, -1)
 LEFT = (-1, 0)
 RIGHT = (1, 0)
-
-# Colors (Catppuccin-ish palette to match other games)
-BG_COLOR = (30, 30, 46)
-GRID_LINE_COLOR = (45, 45, 65)
-SNAKE_HEAD_COLOR = (64, 160, 64)
-SNAKE_BODY_COLOR = (116, 199, 116)
-FOOD_COLOR = (243, 139, 168)
-LINE_COLOR = (205, 214, 244)
-BUTTON_COLOR = (69, 71, 90)
-BUTTON_HOVER_COLOR = (88, 91, 112)
-BUTTON_TEXT_COLOR = (205, 214, 244)
-OVERLAY_COLOR = (30, 30, 46, 200)
-STATUS_TEXT_COLOR = (205, 214, 244)
-SCORE_COLOR = (249, 226, 175)
 
 # Timing
 BASE_MOVE_INTERVAL = 0.15  # seconds between moves at start
@@ -56,6 +33,10 @@ class _Button:
         self.w = w
         self.h = h
         self.label = label
+        self.txt_label = arcade.Text(
+            label, cx, cy, BUTTON_TEXT_COLOR,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
 
     def contains(self, x, y):
         return (abs(x - self.cx) <= self.w / 2) and (abs(y - self.cy) <= self.h / 2)
@@ -64,22 +45,7 @@ class _Button:
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
         arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
         arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
-        arcade.draw_text(
-            self.label,
-            self.cx,
-            self.cy,
-            BUTTON_TEXT_COLOR,
-            font_size=14,
-            anchor_x="center",
-            anchor_y="center",
-        )
-
-
-def _cell_to_screen(col, row):
-    """Convert grid (col, row) to screen center (x, y)."""
-    x = GRID_ORIGIN_X + col * CELL_SIZE + CELL_SIZE // 2
-    y = GRID_ORIGIN_Y + row * CELL_SIZE + CELL_SIZE // 2
-    return x, y
+        self.txt_label.draw()
 
 
 class SnakeView(arcade.View):
@@ -95,7 +61,37 @@ class SnakeView(arcade.View):
         self.btn_new = _Button(170, HEIGHT - 25, 110, 34, "New Game")
         self.btn_help = _Button(WIDTH - 30, HEIGHT - 25, 40, 40, "?")
 
+        # Pre-created Text objects for the renderer
+        self._create_texts()
+
         self._init_game()
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for rendering."""
+        from renderers.snake_renderer import (
+            SCORE_COLOR, STATUS_TEXT_COLOR, OVERLAY_COLOR,
+        )
+        self.txt_score = arcade.Text(
+            "", WIDTH // 2 - 80, HEIGHT - 33, SCORE_COLOR,
+            font_size=16, anchor_x="center", anchor_y="center",
+        )
+        self.txt_high_score = arcade.Text(
+            "", WIDTH // 2 + 80, HEIGHT - 33, STATUS_TEXT_COLOR,
+            font_size=16, anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over = arcade.Text(
+            "GAME OVER", WIDTH // 2, HEIGHT // 2 + 50, (243, 139, 168),
+            font_size=36, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_score = arcade.Text(
+            "", WIDTH // 2, HEIGHT // 2, SCORE_COLOR,
+            font_size=22, anchor_x="center", anchor_y="center",
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' or press ENTER to play again",
+            WIDTH // 2, HEIGHT // 2 - 45, STATUS_TEXT_COLOR,
+            font_size=14, anchor_x="center", anchor_y="center",
+        )
 
     def _init_game(self):
         """Initialize or reset all game state."""

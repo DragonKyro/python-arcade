@@ -6,6 +6,11 @@ import arcade
 from pages.components import Button
 from pages.rules import RulesView
 from renderers import checkers_renderer
+from renderers.checkers_renderer import (
+    WIDTH, HEIGHT,
+    BOARD_SIZE, CELL_SIZE, BOARD_PIXEL, BOARD_LEFT, BOARD_BOTTOM,
+    BUTTON_W, BUTTON_H,
+)
 from ai.checkers_ai import (
     CheckersAI,
     initial_board,
@@ -13,38 +18,10 @@ from ai.checkers_ai import (
     get_captures,
     apply_move,
     check_winner,
-    count_pieces,
-    EMPTY,
     RED,
     BLACK,
     RED_KING,
-    BLACK_KING,
 )
-
-WIDTH = 800
-HEIGHT = 600
-
-# Board drawing constants
-BOARD_SIZE = 8
-CELL_SIZE = 60
-BOARD_PIXEL = BOARD_SIZE * CELL_SIZE  # 480
-BOARD_LEFT = (WIDTH - BOARD_PIXEL) // 2
-BOARD_BOTTOM = 30
-PIECE_RADIUS = CELL_SIZE * 0.38
-
-# Colors
-LIGHT_SQUARE = (240, 217, 181)
-DARK_SQUARE = (181, 136, 99)
-PLAYER_COLOR = (200, 30, 30)        # Red pieces
-AI_PIECE_COLOR = (30, 30, 30)       # Black pieces
-SELECT_HIGHLIGHT = (255, 255, 0, 100)
-VALID_DEST_COLOR = (0, 200, 0, 130)
-KING_MARKER_COLOR = (255, 215, 0)   # Gold for king text
-OVERLAY_BG = (0, 0, 0, 170)
-
-# Button dimensions
-BUTTON_W = 100
-BUTTON_H = 36
 
 # Game states
 STATE_PLAYER_TURN = "player_turn"
@@ -71,6 +48,7 @@ class CheckersView(arcade.View):
         self.valid_destinations = []  # list of moves starting from selected piece
         self.ai_delay = 0.0
         self.multi_jump_pos = None    # (row, col) during multi-jump
+        self._create_texts()
         self.new_game()
 
     def new_game(self):
@@ -82,6 +60,51 @@ class CheckersView(arcade.View):
         self.valid_destinations = []
         self.ai_delay = 0.0
         self.multi_jump_pos = None
+
+    def _create_texts(self):
+        """Create reusable arcade.Text objects for rendering."""
+        from renderers.checkers_renderer import (
+            BOARD_BOTTOM, BOARD_PIXEL, PLAYER_COLOR,
+        )
+        board_top = BOARD_BOTTOM + BOARD_PIXEL
+        self.txt_back = arcade.Text(
+            "Back", 60, HEIGHT - 30, arcade.color.WHITE,
+            14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_new_game = arcade.Text(
+            "New Game", WIDTH - 70, HEIGHT - 30, arcade.color.WHITE,
+            14, anchor_x="center", anchor_y="center",
+        )
+        self.txt_title = arcade.Text(
+            "Checkers", WIDTH // 2, HEIGHT - 30, arcade.color.WHITE,
+            22, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_turn = arcade.Text(
+            "", WIDTH // 2, board_top + 18, arcade.color.WHITE,
+            16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        # Reusable king marker text
+        self.txt_king = arcade.Text(
+            "K", 0, 0, (212, 175, 55),
+            16, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_red_count = arcade.Text(
+            "", 38, HEIGHT // 2 + 20, arcade.color.WHITE,
+            14, anchor_x="left", anchor_y="center",
+        )
+        self.txt_black_count = arcade.Text(
+            "", 38, HEIGHT // 2 - 10, arcade.color.WHITE,
+            14, anchor_x="left", anchor_y="center",
+        )
+        self.txt_game_over = arcade.Text(
+            "", WIDTH // 2, HEIGHT // 2 + 30, arcade.color.WHITE,
+            48, anchor_x="center", anchor_y="center", bold=True,
+        )
+        self.txt_game_over_hint = arcade.Text(
+            "Click 'New Game' to play again",
+            WIDTH // 2, HEIGHT // 2 - 30, arcade.color.WHITE,
+            18, anchor_x="center", anchor_y="center",
+        )
 
     # ------------------------------------------------------------------ helpers
 
