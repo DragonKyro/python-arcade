@@ -1,0 +1,20 @@
+DOODLE JUMP
+
+Jump endlessly upward on platforms to reach the highest score.
+
+CONTROLS
+- Left/Right arrow keys (or A/D) to move horizontally.
+- The character auto-jumps when landing on a platform.
+- Character wraps around screen edges (go off left, appear right).
+
+PLATFORMS
+- Green: normal, always solid.
+- Blue: moves horizontally.
+- Brown: breaks on contact (one use only).
+- White: disappears shortly after landing.
+
+HAZARDS
+- Falling off the bottom of the screen ends the game.
+- Avoid monsters (if present).
+
+Your score is your maximum height reached. Beat your high score!

@@ -1,6 +1,6 @@
 # Python Arcade
 
-A collection of 52 classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, retro arcade classics, multiplayer party games, and VS modes — all playable from a single launcher.
+A collection of 55 classic games built with the [Python Arcade](https://api.arcade.academy/) library. Includes single-player puzzles, AI-opponent board games, retro arcade classics, multiplayer party games, and VS modes — all playable from a single launcher.
 
 ## Games
 
@@ -58,6 +58,9 @@ A collection of 52 classic games built with the [Python Arcade](https://api.arca
 | Snakes & Ladders | Party (2-6) | Auto-roll |
 | Ludo | Party (2-4) | Heuristic |
 | Yahtzee | Dice (1-4) | Expected value |
+| Doodle Jump | Arcade | - |
+| Galaga | Arcade | Per-enemy type AI |
+| Pac-Man | Arcade | 4 unique ghost AIs |
 
 ## Getting Started
 

@@ -850,6 +850,80 @@ def icon_yahtzee():
     _save(img, "yahtzee.png")
 
 
+def icon_doodle_jump():
+    img, d = _new((245, 245, 220))
+    # grid lines (graph paper)
+    for i in range(0, 120, 15):
+        d.line([(0, i), (120, i)], fill=(220, 220, 200), width=1)
+        d.line([(i, 0), (i, 120)], fill=(220, 220, 200), width=1)
+    # platforms
+    d.rectangle([20, 85, 55, 92], fill=GREEN)
+    d.rectangle([60, 55, 95, 62], fill=GREEN)
+    d.rectangle([30, 30, 65, 37], fill=BLUE)
+    d.rectangle([70, 100, 100, 107], fill=BROWN)
+    # doodler
+    d.ellipse([35, 40, 50, 55], fill=YELLOW, outline=BLACK)
+    d.rectangle([38, 55, 47, 70], fill=GREEN)
+    # jump arc
+    d.line([(42, 70), (42, 85)], fill=GRAY, width=1)
+    _save(img, "doodle_jump.png")
+
+def icon_galaga():
+    img, d = _new(BLACK)
+    # stars
+    for sx, sy in [(10,10),(30,20),(80,15),(50,40),(100,30),(20,90),(90,80)]:
+        d.point((sx, sy), fill=WHITE)
+    # enemies row 1 (bosses - green)
+    for i in range(3):
+        x = 30 + i * 25
+        d.rectangle([x, 15, x + 18, 28], fill=GREEN, outline=(0, 180, 0))
+        d.ellipse([x + 3, 18, x + 8, 23], fill=WHITE)
+        d.ellipse([x + 10, 18, x + 15, 23], fill=WHITE)
+    # enemies row 2 (butterflies - red)
+    for i in range(4):
+        x = 22 + i * 22
+        d.polygon([(x + 8, 35), (x, 48), (x + 16, 48)], fill=RED)
+    # enemies row 3 (bees - blue)
+    for i in range(5):
+        x = 15 + i * 20
+        d.ellipse([x, 55, x + 14, 67], fill=BLUE, outline=(100, 100, 255))
+    # player ship
+    d.polygon([(55, 100), (60, 85), (65, 100)], fill=(0, 255, 255))
+    # bullet
+    d.line([(60, 82), (60, 72)], fill=WHITE, width=2)
+    _save(img, "galaga.png")
+
+def icon_pacman():
+    img, d = _new(BLACK)
+    # maze walls (simplified)
+    d.rectangle([10, 10, 110, 12], fill=BLUE)
+    d.rectangle([10, 108, 110, 110], fill=BLUE)
+    d.rectangle([10, 10, 12, 110], fill=BLUE)
+    d.rectangle([108, 10, 110, 110], fill=BLUE)
+    d.rectangle([30, 30, 50, 45], fill=BLUE)
+    d.rectangle([70, 30, 90, 45], fill=BLUE)
+    d.rectangle([30, 70, 50, 85], fill=BLUE)
+    d.rectangle([70, 70, 90, 85], fill=BLUE)
+    # dots
+    for x in range(20, 110, 12):
+        for y in [55, 60]:
+            d.ellipse([x-1, y-1, x+1, y+1], fill=WHITE)
+    # power pellet
+    d.ellipse([16, 16, 24, 24], fill=WHITE)
+    # pac-man (open mouth facing right)
+    d.pieslice([35, 50, 55, 70], start=30, end=330, fill=YELLOW)
+    # ghosts
+    ghost_colors = [RED, (255, 184, 255), (0, 255, 255), ORANGE]
+    for i, gc in enumerate(ghost_colors):
+        gx = 65 + i * 12
+        gy = 90
+        d.rectangle([gx, gy, gx + 10, gy + 12], fill=gc)
+        d.pieslice([gx, gy - 2, gx + 10, gy + 8], start=180, end=360, fill=gc)
+        d.ellipse([gx + 2, gy + 1, gx + 4, gy + 3], fill=WHITE)
+        d.ellipse([gx + 6, gy + 1, gx + 8, gy + 3], fill=WHITE)
+    _save(img, "pacman.png")
+
+
 # ── UI Assets ────────────────────────────────────────────────────────
 
 def ui_help():
@@ -944,6 +1018,9 @@ def main():
     icon_snakes_and_ladders()
     icon_ludo()
     icon_yahtzee()
+    icon_doodle_jump()
+    icon_galaga()
+    icon_pacman()
 
     print("Generating UI assets...")
     ui_help()

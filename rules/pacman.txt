@@ -1,0 +1,22 @@
+PAC-MAN
+
+Eat all dots while avoiding four colored ghosts.
+
+CONTROLS
+- Arrow keys to change direction.
+- Pac-Man moves continuously in the chosen direction.
+
+GHOSTS (each has unique behavior)
+- Blinky (red): directly chases Pac-Man aggressively.
+- Pinky (pink): ambushes by targeting 4 tiles ahead of Pac-Man.
+- Inky (cyan): unpredictable, uses Blinky's position to calculate target.
+- Clyde (orange): chases when far away, retreats when close.
+
+GAMEPLAY
+- Eat all dots to clear the level.
+- Power pellets (large dots) turn ghosts blue and vulnerable.
+- Eat blue ghosts for bonus points (200, 400, 800, 1600).
+- Ghosts respawn at the center pen after being eaten.
+- Fruit bonuses appear periodically in the center.
+
+You start with 3 lives. Losing all lives ends the game.

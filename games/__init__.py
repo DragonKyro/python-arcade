@@ -50,6 +50,9 @@ from games.chess import ChessView
 from games.snakes_and_ladders import SnakesAndLaddersView
 from games.ludo import LudoView
 from games.yahtzee import YahtzeeView
+from games.doodle_jump import DoodleJumpView
+from games.galaga import GalagaView
+from games.pacman import PacmanView
 
 # Each entry: (display name, view class, rules filename, icon filename)
 GAME_LIST = [
@@ -105,4 +108,7 @@ GAME_LIST = [
     ("Snakes & Ladders", SnakesAndLaddersView, "snakes_and_ladders.txt", "snakes_and_ladders.png"),
     ("Ludo", LudoView, "ludo.txt", "ludo.png"),
     ("Yahtzee", YahtzeeView, "yahtzee.txt", "yahtzee.png"),
+    ("Doodle Jump", DoodleJumpView, "doodle_jump.txt", "doodle_jump.png"),
+    ("Galaga", GalagaView, "galaga.txt", "galaga.png"),
+    ("Pac-Man", PacmanView, "pacman.txt", "pacman.png"),
 ]

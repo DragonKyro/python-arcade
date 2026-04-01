@@ -1,0 +1,25 @@
+GALAGA
+
+Destroy waves of alien fighters in this classic space shooter.
+
+CONTROLS
+- Left/Right arrow keys to move your ship.
+- Space to fire.
+
+ENEMIES
+- Bees (blue): basic fighters, simple dive attacks.
+- Butterflies (red): aggressive, wide swooping attack patterns.
+- Boss Galaga (green): takes 2 hits, may use tractor beam to
+  capture your ship. Destroy a boss holding your ship to get
+  a dual-fighter (double firepower!).
+
+GAMEPLAY
+- Enemies form in waves at the top, then dive-bomb your ship.
+- Destroy all enemies to advance to the next stage.
+- Bonus stages appear periodically (no enemies fire back).
+- You start with 3 lives.
+
+SCORING
+- Bees: 50 points (formation) / 100 (diving).
+- Butterflies: 80 (formation) / 160 (diving).
+- Boss: 150 (formation) / 400 (diving).

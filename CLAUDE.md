@@ -1,7 +1,7 @@
 # Python Arcade Game Collection
 
 ## Project Overview
-A collection of 52 games built with the `arcade` library (3.x). Includes single-player puzzles, AI-opponent board games, retro arcade classics, multiplayer party games, and VS modes.
+A collection of 55 games built with the `arcade` library (3.x). Includes single-player puzzles, AI-opponent board games, retro arcade classics, multiplayer party games, and VS modes.
 
 ## Architecture
 - `main.py` — minimal entry point, creates window and shows HomeView
