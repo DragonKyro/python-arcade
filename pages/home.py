@@ -26,7 +26,7 @@ class HomeView(arcade.View):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         arcade.draw_text(
             "Python Arcade",
             WIDTH / 2,

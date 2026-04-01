@@ -59,8 +59,8 @@ class Button:
         self.text_color = text_color
 
     def draw(self):
-        arcade.draw_rectangle_filled(self.cx, self.cy, self.w, self.h, self.bg_color)
-        arcade.draw_rectangle_outline(self.cx, self.cy, self.w, self.h, (255, 255, 255), 2)
+        arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), self.bg_color)
+        arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), (255, 255, 255), 2)
         arcade.draw_text(
             self.text,
             self.cx, self.cy,
@@ -249,7 +249,7 @@ class Twenty48View(arcade.View):
     # ------------------------------------------------------------------ #
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Background
         arcade.set_background_color((250, 248, 239))
@@ -282,7 +282,7 @@ class Twenty48View(arcade.View):
         # Grid background
         grid_cx = GRID_LEFT + GRID_PIXEL / 2
         grid_cy = GRID_BOTTOM + GRID_PIXEL / 2
-        arcade.draw_rectangle_filled(grid_cx, grid_cy, GRID_PIXEL + 6, GRID_PIXEL + 6, GRID_BG_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(grid_cx, grid_cy, GRID_PIXEL + 6, GRID_PIXEL + 6), GRID_BG_COLOR)
 
         # Draw each cell
         for r in range(GRID_SIZE):
@@ -293,7 +293,7 @@ class Twenty48View(arcade.View):
                 y = GRID_BOTTOM + GRID_PIXEL - (CELL_GAP + r * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2)
 
                 color = _get_tile_color(value)
-                arcade.draw_rectangle_filled(x, y, CELL_SIZE, CELL_SIZE, color)
+                arcade.draw_rect_filled(arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), color)
 
                 if value != 0:
                     txt_color = _get_text_color(value)
@@ -319,9 +319,7 @@ class Twenty48View(arcade.View):
     def _draw_overlay(self, title, subtitle):
         """Draw a semi-transparent overlay with a message."""
         # Semi-transparent backdrop over the grid
-        arcade.draw_rectangle_filled(
-            WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, (255, 255, 255, 150)
-        )
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), (255, 255, 255, 150))
         arcade.draw_text(
             title,
             WIDTH / 2, HEIGHT / 2 + 20,
@@ -392,7 +390,7 @@ if __name__ == "__main__":
     class _DummyMenuView(arcade.View):
         """Placeholder so the game can be tested standalone."""
         def on_draw(self):
-            arcade.start_render()
+            self.clear()
             arcade.draw_text("Menu (press Enter for 2048)", WIDTH / 2, HEIGHT / 2,
                              arcade.color.WHITE, 24, anchor_x="center", anchor_y="center")
 

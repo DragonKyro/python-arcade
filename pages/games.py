@@ -83,7 +83,7 @@ class GamesView(arcade.View):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Draw scrollable game buttons
         for btn in self.game_buttons:
@@ -98,11 +98,7 @@ class GamesView(arcade.View):
             btn.center_y = orig_y
 
         # Draw top bar background over scrolled content
-        arcade.draw_rectangle_filled(
-            WIDTH / 2, HEIGHT - TOP_BAR_HEIGHT / 2,
-            WIDTH, TOP_BAR_HEIGHT,
-            arcade.color.AMAZON,
-        )
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT - TOP_BAR_HEIGHT / 2, WIDTH, TOP_BAR_HEIGHT), arcade.color.AMAZON, )
         arcade.draw_text(
             "Select a Game",
             WIDTH / 2,

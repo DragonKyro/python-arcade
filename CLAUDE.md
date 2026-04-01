@@ -1,7 +1,7 @@
 # Python Arcade Game Collection
 
 ## Project Overview
-A collection of single-player and AI-opponent games built with the `arcade` library (2.6.x).
+A collection of single-player and AI-opponent games built with the `arcade` library (3.x).
 
 ## Architecture
 - `main.py` — minimal entry point, creates window and shows HomeView
@@ -11,7 +11,7 @@ A collection of single-player and AI-opponent games built with the `arcade` libr
 - `games/__init__.py` — `GAME_LIST` registry; add new games here
 
 ## Conventions
-- All games use arcade 2.6.x APIs (`arcade.start_render()`, `arcade.draw_*`)
+- All games use arcade 3.x APIs (`self.clear()`, `arcade.draw_rect_filled`, `arcade.XYWH`, etc.)
 - Window size: 800x600 (WIDTH/HEIGHT constants)
 - Every game view has "Back" (top-left) and "New Game" (top-right) buttons
 - AI moves use `on_update` with a short delay (0.3-0.5s), never blocking
@@ -28,4 +28,4 @@ A collection of single-player and AI-opponent games built with the `arcade` libr
 - Install deps: `pip install -r requirements.txt`
 
 ## Dependencies
-- `arcade>=2.6,<3.0` (pinned to 2.x due to breaking API changes in 3.x)
+- `arcade>=3.0`

@@ -68,7 +68,7 @@ class MancalaView(arcade.View):
 
     # ------------------------------------------------------------------ draw
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Title
         arcade.draw_text(
@@ -100,8 +100,8 @@ class MancalaView(arcade.View):
             self._draw_game_over()
 
     def _draw_button(self, cx, cy, w, h, text, color):
-        arcade.draw_rectangle_filled(cx, cy, w, h, color)
-        arcade.draw_rectangle_outline(cx, cy, w, h, arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
+        arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE)
         arcade.draw_text(
             text, cx, cy, arcade.color.WHITE,
             font_size=14, anchor_x="center", anchor_y="center",
@@ -109,8 +109,8 @@ class MancalaView(arcade.View):
 
     def _draw_board(self):
         """Draw the rounded board background."""
-        arcade.draw_rectangle_filled(BOARD_CX, BOARD_CY, BOARD_W, BOARD_H, BOARD_COLOR)
-        arcade.draw_rectangle_outline(BOARD_CX, BOARD_CY, BOARD_W, BOARD_H, BOARD_OUTLINE_COLOR, 3)
+        arcade.draw_rect_filled(arcade.XYWH(BOARD_CX, BOARD_CY, BOARD_W, BOARD_H), BOARD_COLOR)
+        arcade.draw_rect_outline(arcade.XYWH(BOARD_CX, BOARD_CY, BOARD_W, BOARD_H), BOARD_OUTLINE_COLOR, 3)
         # Rounded ends (circles at left/right)
         arcade.draw_circle_filled(BOARD_CX - BOARD_W / 2, BOARD_CY, BOARD_H / 2, BOARD_COLOR)
         arcade.draw_circle_filled(BOARD_CX + BOARD_W / 2, BOARD_CY, BOARD_H / 2, BOARD_COLOR)
@@ -195,8 +195,8 @@ class MancalaView(arcade.View):
         # Player store = right, AI store = left.
 
         # AI store (left)
-        arcade.draw_rectangle_filled(LEFT_STORE_X, STORE_Y, STORE_W, STORE_H, STORE_COLOR)
-        arcade.draw_rectangle_outline(LEFT_STORE_X, STORE_Y, STORE_W, STORE_H, BOARD_OUTLINE_COLOR, 2)
+        arcade.draw_rect_filled(arcade.XYWH(LEFT_STORE_X, STORE_Y, STORE_W, STORE_H), STORE_COLOR)
+        arcade.draw_rect_outline(arcade.XYWH(LEFT_STORE_X, STORE_Y, STORE_W, STORE_H), BOARD_OUTLINE_COLOR, 2)
         arcade.draw_text(
             str(self.stores[AI_SIDE]),
             LEFT_STORE_X, STORE_Y,
@@ -210,8 +210,8 @@ class MancalaView(arcade.View):
         )
 
         # Player store (right)
-        arcade.draw_rectangle_filled(RIGHT_STORE_X, STORE_Y, STORE_W, STORE_H, STORE_COLOR)
-        arcade.draw_rectangle_outline(RIGHT_STORE_X, STORE_Y, STORE_W, STORE_H, BOARD_OUTLINE_COLOR, 2)
+        arcade.draw_rect_filled(arcade.XYWH(RIGHT_STORE_X, STORE_Y, STORE_W, STORE_H), STORE_COLOR)
+        arcade.draw_rect_outline(arcade.XYWH(RIGHT_STORE_X, STORE_Y, STORE_W, STORE_H), BOARD_OUTLINE_COLOR, 2)
         arcade.draw_text(
             str(self.stores[PLAYER_SIDE]),
             RIGHT_STORE_X, STORE_Y,
@@ -249,8 +249,8 @@ class MancalaView(arcade.View):
 
     def _draw_game_over(self):
         """Draw game over overlay."""
-        arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, 420, 140, (0, 0, 0, 200))
-        arcade.draw_rectangle_outline(WIDTH / 2, HEIGHT / 2, 420, 140, arcade.color.WHITE, 2)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 420, 140), (0, 0, 0, 200))
+        arcade.draw_rect_outline(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 420, 140), arcade.color.WHITE, 2)
 
         if self.winner == "Tie":
             msg = "It's a tie!"
@@ -410,7 +410,7 @@ if __name__ == "__main__":
 
     class DummyMenu(arcade.View):
         def on_draw(self):
-            arcade.start_render()
+            self.clear()
             arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
                              arcade.color.WHITE, 20, anchor_x="center")
 

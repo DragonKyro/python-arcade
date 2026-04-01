@@ -80,7 +80,7 @@ class OthelloView(arcade.View):
     # ---- Drawing ----
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         self._draw_board()
         self._draw_pieces()
@@ -97,9 +97,7 @@ class OthelloView(arcade.View):
 
     def _draw_board(self):
         # Green background
-        arcade.draw_rectangle_filled(
-            WIDTH / 2, HEIGHT / 2, BOARD_PIXEL, BOARD_PIXEL, BOARD_GREEN
-        )
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, BOARD_PIXEL, BOARD_PIXEL), BOARD_GREEN)
         # Grid lines
         for i in range(BOARD_SIZE + 1):
             # Horizontal
@@ -149,8 +147,8 @@ class OthelloView(arcade.View):
         self._draw_button(WIDTH - 70, HEIGHT - 30, 110, 36, "New Game", arcade.color.DARK_GREEN)
 
     def _draw_button(self, cx, cy, w, h, text, color):
-        arcade.draw_rectangle_filled(cx, cy, w, h, color)
-        arcade.draw_rectangle_outline(cx, cy, w, h, arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
+        arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE)
         arcade.draw_text(
             text, cx, cy, arcade.color.WHITE,
             font_size=14, anchor_x="center", anchor_y="center",
@@ -171,8 +169,8 @@ class OthelloView(arcade.View):
 
     def _draw_game_over(self):
         # Semi-transparent overlay
-        arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, 400, 140, (0, 0, 0, 200))
-        arcade.draw_rectangle_outline(WIDTH / 2, HEIGHT / 2, 400, 140, arcade.color.WHITE, 2)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 400, 140), (0, 0, 0, 200))
+        arcade.draw_rect_outline(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 400, 140), arcade.color.WHITE, 2)
 
         b, w = self._count_pieces()
         if self.winner == BLACK:
@@ -295,7 +293,7 @@ if __name__ == "__main__":
 
     class DummyMenu(arcade.View):
         def on_draw(self):
-            arcade.start_render()
+            self.clear()
             arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
                              arcade.color.WHITE, 20, anchor_x="center")
 

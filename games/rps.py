@@ -51,20 +51,20 @@ class RPSView(arcade.View):
         self.player_wins = 0
         self.ai_wins = 0
         self.draws = 0
-        self.player_history: list[str] = []
-        self.round_log: list[tuple[str, str, str]] = []  # (player, ai, result)
+        self.player_history = []
+        self.round_log = []  # (player, ai, result)
         self._clear_round()
 
     def _clear_round(self):
-        self.player_choice: str | None = None
-        self.ai_choice: str | None = None
-        self.result_text: str | None = None
+        self.player_choice = None
+        self.ai_choice = None
+        self.result_text = None
         self.reveal_timer: float = 0.0
         self.waiting_for_reveal: bool = False
 
     # --------------------------------------------------------------- drawing
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         arcade.set_background_color(BG_COLOR)
 
         # -- Score bar --
@@ -75,19 +75,19 @@ class RPSView(arcade.View):
         )
 
         # -- Back button (top-left) --
-        arcade.draw_rectangle_filled(60, HEIGHT - 30, 100, 36, BTN_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(60, HEIGHT - 30, 100, 36), BTN_COLOR)
         arcade.draw_text("Back", 60, HEIGHT - 30, TEXT_COLOR, 14, anchor_x="center", anchor_y="center")
 
         # -- New Game button (top-right) --
-        arcade.draw_rectangle_filled(WIDTH - 70, HEIGHT - 30, 120, 36, BTN_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH - 70, HEIGHT - 30, 120, 36), BTN_COLOR)
         arcade.draw_text("New Game", WIDTH - 70, HEIGHT - 30, TEXT_COLOR, 14, anchor_x="center", anchor_y="center")
 
         # -- Choice buttons (bottom) --
         labels = ["Rock", "Paper", "Scissors"]
         for i, (cx, label) in enumerate(zip(BTN_CENTERS, labels)):
             color = BTN_COLOR
-            arcade.draw_rectangle_filled(cx, BTN_Y, BTN_W, BTN_H, color)
-            arcade.draw_rectangle_outline(cx, BTN_Y, BTN_W, BTN_H, TEXT_COLOR, 2)
+            arcade.draw_rect_filled(arcade.XYWH(cx, BTN_Y, BTN_W, BTN_H), color)
+            arcade.draw_rect_outline(arcade.XYWH(cx, BTN_Y, BTN_W, BTN_H), TEXT_COLOR, 2)
             # Draw simple icon
             self._draw_icon(cx, BTN_Y + 10, label.lower())
             arcade.draw_text(label, cx, BTN_Y - 45, TEXT_COLOR, 14, anchor_x="center", anchor_y="center")
@@ -107,8 +107,8 @@ class RPSView(arcade.View):
             arcade.draw_circle_filled(cx, cy, 25 * scale, arcade.color.GRAY)
             arcade.draw_circle_outline(cx, cy, 25 * scale, TEXT_COLOR, 2)
         elif move == "paper":
-            arcade.draw_rectangle_filled(cx, cy, 40 * scale, 50 * scale, arcade.color.GHOST_WHITE)
-            arcade.draw_rectangle_outline(cx, cy, 40 * scale, 50 * scale, TEXT_COLOR, 2)
+            arcade.draw_rect_filled(arcade.XYWH(cx, cy, 40 * scale, 50 * scale), arcade.color.GHOST_WHITE)
+            arcade.draw_rect_outline(arcade.XYWH(cx, cy, 40 * scale, 50 * scale), TEXT_COLOR, 2)
         elif move == "scissors":
             # V-shape
             length = 25 * scale

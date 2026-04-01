@@ -59,7 +59,7 @@ class MastermindView(arcade.View):
         arcade.set_background_color((40, 40, 60))
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Title
         arcade.draw_text(
@@ -95,8 +95,8 @@ class MastermindView(arcade.View):
             self._draw_game_over_message()
 
     def _draw_button(self, cx, cy, w, h, text, color):
-        arcade.draw_rectangle_filled(cx, cy, w, h, color)
-        arcade.draw_rectangle_outline(cx, cy, w, h, arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
+        arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE)
         arcade.draw_text(
             text, cx, cy, arcade.color.WHITE,
             font_size=14, anchor_x="center", anchor_y="center",
@@ -195,8 +195,8 @@ class MastermindView(arcade.View):
 
     def _draw_game_over_message(self):
         # Semi-transparent overlay
-        arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, 400, 120, (0, 0, 0, 180))
-        arcade.draw_rectangle_outline(WIDTH / 2, HEIGHT / 2, 400, 120, arcade.color.WHITE, 2)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 400, 120), (0, 0, 0, 180))
+        arcade.draw_rect_outline(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 400, 120), arcade.color.WHITE, 2)
         if self.won:
             msg = f"You Win! Guessed in {len(self.guesses)} attempt(s)!"
             color = arcade.color.LIGHT_GREEN
@@ -303,7 +303,7 @@ if __name__ == "__main__":
 
     class DummyMenu(arcade.View):
         def on_draw(self):
-            arcade.start_render()
+            self.clear()
             arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
                              arcade.color.WHITE, 20, anchor_x="center")
 

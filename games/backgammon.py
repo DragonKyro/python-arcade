@@ -340,7 +340,7 @@ class BackgammonView(arcade.View):
     # ---- Drawing ----
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         self._draw_board_bg()
         self._draw_points()
@@ -360,12 +360,12 @@ class BackgammonView(arcade.View):
         # Main board background
         cx = (BOARD_LEFT + BOARD_RIGHT) / 2
         cy = (BOARD_BOTTOM + BOARD_TOP) / 2
-        arcade.draw_rectangle_filled(cx, cy, BOARD_WIDTH, BOARD_HEIGHT, BOARD_COLOR)
-        arcade.draw_rectangle_outline(cx, cy, BOARD_WIDTH, BOARD_HEIGHT, (20, 20, 20), 3)
+        arcade.draw_rect_filled(arcade.XYWH(cx, cy, BOARD_WIDTH, BOARD_HEIGHT), BOARD_COLOR)
+        arcade.draw_rect_outline(arcade.XYWH(cx, cy, BOARD_WIDTH, BOARD_HEIGHT), (20, 20, 20), 3)
 
         # Bar
         bar_cx = (BAR_LEFT + BAR_RIGHT) / 2
-        arcade.draw_rectangle_filled(bar_cx, cy, BAR_WIDTH, BOARD_HEIGHT, BAR_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(bar_cx, cy, BAR_WIDTH, BOARD_HEIGHT), BAR_COLOR)
 
     def _draw_points(self):
         """Draw 24 triangular points."""
@@ -467,7 +467,7 @@ class BackgammonView(arcade.View):
         # Highlight bar if selected
         if self.selected_point == 'bar':
             bar_cy = BOARD_BOTTOM + HALF_HEIGHT // 2 - 10
-            arcade.draw_rectangle_filled(bar_cx, bar_cy, BAR_WIDTH - 4, 60, HIGHLIGHT_COLOR)
+            arcade.draw_rect_filled(arcade.XYWH(bar_cx, bar_cy, BAR_WIDTH - 4, 60), HIGHLIGHT_COLOR)
 
     def _draw_off_area(self):
         """Draw bearing off tray on the right side."""
@@ -485,8 +485,8 @@ class BackgammonView(arcade.View):
             # Draw small stack
             for s in range(min(self.off[0], 5)):
                 y = BOARD_BOTTOM + 10 + s * 12
-                arcade.draw_rectangle_filled(off_x, y, 20, 10, PLAYER_COLOR)
-                arcade.draw_rectangle_outline(off_x, y, 20, 10, PLAYER_OUTLINE, 1)
+                arcade.draw_rect_filled(arcade.XYWH(off_x, y, 20, 10), PLAYER_COLOR)
+                arcade.draw_rect_outline(arcade.XYWH(off_x, y, 20, 10), PLAYER_OUTLINE, 1)
 
         # AI off (top)
         arcade.draw_text(
@@ -500,18 +500,15 @@ class BackgammonView(arcade.View):
             )
             for s in range(min(self.off[1], 5)):
                 y = BOARD_TOP - 10 - s * 12
-                arcade.draw_rectangle_filled(off_x, y, 20, 10, AI_COLOR)
-                arcade.draw_rectangle_outline(off_x, y, 20, 10, AI_OUTLINE, 1)
+                arcade.draw_rect_filled(arcade.XYWH(off_x, y, 20, 10), AI_COLOR)
+                arcade.draw_rect_outline(arcade.XYWH(off_x, y, 20, 10), AI_OUTLINE, 1)
 
     def _draw_valid_destinations(self):
         """Highlight valid destination points."""
         for dest in self.valid_destinations:
             if dest == 'off':
                 off_x = BOARD_RIGHT + 20
-                arcade.draw_rectangle_filled(
-                    off_x, BOARD_BOTTOM + HALF_HEIGHT // 2 - 40,
-                    30, 30, VALID_DEST_COLOR,
-                )
+                arcade.draw_rect_filled(arcade.XYWH(off_x, BOARD_BOTTOM + HALF_HEIGHT // 2 - 40, 30, 30), VALID_DEST_COLOR, )
             else:
                 x, base_y, tip_y, is_top = self._point_tip_xy(dest)
                 half_w = POINT_WIDTH // 2 - 1
@@ -551,8 +548,8 @@ class BackgammonView(arcade.View):
             bg = (200, 200, 200) if not is_used else (100, 100, 100)
             fg = arcade.color.BLACK if not is_used else (60, 60, 60)
 
-            arcade.draw_rectangle_filled(dx, dy, 36, 36, bg)
-            arcade.draw_rectangle_outline(dx, dy, 36, 36, (50, 50, 50), 2)
+            arcade.draw_rect_filled(arcade.XYWH(dx, dy, 36, 36), bg)
+            arcade.draw_rect_outline(arcade.XYWH(dx, dy, 36, 36), (50, 50, 50), 2)
             arcade.draw_text(
                 str(die_val), dx, dy, fg,
                 font_size=18, anchor_x="center", anchor_y="center", bold=True,
@@ -609,16 +606,16 @@ class BackgammonView(arcade.View):
         )
 
     def _draw_button(self, cx, cy, w, h, text, color):
-        arcade.draw_rectangle_filled(cx, cy, w, h, color)
-        arcade.draw_rectangle_outline(cx, cy, w, h, arcade.color.WHITE, 1)
+        arcade.draw_rect_filled(arcade.XYWH(cx, cy, w, h), color)
+        arcade.draw_rect_outline(arcade.XYWH(cx, cy, w, h), arcade.color.WHITE, 1)
         arcade.draw_text(
             text, cx, cy, arcade.color.WHITE,
             font_size=13, anchor_x="center", anchor_y="center",
         )
 
     def _draw_game_over(self):
-        arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, 400, 120, (0, 0, 0, 200))
-        arcade.draw_rectangle_outline(WIDTH / 2, HEIGHT / 2, 400, 120, arcade.color.WHITE, 2)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 400, 120), (0, 0, 0, 200))
+        arcade.draw_rect_outline(arcade.XYWH(WIDTH / 2, HEIGHT / 2, 400, 120), arcade.color.WHITE, 2)
         if self.winner == "Player":
             msg = "You Win!"
             color = arcade.color.LIGHT_GREEN
@@ -719,7 +716,7 @@ if __name__ == "__main__":
 
     class DummyMenu(arcade.View):
         def on_draw(self):
-            arcade.start_render()
+            self.clear()
             arcade.draw_text("Menu (placeholder)", WIDTH / 2, HEIGHT / 2,
                              arcade.color.WHITE, 20, anchor_x="center")
 

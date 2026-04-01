@@ -113,7 +113,7 @@ class Connect4View(arcade.View):
     # ------------------------------------------------------------------ draw
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self._draw_buttons()
         self._draw_board()
         self._draw_hover()
@@ -124,14 +124,14 @@ class Connect4View(arcade.View):
     def _draw_buttons(self):
         # Back button (top-left)
         bx, by = 60, HEIGHT - 30
-        arcade.draw_rectangle_filled(bx, by, BUTTON_W, BUTTON_H, arcade.color.DARK_GRAY)
-        arcade.draw_rectangle_outline(bx, by, BUTTON_W, BUTTON_H, arcade.color.WHITE, 2)
+        arcade.draw_rect_filled(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.DARK_GRAY)
+        arcade.draw_rect_outline(arcade.XYWH(bx, by, BUTTON_W, BUTTON_H), arcade.color.WHITE, 2)
         arcade.draw_text("Back", bx, by, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
 
         # New Game button (top-right)
         nx, ny = WIDTH - 70, HEIGHT - 30
-        arcade.draw_rectangle_filled(nx, ny, BUTTON_W + 10, BUTTON_H, arcade.color.DARK_GREEN)
-        arcade.draw_rectangle_outline(nx, ny, BUTTON_W + 10, BUTTON_H, arcade.color.WHITE, 2)
+        arcade.draw_rect_filled(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.DARK_GREEN)
+        arcade.draw_rect_outline(arcade.XYWH(nx, ny, BUTTON_W + 10, BUTTON_H), arcade.color.WHITE, 2)
         arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 14, anchor_x="center", anchor_y="center")
 
         # Title
@@ -164,7 +164,7 @@ class Connect4View(arcade.View):
         # Blue board background
         bx = BOARD_MARGIN_X + (COLS * CELL_SIZE) // 2
         by = BOARD_MARGIN_Y + (ROWS * CELL_SIZE) // 2
-        arcade.draw_rectangle_filled(bx, by, COLS * CELL_SIZE, ROWS * CELL_SIZE, BOARD_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(bx, by, COLS * CELL_SIZE, ROWS * CELL_SIZE), BOARD_COLOR)
 
         # Circles
         for row in range(ROWS):
@@ -185,7 +185,7 @@ class Connect4View(arcade.View):
             return
         hx = BOARD_MARGIN_X + self.hover_col * CELL_SIZE + CELL_SIZE // 2
         hy = BOARD_MARGIN_Y + (ROWS * CELL_SIZE) // 2
-        arcade.draw_rectangle_filled(hx, hy, CELL_SIZE, ROWS * CELL_SIZE, HIGHLIGHT_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(hx, hy, CELL_SIZE, ROWS * CELL_SIZE), HIGHLIGHT_COLOR)
 
         # Preview piece at top
         preview_y = BOARD_MARGIN_Y + ROWS * CELL_SIZE + 18
@@ -199,7 +199,7 @@ class Connect4View(arcade.View):
 
     def _draw_overlay(self):
         """Draw a semi-transparent overlay with the result message."""
-        arcade.draw_rectangle_filled(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, OVERLAY_BG)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), OVERLAY_BG)
 
         if self.winner == PLAYER_PIECE:
             msg = "You Win!"

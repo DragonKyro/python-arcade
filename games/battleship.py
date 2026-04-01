@@ -133,7 +133,7 @@ class BattleshipView(arcade.View):
     # ------------------------------------------------------------------ #
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self._draw_background()
         self._draw_buttons()
 
@@ -149,19 +149,19 @@ class BattleshipView(arcade.View):
         self._draw_message()
 
     def _draw_background(self):
-        arcade.draw_rectangle_filled(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, (30, 30, 50))
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), (30, 30, 50))
 
     def _draw_buttons(self):
         # Back button
         bx, by = 55, HEIGHT - 22
-        arcade.draw_rectangle_filled(bx, by, BTN_W, BTN_H, (80, 80, 100))
-        arcade.draw_rectangle_outline(bx, by, BTN_W, BTN_H, arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(bx, by, BTN_W, BTN_H), (80, 80, 100))
+        arcade.draw_rect_outline(arcade.XYWH(bx, by, BTN_W, BTN_H), arcade.color.WHITE)
         arcade.draw_text("Back", bx, by, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
 
         # New Game button
         nx, ny = WIDTH - 55, HEIGHT - 22
-        arcade.draw_rectangle_filled(nx, ny, BTN_W, BTN_H, (80, 80, 100))
-        arcade.draw_rectangle_outline(nx, ny, BTN_W, BTN_H, arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(nx, ny, BTN_W, BTN_H), (80, 80, 100))
+        arcade.draw_rect_outline(arcade.XYWH(nx, ny, BTN_W, BTN_H), arcade.color.WHITE)
         arcade.draw_text("New Game", nx, ny, arcade.color.WHITE, 13, anchor_x="center", anchor_y="center")
 
     def _draw_grid(self, left, board, show_ships=False):
@@ -181,8 +181,8 @@ class BattleshipView(arcade.View):
                 else:
                     color = COLOR_WATER
 
-                arcade.draw_rectangle_filled(x, y, CELL_SIZE - 1, CELL_SIZE - 1, color)
-                arcade.draw_rectangle_outline(x, y, CELL_SIZE, CELL_SIZE, COLOR_GRID_LINE)
+                arcade.draw_rect_filled(arcade.XYWH(x, y, CELL_SIZE - 1, CELL_SIZE - 1), color)
+                arcade.draw_rect_outline(arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), COLOR_GRID_LINE)
 
                 # Miss dot
                 if val == 3:
@@ -224,8 +224,8 @@ class BattleshipView(arcade.View):
                     else:
                         color = COLOR_WATER
 
-                arcade.draw_rectangle_filled(x, y, CELL_SIZE - 1, CELL_SIZE - 1, color)
-                arcade.draw_rectangle_outline(x, y, CELL_SIZE, CELL_SIZE, COLOR_GRID_LINE)
+                arcade.draw_rect_filled(arcade.XYWH(x, y, CELL_SIZE - 1, CELL_SIZE - 1), color)
+                arcade.draw_rect_outline(arcade.XYWH(x, y, CELL_SIZE, CELL_SIZE), COLOR_GRID_LINE)
 
                 if val == 3:
                     arcade.draw_circle_filled(x, y, 5, COLOR_MISS_DOT)
@@ -265,7 +265,7 @@ class BattleshipView(arcade.View):
 
         for r, c in cells:
             x, y = self._grid_to_screen(PLAYER_GRID_LEFT, r, c)
-            arcade.draw_rectangle_filled(x, y, CELL_SIZE - 1, CELL_SIZE - 1, color)
+            arcade.draw_rect_filled(arcade.XYWH(x, y, CELL_SIZE - 1, CELL_SIZE - 1), color)
 
     def _draw_ship_list(self):
         """Draw the list of ships during placement phase."""

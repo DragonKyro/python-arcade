@@ -21,12 +21,12 @@ class RPSAI:
     """AI opponent that tracks the player's history and counters the most
     frequent move.  Falls back to a random choice when there is no history."""
 
-    def get_move(self, history: list[str]) -> str:
+    def get_move(self, history):
         """Return 'rock', 'paper', or 'scissors'.
 
         Parameters
         ----------
-        history : list[str]
+        history : list of str
             The player's past moves (oldest first).
         """
         if not history:

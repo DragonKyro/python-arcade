@@ -158,23 +158,19 @@ class MinesweeperView(arcade.View):
             self.elapsed_time += delta_time
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Background
-        arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT,
-                                     arcade.color.DARK_SLATE_GRAY)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), arcade.color.DARK_SLATE_GRAY)
 
         # --- Top bar ---
         bar_y = HEIGHT - TOP_BAR_HEIGHT / 2
-        arcade.draw_rectangle_filled(WIDTH / 2, bar_y, WIDTH, TOP_BAR_HEIGHT,
-                                     (50, 50, 50))
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, bar_y, WIDTH, TOP_BAR_HEIGHT), (50, 50, 50))
 
         # Back button
         back_bx, back_by, back_bw, back_bh = 55, bar_y, 90, 35
-        arcade.draw_rectangle_filled(back_bx, back_by, back_bw, back_bh,
-                                     arcade.color.DARK_SLATE_BLUE)
-        arcade.draw_rectangle_outline(back_bx, back_by, back_bw, back_bh,
-                                      arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(back_bx, back_by, back_bw, back_bh), arcade.color.DARK_SLATE_BLUE)
+        arcade.draw_rect_outline(arcade.XYWH(back_bx, back_by, back_bw, back_bh), arcade.color.WHITE)
         arcade.draw_text("Back", back_bx, back_by, arcade.color.WHITE,
                          font_size=14, anchor_x="center", anchor_y="center")
 
@@ -192,10 +188,8 @@ class MinesweeperView(arcade.View):
 
         # New Game button
         new_bx, new_by, new_bw, new_bh = WIDTH - 65, bar_y, 110, 35
-        arcade.draw_rectangle_filled(new_bx, new_by, new_bw, new_bh,
-                                     arcade.color.DARK_GREEN)
-        arcade.draw_rectangle_outline(new_bx, new_by, new_bw, new_bh,
-                                      arcade.color.WHITE)
+        arcade.draw_rect_filled(arcade.XYWH(new_bx, new_by, new_bw, new_bh), arcade.color.DARK_GREEN)
+        arcade.draw_rect_outline(arcade.XYWH(new_bx, new_by, new_bw, new_bh), arcade.color.WHITE)
         arcade.draw_text("New Game", new_bx, new_by, arcade.color.WHITE,
                          font_size=14, anchor_x="center", anchor_y="center")
 
@@ -207,8 +201,7 @@ class MinesweeperView(arcade.View):
 
                 if state == UNREVEALED:
                     # Raised gray cell
-                    arcade.draw_rectangle_filled(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2,
-                                                 (180, 180, 180))
+                    arcade.draw_rect_filled(arcade.XYWH(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2), (180, 180, 180))
                     # Highlight edges for raised look
                     left = cx - CELL_SIZE / 2 + 1
                     right = cx + CELL_SIZE / 2 - 1
@@ -221,8 +214,7 @@ class MinesweeperView(arcade.View):
 
                 elif state == FLAGGED:
                     # Same raised appearance as unrevealed
-                    arcade.draw_rectangle_filled(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2,
-                                                 (180, 180, 180))
+                    arcade.draw_rect_filled(arcade.XYWH(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2), (180, 180, 180))
                     left = cx - CELL_SIZE / 2 + 1
                     right = cx + CELL_SIZE / 2 - 1
                     top = cy + CELL_SIZE / 2 - 1
@@ -247,10 +239,8 @@ class MinesweeperView(arcade.View):
 
                 elif state == REVEALED:
                     # Flat white/light cell
-                    arcade.draw_rectangle_filled(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2,
-                                                 (220, 220, 220))
-                    arcade.draw_rectangle_outline(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2,
-                                                  (160, 160, 160), 1)
+                    arcade.draw_rect_filled(arcade.XYWH(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2), (220, 220, 220))
+                    arcade.draw_rect_outline(arcade.XYWH(cx, cy, CELL_SIZE - 2, CELL_SIZE - 2), (160, 160, 160), 1)
 
                     if self.mines[row][col]:
                         # Draw mine as black circle

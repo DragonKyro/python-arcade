@@ -13,12 +13,8 @@ class Button:
         self.color = color
 
     def draw(self):
-        arcade.draw_rectangle_filled(
-            self.center_x, self.center_y, self.width, self.height, self.color
-        )
-        arcade.draw_rectangle_outline(
-            self.center_x, self.center_y, self.width, self.height, arcade.color.WHITE
-        )
+        arcade.draw_rect_filled(arcade.XYWH(self.center_x, self.center_y, self.width, self.height), self.color)
+        arcade.draw_rect_outline(arcade.XYWH(self.center_x, self.center_y, self.width, self.height), arcade.color.WHITE)
         arcade.draw_text(
             self.text,
             self.center_x,

@@ -230,7 +230,7 @@ class DotsBoxesView(arcade.View):
     # Drawing
     # ------------------------------------------------------------------ #
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.draw_background()
         self.draw_filled_boxes()
         self.draw_lines()
@@ -238,7 +238,7 @@ class DotsBoxesView(arcade.View):
         self.draw_ui()
 
     def draw_background(self):
-        arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, COLOR_BG)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT), COLOR_BG)
 
     def draw_filled_boxes(self):
         for r in range(GRID_ROWS):
@@ -251,7 +251,7 @@ class DotsBoxesView(arcade.View):
                 cx = (x1 + x2) / 2
                 cy = (y1 + y2) / 2
                 color = COLOR_PLAYER_FILL if owner == 'player' else COLOR_AI_FILL
-                arcade.draw_rectangle_filled(cx, cy, DOT_SPACING, DOT_SPACING, color)
+                arcade.draw_rect_filled(arcade.XYWH(cx, cy, DOT_SPACING, DOT_SPACING), color)
 
     def draw_lines(self):
         # Horizontal
@@ -307,17 +307,13 @@ class DotsBoxesView(arcade.View):
                              anchor_x="center")
 
         # Back button
-        arcade.draw_rectangle_filled(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H,
-                                     arcade.color.LIGHT_GRAY)
-        arcade.draw_rectangle_outline(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H,
-                                      arcade.color.DARK_GRAY, 2)
+        arcade.draw_rect_filled(arcade.XYWH(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H), arcade.color.LIGHT_GRAY)
+        arcade.draw_rect_outline(arcade.XYWH(BTN_BACK_X, BTN_BACK_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
         arcade.draw_text("Back", BTN_BACK_X, BTN_BACK_Y, COLOR_TEXT, 13,
                          anchor_x="center", anchor_y="center")
 
         # New Game button
-        arcade.draw_rectangle_filled(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H,
-                                     arcade.color.LIGHT_GRAY)
-        arcade.draw_rectangle_outline(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H,
-                                      arcade.color.DARK_GRAY, 2)
+        arcade.draw_rect_filled(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.LIGHT_GRAY)
+        arcade.draw_rect_outline(arcade.XYWH(BTN_NEW_X, BTN_NEW_Y, BTN_W, BTN_H), arcade.color.DARK_GRAY, 2)
         arcade.draw_text("New Game", BTN_NEW_X, BTN_NEW_Y, COLOR_TEXT, 13,
                          anchor_x="center", anchor_y="center")

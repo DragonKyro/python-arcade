@@ -67,8 +67,8 @@ class _Button:
 
     def draw(self, hover=False):
         color = BUTTON_HOVER_COLOR if hover else BUTTON_COLOR
-        arcade.draw_rectangle_filled(self.cx, self.cy, self.w, self.h, color)
-        arcade.draw_rectangle_outline(self.cx, self.cy, self.w, self.h, LINE_COLOR, 2)
+        arcade.draw_rect_filled(arcade.XYWH(self.cx, self.cy, self.w, self.h), color)
+        arcade.draw_rect_outline(arcade.XYWH(self.cx, self.cy, self.w, self.h), LINE_COLOR, 2)
         arcade.draw_text(
             self.label,
             self.cx,
@@ -142,11 +142,11 @@ class TicTacToeView(arcade.View):
     # Drawing
     # ------------------------------------------------------------------
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.window.set_viewport(0, WIDTH, 0, HEIGHT)
 
         # Background
-        arcade.draw_rectangle_filled(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, BG_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), BG_COLOR)
 
         # Title
         arcade.draw_text(
@@ -242,7 +242,7 @@ class TicTacToeView(arcade.View):
 
     def _draw_overlay(self):
         """Draw a translucent overlay with the result message and Play Again button."""
-        arcade.draw_rectangle_filled(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, OVERLAY_COLOR)
+        arcade.draw_rect_filled(arcade.XYWH(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT), OVERLAY_COLOR)
 
         if self.result == "X":
             msg = "You win!"
