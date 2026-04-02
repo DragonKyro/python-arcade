@@ -1,0 +1,17 @@
+FREECELL
+
+Single-deck solitaire with all 52 cards dealt face up.
+
+HOW TO PLAY
+
+- All 52 cards are dealt face up into 8 tableau columns (4 columns of 7, 4 columns of 6).
+- 4 free cells (top left) provide temporary storage for single cards.
+- 4 foundation piles (top right) are built up by suit from Ace to King.
+- Build tableau columns in descending order, alternating red and black suits.
+- Only the top card of each column may be moved.
+- Move a single card to a free cell, an empty column, or a valid tableau position.
+- Multiple cards may be moved as a shortcut if enough free cells and empty columns exist.
+- The number of cards you can move at once equals (1 + free cells open) x 2^(empty columns).
+- An empty tableau column may be filled with any card.
+- Move Aces to foundations as they become available, then build up by suit.
+- Win by moving all 52 cards to the 4 foundation piles.

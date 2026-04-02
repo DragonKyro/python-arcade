@@ -1,0 +1,16 @@
+KLONDIKE SOLITAIRE
+
+Classic single-deck solitaire card game.
+
+HOW TO PLAY
+
+- 7 tableau columns are dealt: column 1 gets 1 card, column 2 gets 2, up to column 7 with 7 cards.
+- Only the top card of each column is face up; the rest are face down.
+- Remaining cards form the stock pile.
+- Flip cards from the stock to the waste pile.
+- Build tableau columns in descending order, alternating red and black suits.
+- Move any face-up card (and all cards on top of it) to another valid tableau column.
+- When a face-down card is exposed, flip it face up.
+- An empty tableau column may only be filled with a King (or a stack starting with a King).
+- Move Aces to the 4 foundation piles, then build each foundation up by suit from Ace to King.
+- Win by moving all 52 cards to the foundations.

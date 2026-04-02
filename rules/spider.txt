@@ -1,0 +1,17 @@
+SPIDER SOLITAIRE
+
+Two-deck solitaire played on 10 tableau columns.
+
+HOW TO PLAY
+
+- 54 cards are dealt across 10 columns: columns 1-4 get 6 cards, columns 5-10 get 5 cards.
+- Only the top card of each column is face up; the rest are face down.
+- Remaining 50 cards form the stock.
+- Build tableau columns in descending order regardless of suit.
+- A sequence of cards in descending order of the same suit may be moved together as a group.
+- When a face-down card is exposed, flip it face up.
+- Any card or valid group may fill an empty column.
+- A complete same-suit run from King down to Ace is automatically removed to a foundation pile.
+- When no more moves are available, deal 10 new cards from the stock (one to each column).
+- All columns must be non-empty before dealing from the stock.
+- Win by completing all 8 same-suit King-to-Ace runs.

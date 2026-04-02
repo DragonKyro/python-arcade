@@ -53,6 +53,19 @@ from games.yahtzee import YahtzeeView
 from games.doodle_jump import DoodleJumpView
 from games.galaga import GalagaView
 from games.pacman import PacmanView
+from games.klondike import KlondikeView
+from games.spider import SpiderView
+from games.freecell import FreeCellView
+from games.pyramid import PyramidView
+from games.tripeaks import TriPeaksView
+from games.blackjack import BlackjackView
+from games.poker import PokerView
+from games.crazy_eights import CrazyEightsView
+from games.go_fish import GoFishView
+from games.old_maid import OldMaidView
+from games.war import WarView
+from games.hearts import HeartsView
+from games.spades import SpadesView
 
 # Each entry: (display name, view class, rules filename, icon filename)
 GAME_LIST = [
@@ -111,4 +124,17 @@ GAME_LIST = [
     ("Doodle Jump", DoodleJumpView, "doodle_jump.txt", "doodle_jump.png"),
     ("Galaga", GalagaView, "galaga.txt", "galaga.png"),
     ("Pac-Man", PacmanView, "pacman.txt", "pacman.png"),
+    ("Klondike", KlondikeView, "klondike.txt", "klondike.png"),
+    ("Spider", SpiderView, "spider.txt", "spider.png"),
+    ("FreeCell", FreeCellView, "freecell.txt", "freecell.png"),
+    ("Pyramid", PyramidView, "pyramid.txt", "pyramid.png"),
+    ("TriPeaks", TriPeaksView, "tripeaks.txt", "tripeaks.png"),
+    ("Blackjack", BlackjackView, "blackjack.txt", "blackjack.png"),
+    ("Poker", PokerView, "poker.txt", "poker.png"),
+    ("Crazy Eights", CrazyEightsView, "crazy_eights.txt", "crazy_eights.png"),
+    ("Go Fish", GoFishView, "go_fish.txt", "go_fish.png"),
+    ("Old Maid", OldMaidView, "old_maid.txt", "old_maid.png"),
+    ("War", WarView, "war.txt", "war.png"),
+    ("Hearts", HeartsView, "hearts.txt", "hearts.png"),
+    ("Spades", SpadesView, "spades.txt", "spades.png"),
 ]

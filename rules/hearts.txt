@@ -1,0 +1,23 @@
+HEARTS
+
+Score the fewest points by avoiding hearts and the Queen of Spades.
+
+HOW TO PLAY
+
+Players: 4.
+
+Deal all 52 cards evenly (13 each).
+
+Each round, pass 3 cards to another player (left, right, across, then no pass -- rotating).
+
+The player with the 2 of Clubs leads the first trick. Players must follow suit if possible. Highest card of the led suit wins the trick.
+
+Scoring:
+- Each heart: 1 point
+- Queen of Spades: 13 points
+
+Hearts cannot be led until a heart has been played on a previous trick (hearts broken).
+
+Shooting the Moon: if one player takes ALL hearts and the Queen of Spades, they score 0 and all other players receive 26 points.
+
+Lowest score wins when any player reaches 100 points.

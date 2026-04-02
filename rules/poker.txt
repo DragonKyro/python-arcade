@@ -1,0 +1,31 @@
+POKER (TEXAS HOLD'EM)
+
+Make the best 5-card hand using any combination of your 2 hole cards and 5 community cards.
+
+HOW TO PLAY
+
+Players: 2-6 (1 human + 1-5 AI).
+
+Each player is dealt 2 hole cards (face down).
+
+Betting Rounds:
+1. Pre-flop: after hole cards are dealt
+2. Flop: after 3 community cards are revealed
+3. Turn: after 4th community card is revealed
+4. River: after 5th community card is revealed
+
+Actions: Fold, Call, or Raise.
+
+Hand Rankings (highest to lowest):
+1. Royal Flush
+2. Straight Flush
+3. Four of a Kind
+4. Full House
+5. Flush
+6. Straight
+7. Three of a Kind
+8. Two Pair
+9. One Pair
+10. High Card
+
+Best 5-card hand wins the pot.

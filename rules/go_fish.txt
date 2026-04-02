@@ -1,0 +1,18 @@
+GO FISH
+
+Collect the most sets of four matching cards.
+
+HOW TO PLAY
+
+Players: 2-4.
+
+Each player is dealt 5 cards (7 if only 2 players). Remaining cards form the stock.
+
+On your turn:
+1. Ask any opponent for a specific rank you already hold.
+2. If they have any cards of that rank, they give you all of them. You go again.
+3. If they do not, they say "Go Fish." Draw one card from the stock.
+
+When you collect all 4 cards of the same rank, place the set face-up in front of you.
+
+The game ends when all sets have been collected. The player with the most sets wins.

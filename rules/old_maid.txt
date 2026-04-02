@@ -1,0 +1,15 @@
+OLD MAID
+
+Avoid being the last player holding the unpaired Queen.
+
+HOW TO PLAY
+
+Players: 2-4.
+
+Remove one Queen from the deck before dealing. Deal all remaining cards evenly.
+
+Each player removes and discards any pairs from their hand.
+
+On your turn, draw one card (without looking) from the hand of the player to your left. If it forms a pair, discard the pair.
+
+Play continues until all pairs have been discarded. The player left holding the lone Queen (the Old Maid) loses.

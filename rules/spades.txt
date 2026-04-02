@@ -1,0 +1,20 @@
+SPADES
+
+Win the number of tricks you bid with your partner.
+
+HOW TO PLAY
+
+Players: 4 (2 teams of 2, partners sit across from each other).
+
+Deal all 52 cards evenly (13 each). Spades are always trump.
+
+Bidding: each player bids the number of tricks they expect to win. Team bids are combined.
+
+The player to the dealer's left leads the first trick. Players must follow suit if possible. If unable, they may play any card (including a spade to trump). Highest card of the led suit wins unless trumped; highest spade wins if any were played.
+
+Scoring:
+- Meet your bid: score bid x 10 points.
+- Fail your bid: lose bid x 10 points.
+- Overtricks (bags): 1 point each. Every 10 accumulated bags = -100 point penalty.
+
+First team to reach 500 points wins.

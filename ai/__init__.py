@@ -21,3 +21,11 @@ from ai.ludo_ai import LudoAI
 from ai.yahtzee_ai import YahtzeeAI
 from ai.galaga_ai import BeeAI, ButterflyAI, BossGalagaAI
 from ai.pacman_ai import BlinkyAI, PinkyAI, InkyAI, ClydeAI
+from ai.blackjack_ai import BlackjackAI
+from ai.poker_ai import PokerAI
+from ai.crazy_eights_ai import CrazyEightsAI
+from ai.go_fish_ai import GoFishAI
+from ai.old_maid_ai import OldMaidAI
+from ai.war_ai import WarAI
+from ai.hearts_ai import HeartsAI
+from ai.spades_ai import SpadesAI

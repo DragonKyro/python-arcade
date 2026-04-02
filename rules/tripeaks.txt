@@ -1,0 +1,17 @@
+TRI PEAKS SOLITAIRE
+
+Clear three overlapping peaks by removing cards in sequence.
+
+HOW TO PLAY
+
+- 28 cards are dealt face up and face down forming 3 peaks of overlapping cards.
+- Each peak has 4 rows; only fully uncovered cards are face up and available.
+- Remaining 24 cards form the stock pile.
+- One card is flipped from the stock to start the waste pile.
+- Remove any available card that is exactly 1 rank higher or lower than the top waste card.
+- Rank wraps around: a King may be played on an Ace, and an Ace on a King.
+- The removed card becomes the new top of the waste pile, continuing the chain.
+- When no available card matches, flip the next stock card onto the waste pile.
+- A card becomes available (flipped face up) when both cards overlapping it are removed.
+- Longer chains of consecutive removals score bonus points.
+- Win by clearing all three peaks from the table.

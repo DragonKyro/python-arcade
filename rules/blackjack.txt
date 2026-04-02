@@ -1,0 +1,23 @@
+BLACKJACK
+
+Beat the dealer by getting a hand value closer to 21 without going over.
+
+HOW TO PLAY
+
+Players: 1 human + 1-3 AI players (optional) vs. dealer.
+Bet before each hand.
+
+Card Values:
+- Number cards: face value
+- Face cards (J, Q, K): 10
+- Ace: 1 or 11
+
+Actions:
+- Hit: draw another card
+- Stand: keep your current hand
+- Double: double your bet, receive exactly one more card
+- Split: if dealt a pair, split into two separate hands
+
+Dealer hits on 16 or less, stands on 17 or more.
+Blackjack (Ace + 10-value card) pays 3:2.
+Going over 21 is a bust (automatic loss).

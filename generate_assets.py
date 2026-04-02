@@ -924,6 +924,170 @@ def icon_pacman():
     _save(img, "pacman.png")
 
 
+def icon_klondike():
+    img, d = _new(DARK_GREEN)
+    # 3 tableau columns with cascading cards
+    for col in range(3):
+        x = 15 + col * 35
+        for row in range(col + 1):
+            y = 15 + row * 15
+            d.rectangle([x, y, x + 25, y + 35], fill=(40, 40, 40) if row < col else WHITE, outline=GRAY)
+    # foundation
+    d.rectangle([85, 10, 110, 45], outline=GOLD, width=2)
+    d.text((90, 18), "A♠", fill=GOLD, font=_font(12))
+    _save(img, "klondike.png")
+
+def icon_spider():
+    img, d = _new(DARK_GREEN)
+    # many columns (10 narrow)
+    for col in range(5):
+        x = 8 + col * 22
+        for row in range(3):
+            y = 20 + row * 12
+            d.rectangle([x, y, x + 18, y + 28], fill=(40, 40, 40) if row < 2 else WHITE, outline=GRAY)
+    # spider web hint
+    d.text((35, 75), "K→A", fill=WHITE, font=_font(14))
+    _save(img, "spider.png")
+
+def icon_freecell():
+    img, d = _new(DARK_GREEN)
+    # free cells (top left)
+    for i in range(4):
+        x = 8 + i * 18
+        d.rectangle([x, 8, x + 15, y := 30], fill=(30, 60, 30), outline=WHITE)
+    # foundations (top right)
+    for i in range(4):
+        x = 52 + i * 18
+        d.rectangle([x, 8, x + 15, 30], outline=GOLD, width=2)
+    # tableau columns
+    for col in range(4):
+        x = 15 + col * 25
+        for row in range(3):
+            y = 40 + row * 14
+            d.rectangle([x, y, x + 20, y + 28], fill=WHITE, outline=GRAY)
+    _save(img, "freecell.png")
+
+def icon_pyramid_card():
+    img, d = _new(DARK_GREEN)
+    # pyramid shape of cards
+    rows = [1, 2, 3, 4]
+    for r, count in enumerate(rows):
+        for c in range(count):
+            x = 60 - count * 14 + c * 28
+            y = 10 + r * 20
+            d.rectangle([x, y, x + 22, y + 18], fill=WHITE, outline=GRAY)
+    d.text((40, 90), "= 13", fill=YELLOW, font=_font(14))
+    _save(img, "pyramid.png")
+
+def icon_tripeaks():
+    img, d = _new(DARK_GREEN)
+    # 3 peaks
+    peaks = [20, 55, 90]
+    for px in peaks:
+        d.rectangle([px, 15, px + 20, 35], fill=(40, 40, 40), outline=GRAY)
+        d.rectangle([px - 10, 35, px + 10, 55], fill=(40, 40, 40), outline=GRAY)
+        d.rectangle([px + 10, 35, px + 30, 55], fill=WHITE, outline=GRAY)
+    # waste pile
+    d.rectangle([50, 80, 75, 105], fill=WHITE, outline=GRAY)
+    d.text((55, 85), "±1", fill=BLACK, font=_font(12))
+    _save(img, "tripeaks.png")
+
+
+def icon_blackjack():
+    img, d = _new(DARK_GREEN)
+    # two cards overlapping
+    d.rectangle([25, 30, 55, 80], fill=WHITE, outline=GRAY)
+    d.text((30, 35), "A", fill=BLACK, font=_font(16))
+    d.text((30, 58), "♠", fill=BLACK, font=_font(14))
+    d.rectangle([45, 25, 75, 75], fill=WHITE, outline=GRAY)
+    d.text((50, 30), "K", fill=RED, font=_font(16))
+    d.text((50, 53), "♥", fill=RED, font=_font(14))
+    d.text((30, 88), "21", fill=GOLD, font=_font(18))
+    _save(img, "blackjack.png")
+
+def icon_poker():
+    img, d = _new(DARK_GREEN)
+    # 5 community cards
+    for i in range(5):
+        x = 8 + i * 21
+        d.rectangle([x, 45, x + 18, y := 75], fill=WHITE, outline=GRAY)
+    # 2 hole cards
+    d.rectangle([30, 80, 50, 105], fill=WHITE, outline=GRAY)
+    d.rectangle([55, 80, 75, 105], fill=WHITE, outline=GRAY)
+    # chips
+    d.ellipse([75, 15, 105, 35], fill=RED, outline=WHITE, width=2)
+    d.ellipse([65, 10, 95, 30], fill=BLUE, outline=WHITE, width=2)
+    d.text((25, 15), "POKER", fill=GOLD, font=_font(14))
+    _save(img, "poker.png")
+
+def icon_crazy_eights():
+    img, d = _new(BLUE)
+    d.rectangle([35, 25, 65, 75], fill=WHITE, outline=BLACK)
+    d.text((42, 30), "8", fill=RED, font=_font(28))
+    d.text((42, 60), "♦", fill=RED, font=_font(14))
+    # wild indicator
+    d.text((20, 85), "WILD!", fill=YELLOW, font=_font(14))
+    _save(img, "crazy_eights.png")
+
+def icon_go_fish():
+    img, d = _new((100, 180, 220))
+    # fish
+    d.ellipse([30, 40, 80, 75], fill=ORANGE, outline=YELLOW)
+    d.polygon([(75, 55), (95, 40), (95, 70)], fill=ORANGE)
+    d.ellipse([40, 48, 48, 56], fill=WHITE)
+    d.ellipse([42, 50, 46, 54], fill=BLACK)
+    # cards
+    d.rectangle([15, 80, 35, 105], fill=WHITE, outline=GRAY)
+    d.rectangle([40, 80, 60, 105], fill=WHITE, outline=GRAY)
+    d.text((20, 15), "Go Fish", fill=WHITE, font=_font(14))
+    _save(img, "go_fish.png")
+
+def icon_old_maid():
+    img, d = _new(PURPLE)
+    # queen card
+    d.rectangle([35, 20, 65, 70], fill=WHITE, outline=GRAY)
+    d.text((42, 25), "Q", fill=RED, font=_font(22))
+    d.text((42, 50), "♥", fill=RED, font=_font(14))
+    # X over it
+    d.line([(35, 20), (65, 70)], fill=RED, width=3)
+    d.line([(65, 20), (35, 70)], fill=RED, width=3)
+    d.text((15, 80), "Old Maid", fill=WHITE, font=_font(12))
+    _save(img, "old_maid.png")
+
+def icon_war():
+    img, d = _new((50, 50, 50))
+    # two cards clashing
+    d.rectangle([15, 30, 50, 80], fill=WHITE, outline=GRAY)
+    d.text((22, 40), "K", fill=BLACK, font=_font(20))
+    d.rectangle([60, 25, 95, 75], fill=WHITE, outline=GRAY)
+    d.text((67, 35), "A", fill=RED, font=_font(20))
+    # vs
+    d.text((42, 48), "⚔", fill=GOLD, font=_font(16))
+    d.text((30, 90), "WAR!", fill=RED, font=_font(16))
+    _save(img, "war.png")
+
+def icon_hearts():
+    img, d = _new(DARK_GREEN)
+    # large heart
+    d.text((25, 20), "♥", fill=RED, font=_font(50))
+    # queen of spades small
+    d.rectangle([70, 60, 95, 95], fill=WHITE, outline=GRAY)
+    d.text((74, 65), "Q♠", fill=BLACK, font=_font(12))
+    d.text((15, 90), "-13", fill=RED, font=_font(12))
+    _save(img, "hearts.png")
+
+def icon_spades():
+    img, d = _new(DARK_GREEN)
+    # large spade
+    d.text((25, 20), "♠", fill=WHITE, font=_font(50))
+    # trump indicator
+    d.text((15, 85), "TRUMP", fill=GOLD, font=_font(14))
+    # bid number
+    d.ellipse([75, 75, 105, 105], fill=BLUE, outline=WHITE)
+    d.text((83, 80), "4", fill=WHITE, font=_font(16))
+    _save(img, "spades.png")
+
+
 # ── UI Assets ────────────────────────────────────────────────────────
 
 def ui_help():
@@ -1021,6 +1185,19 @@ def main():
     icon_doodle_jump()
     icon_galaga()
     icon_pacman()
+    icon_klondike()
+    icon_spider()
+    icon_freecell()
+    icon_pyramid_card()
+    icon_tripeaks()
+    icon_blackjack()
+    icon_poker()
+    icon_crazy_eights()
+    icon_go_fish()
+    icon_old_maid()
+    icon_war()
+    icon_hearts()
+    icon_spades()
 
     print("Generating UI assets...")
     ui_help()

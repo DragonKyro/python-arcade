@@ -1,0 +1,19 @@
+WAR
+
+Win all the cards.
+
+HOW TO PLAY
+
+Players: 2.
+
+Split the deck evenly between both players. Cards remain face down in a pile.
+
+Each round, both players flip their top card. The higher card wins both cards (placed at the bottom of the winner's pile).
+
+Tie = War:
+1. Each player places 3 cards face down.
+2. Each player flips 1 card face up.
+3. Higher face-up card wins all cards in play.
+4. If still tied, repeat the war.
+
+The game ends when one player has all the cards.

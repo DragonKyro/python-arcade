@@ -1,0 +1,17 @@
+CRAZY EIGHTS
+
+Be the first player to get rid of all your cards.
+
+HOW TO PLAY
+
+Players: 2-4.
+
+Each player is dealt 5 cards (7 if only 2 players). One card is turned face-up to start the discard pile. Remaining cards form the stock.
+
+On your turn, play a card that matches the top card's suit or rank.
+
+8s are wild: play an 8 on anything and choose the next suit.
+
+If you cannot play, draw from the stock until you can play or the stock is empty.
+
+First player to empty their hand wins.

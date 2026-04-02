@@ -1,0 +1,16 @@
+PYRAMID SOLITAIRE
+
+Remove pairs of cards that sum to 13 to clear the pyramid.
+
+HOW TO PLAY
+
+- 28 cards are dealt face up in a pyramid of 7 rows (1 card in row 1, up to 7 in row 7).
+- Each card partially overlaps two cards in the row below it.
+- A card is available for play only when no cards overlap it from below.
+- Remaining 24 cards form the stock pile.
+- Remove pairs of available cards whose ranks sum to 13.
+- Card values: A=1, 2-10=face value, J=11, Q=12, K=13.
+- Kings equal 13 and are removed on their own with a single click.
+- Draw cards from the stock to the waste pile; the top waste card is always available.
+- Stock and waste cards may pair with each other or with available pyramid cards.
+- Win by removing all 28 cards from the pyramid.
