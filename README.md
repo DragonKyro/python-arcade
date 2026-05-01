@@ -95,6 +95,11 @@ pip install pytest
 python -m pytest tests/ -v
 ```
 
+The AI test suite currently has 448 tests covering move validity, rule helpers,
+and edge cases for every AI module. The Go tests include Monte Carlo playouts
+and take the longest — the full AI suite typically runs in 15–20 minutes on
+Windows.
+
 ## Project Structure
 
 ```

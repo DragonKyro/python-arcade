@@ -93,8 +93,10 @@ class TestChoosePiecePreferences:
         """AI should prefer finishing a piece over other moves."""
         random.seed(42)
         ai = LudoAI()
+        # finish_pos is 0-indexed; the lane has FINISH_LANE_LENGTH slots (0..5).
+        # Reaching slot 5 (== finish_lane_length - 1) finishes the piece.
         pieces = [
-            _make_piece("finish_lane", finish_pos=4),  # needs 2 to finish (pos 6)
+            _make_piece("finish_lane", finish_pos=3),  # needs 2 more to finish (reach 5)
             _make_piece("track", track_pos=10, steps_from_entry=10),
             _make_piece("home"),
             _make_piece("finished"),
@@ -136,23 +138,24 @@ class TestChoosePieceEdgeCases:
         """Piece in finish lane can't move past the end."""
         random.seed(42)
         ai = LudoAI()
+        # finish_pos=4 means the piece is one slot away from finishing (slot 5).
         pieces = [
-            _make_piece("finish_lane", finish_pos=5),  # needs exactly 1 to finish
+            _make_piece("finish_lane", finish_pos=4),
             _make_piece("finished"),
             _make_piece("finished"),
             _make_piece("finished"),
         ]
         board = _default_board_state()
-        # Dice 3 would overshoot (5 + 3 = 8 > 6)
+        # Dice 3 would overshoot (4 + 3 = 7, but max valid is 5)
         result = ai.choose_piece(pieces, 3, board)
         assert result == -1
 
     def test_piece_exact_finish(self):
-        """Piece at finish_pos=5 with dice=1 finishes exactly."""
+        """Piece one slot from the end with dice=1 finishes exactly."""
         random.seed(42)
         ai = LudoAI()
         pieces = [
-            _make_piece("finish_lane", finish_pos=5),
+            _make_piece("finish_lane", finish_pos=4),  # 4 + 1 = 5 = finish
             _make_piece("finished"),
             _make_piece("finished"),
             _make_piece("finished"),

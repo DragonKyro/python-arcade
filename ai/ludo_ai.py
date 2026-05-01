@@ -64,7 +64,9 @@ class LudoAI:
                     valid.append(i)
             elif p["state"] == "finish_lane":
                 new_finish = p["finish_pos"] + dice
-                if new_finish <= board_state["finish_lane_length"]:
+                # Exact roll required: new_finish == finish_lane_length - 1 is home,
+                # anything larger overshoots.
+                if new_finish < board_state["finish_lane_length"]:
                     valid.append(i)
         return valid
 
@@ -89,8 +91,8 @@ class LudoAI:
 
         if p["state"] == "finish_lane":
             new_finish = p["finish_pos"] + dice
-            if new_finish == finish_len:
-                # Finishing a piece is highest priority
+            if new_finish == finish_len - 1:
+                # Finishing a piece is highest priority (home = last slot).
                 score += 200.0
             else:
                 score += 100.0 + new_finish * 5

@@ -253,9 +253,17 @@ class Connect4AI:
             player_piece: The piece value for the player (typically 1).
 
         Returns:
-            int: Column index (0-6) for the best move.
+            int: Column index (0-6) for the best move, or None if the board
+            is full.
         """
         col, _ = _minimax(
             board, DEPTH_LIMIT, -math.inf, math.inf, True, ai_piece, player_piece
         )
+        # Terminal positions short-circuit to (None, score) inside _minimax.
+        # Fall back to any legal column so callers always get a playable move
+        # when one exists.
+        if col is None:
+            valid = get_valid_columns(board)
+            if valid:
+                return valid[0]
         return col

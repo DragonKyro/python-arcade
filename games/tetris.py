@@ -297,13 +297,12 @@ class TetrisView(arcade.View):
         self.current_type = self.next_piece_type
         self.next_piece_type = self._pop_bag()
         self.rotation = 0
-        # Spawn position: centered, top of board
+        # Spawn position: centered, top of board.
+        # _get_cells maps (dr, dc) -> (piece_col + dc, piece_row - dr), so the
+        # topmost cell is at row `piece_row`. Placing it at BOARD_ROWS - 1
+        # keeps all cells in bounds regardless of the piece's max_r.
         self.piece_col = BOARD_COLS // 2 - 2
-        self.piece_row = BOARD_ROWS - 1  # will be adjusted
-        # Find the lowest occupied row in the piece shape so we can place it at the top
-        shape = TETROMINOES[self.current_type][self.rotation]
-        max_r = max(r for r, c in shape)
-        self.piece_row = BOARD_ROWS - 1 - max_r + 1  # top visible row
+        self.piece_row = BOARD_ROWS - 1
 
         self.fall_timer = 0.0
         self.lock_timer = -1.0

@@ -40,15 +40,15 @@ class TestSow:
 
     def test_skip_opponent_store(self):
         """Sowing should skip the opponent's store."""
-        pits = [[0, 0, 0, 0, 0, 12], [4, 4, 4, 4, 4, 4]]
+        # 8 stones from pit 5: one into own store, six across opponent pits,
+        # then the 8th lands on own pit 0 (which is pre-seeded so no capture).
+        pits = [[1, 0, 0, 0, 0, 8], [4, 4, 4, 4, 4, 4]]
         stores = [0, 0]
-        # Side 0, pit 5 has 12 stones: goes through store, across opponent,
-        # skips opponent store, returns to own side
         new_pits, new_stores, extra_turn, capture = sow(pits, stores, 0, 5)
-        # Own store should get exactly 1 stone (passing through once)
         assert new_stores[0] == 1
-        # Opponent store should remain 0 (skipped)
-        assert new_stores[1] == 0
+        assert new_stores[1] == 0          # opponent store skipped
+        assert new_pits[1] == [5, 5, 5, 5, 5, 5]
+        assert capture is False
 
     def test_capture_rule(self):
         """Last stone lands in empty own pit: capture that stone + opposite."""

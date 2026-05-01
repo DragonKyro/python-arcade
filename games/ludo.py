@@ -265,7 +265,9 @@ class LudoView(arcade.View):
                     valid.append(i)
             elif p["state"] == "finish_lane":
                 new_fp = p["finish_pos"] + dice
-                if new_fp <= FINISH_LANE_LENGTH:
+                # new_fp == FINISH_LANE_LENGTH - 1 is the final "home" slot;
+                # anything higher overshoots and is illegal (need exact roll).
+                if new_fp < FINISH_LANE_LENGTH:
                     valid.append(i)
         return valid
 

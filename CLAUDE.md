@@ -33,9 +33,16 @@ A collection of 68 games built with the `arcade` library (3.x). Includes single-
 
 ## Testing
 Tests are in `tests/` using pytest:
-- `tests/ai/` — unit tests for all 15 AI modules (move validity, rule helpers, edge cases)
+- `tests/ai/` — unit tests for all AI modules (move validity, rule helpers, edge cases)
 - `tests/games/` — logic tests for non-AI games (2048, Wordle, Mastermind, 15 Puzzle, Peg Solitaire)
 - `tests/integration/` — full game flow simulations (TicTacToe, Connect4, Othello, Checkers, Mancala)
+
+## Import layout
+`games/__init__.py` eagerly imports every game View so `GAME_LIST` can reference
+them. Game modules in turn import `pages.rules.RulesView`, so `pages/__init__.py`
+must NOT eagerly import `pages.games.GamesView` (that would pull `GAME_LIST`
+while the `games` package is still initialising and break with a circular
+import). Import `GamesView` lazily where it is used (see `pages/home.py`).
 
 ## Adding a New Game
 1. Create `games/your_game.py` with `YourGameView(arcade.View)` taking `menu_view` param

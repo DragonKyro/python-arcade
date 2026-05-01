@@ -53,7 +53,7 @@ class TestGetLegalMoves:
             # Now if we try to recapture, previous board hash should block it
             prev_hash = _board_hash(board)
             # Create a scenario where recapture would recreate 'board'
-            moves = get_legal_moves(new_board, BLACK, prev_hash=prev_hash)
+            moves = get_legal_moves(new_board, BLACK, prev_board_hash=prev_hash)
             # The move might or might not be legal depending on exact ko shape.
             # At minimum, this should not crash.
             assert isinstance(moves, list)
